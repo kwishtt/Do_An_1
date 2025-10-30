@@ -68,12 +68,23 @@ Do_An/
 
 Dự án sử dụng Git và GitHub để quản lý phiên bản và hợp tác nhóm. Dưới đây là hướng dẫn chi tiết cách clone, code, push, và xem tiến độ. Mỗi commit sẽ hiển thị tên người thực hiện trên GitHub.
 
-### �️ Thiết Lập Git và GitHub
+### Quy tắc chung
+1. Mỗi thành viên làm việc trên branch riêng để tránh xung đột.
+2. Commit thường xuyên với message rõ ràng.
+3. Tạo Pull Request (PR) để review trước khi merge vào main branch.
+
+Đối với báo cáo mỗi tuần, code thực hiện: 
+- Làm và thực hiện trong thư mục tuần tương ứng trong `progress/..`.
+- Ghi chú lại các bước thực hiện và kết quả đạt được.
+- Báo cáo ghi rõ: Đã làm gì, Công dụng của phần đó, Tác dụng và Ảnh hưởng.
+
+### Thiết Lập Git và GitHub
 1. **Cài đặt Git**: Tải từ [git-scm.com](https://git-scm.com/downloads).
 2. **Tạo tài khoản GitHub**: Nếu chưa có, đăng ký tại [github.com](https://github.com).
 3. **Thêm SSH Key** (tùy chọn, để push dễ dàng): Theo hướng dẫn [GitHub Docs](https://docs.github.com/en/authentication/connecting-to-github-with-ssh).
 
-### 📥 Clone Repo và Bắt Đầu
+### Clone Repo và Bắt Đầu
+> Copy link repo này và dán vào AI nếu không hiểu. 
 1. **Clone repo về máy**:
    ```bash
    git clone https://github.com/kwishtt/Do_An_1.git
