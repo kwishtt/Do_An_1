@@ -9,11 +9,11 @@
 
 ## ✨ Tính Năng Chính
 
-- 📊 **Phân tích dữ liệu toàn diện**: Xử lý dữ liệu thô từ TMDB API và các nguồn khác.
-- 🤖 **Mô hình Machine Learning**: Dự đoán thành công phim dựa trên ROI và các chỉ số khác.
-- 📈 **Trực quan hóa dữ liệu**: Biểu đồ phân tích phân bố, tương quan, và hiệu suất mô hình.
-- 🌍 **Hỗ trợ đa ngôn ngữ**: Tập trung vào phim Việt Nam với dữ liệu quốc tế.
-- 🔄 **Pipeline tự động**: Từ thu thập dữ liệu đến triển khai mô hình.
+-  **Phân tích dữ liệu toàn diện**: Xử lý dữ liệu thô từ TMDB API và các nguồn khác.
+-  **Mô hình Machine Learning**: Dự đoán thành công phim dựa trên ROI và các chỉ số khác.
+-  **Trực quan hóa dữ liệu**: Biểu đồ phân tích phân bố, tương quan, và hiệu suất mô hình.
+-  **Hỗ trợ đa ngôn ngữ**: Tập trung vào phim Việt Nam với dữ liệu quốc tế.
+-  **Pipeline tự động**: Từ thu thập dữ liệu đến triển khai mô hình.
 
 ## 📁 Cấu Trúc Dự Án
 
@@ -64,72 +64,13 @@ Do_An/
 5. **Đọc báo cáo**: `report/BaoCaoDoAn1_Nhom04.md` cho tổng hợp, `todo.md` cho tiến độ.
 6. **Trực quan hóa**: Xem `chart/` cho biểu đồ mẫu.
 
-## 🚀 Cài Đặt và Chạy
-
-### Yêu Cầu Hệ Thống
-- Python 3.8+
-- Jupyter Notebook
-- Git (để clone repo nếu cần)
-
-### Bước Cài Đặt
-1. **Clone repo** (nếu chưa có):
-   ```bash
-   git clone https://github.com/kwishtt/Do_An_1.git
-   cd Do_An_1
-   ```
-
-2. **Cài đặt thư viện**:
+## ⚙️ Cài Đặt Môi Trường
+1. **Cài đặt Python 3.8+**: Tải từ [python.org](https://www.python.org/downloads/).
+2. **Cài thư viện cần thiết**:
+Cài đặt thư viện**:
    ```bash
    pip install -r requirements.txt
-   ```
-
-3. **Khởi động Jupyter**:
-   ```bash
-   jupyter notebook
-   ```
-   Hoặc dùng VS Code để mở notebook trực tiếp.
-
-### Chạy Dự Án
-- **Chạy tuần 4 (Feature Engineering)**: Mở `progress/week04/feature_engineering.ipynb`, chạy từng cell để tạo `clean_movies_features.csv`.
-- **Kiểm tra output**: Sau khi chạy, kiểm tra file trong `data/` và biểu đồ trong notebook.
-- **Tùy chỉnh**: Sửa code trong notebook để thử nghiệm các đặc trưng mới.
-
-## 📊 Ví Dụ Trực Quan
-
-### Phân Bố Thể Loại Phim
-![Genre Distribution](chart/genre_distribution.png) *(Nếu có hình ảnh, thay link thực tế)*
-
-### Tương Quan Đặc Trưng
-```python
-import seaborn as sns
-sns.heatmap(df.corr(), annot=True)
-```
-
-## 🤝 Đóng Góp
-
-Chúng tôi hoan nghênh đóng góp! Cách tham gia:
-
-1. Fork repo này.
-2. Tạo branch mới: `git checkout -b feature/AmazingFeature`.
-3. Commit thay đổi: `git commit -m 'Add some AmazingFeature'`.
-4. Push lên branch: `git push origin feature/AmazingFeature`.
-5. Tạo Pull Request.
-
-### Quy Tắc Đóng Góp
-- Viết code sạch, comment tiếng Việt.
-- Test kỹ trước khi commit.
-- Cập nhật README nếu thêm tính năng mới.
-
-## 📝 Giấy Phép
-
-Dự án này sử dụng giấy phép MIT. Xem file `LICENSE` để biết thêm chi tiết.
-
-## 📞 Liên Hệ
-
-- **Nhóm**: Nhóm 04
-- **Email**: [your-email@example.com]
-- **GitHub**: [https://github.com/kwishtt/Do_An_1]
-
+   ```          
 ---
 
 *Được tạo với ❤️ bởi Nhóm 04 - Dự Án Đồ Án 1*
