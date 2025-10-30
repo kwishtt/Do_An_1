@@ -1,0 +1,64 @@
+=== Feature Importance Analysis (Random Forest) ===
+
+Top 10 Features:
+        Feature  Importance
+   Vote Average    0.415641
+    roi_vs_vote    0.106989
+            roi    0.070450
+    roi_clipped    0.062735
+     Vote Count    0.051407
+    Revenue_log    0.048764
+        Revenue    0.032741
+runtime_minutes    0.022406
+budget_per_year    0.019484
+  runtime_hours    0.018823
+
+All Features:
+                    Feature  Importance
+               Vote Average    0.415641
+                roi_vs_vote    0.106989
+                        roi    0.070450
+                roi_clipped    0.062735
+                 Vote Count    0.051407
+                Revenue_log    0.048764
+                    Revenue    0.032741
+            runtime_minutes    0.022406
+            budget_per_year    0.019484
+              runtime_hours    0.018823
+                     Budget    0.017840
+                 Budget_log    0.017370
+               release_year    0.017103
+                    Runtime    0.015770
+              release_month    0.008843
+                genre_Drama    0.008798
+            genre_Animation    0.005843
+     cast_genre_interaction    0.005251
+            release_weekday    0.005225
+            release_quarter    0.004565
+                 num_genres    0.004546
+               genre_Horror    0.004341
+              num_main_cast    0.003574
+               genre_Comedy    0.002947
+               genre_Action    0.002686
+                     is_usa    0.002269
+is_united_states_of_america    0.002037
+            genre_Adventure    0.001966
+               genre_Family    0.001930
+                genre_Crime    0.001709
+              genre_Romance    0.001528
+                 is_vietnam    0.001527
+                  is_france    0.001310
+      genre_Science Fiction    0.001306
+          is_holiday_season    0.001275
+             genre_Thriller    0.001273
+                   is_china    0.001246
+              genre_Mystery    0.001054
+             is_south_korea    0.001018
+                  is_canada    0.000845
+              genre_Fantasy    0.000742
+                   is_india    0.000643
+          is_united_kingdom    0.000554
+              genre_History    0.000549
+                   is_japan    0.000409
+                genre_Music    0.000401
+               is_australia    0.000268

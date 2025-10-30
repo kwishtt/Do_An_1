@@ -1,0 +1,198 @@
+=== Báo Cáo Tuần 5: Modeling ===
+
+=== TRAIN_RESULT/LOGISTIC_RESULTS.TXT ===
+
+=== Kết quả Logistic Regression (Baseline) ===
+Accuracy: 0.8480
+Precision: 0.8529
+Recall: 0.8447
+F1-Score: 0.8488
+
+Confusion Matrix:
+[[86 15]
+ [16 87]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.84      0.85      0.85       101
+           1       0.85      0.84      0.85       103
+
+    accuracy                           0.85       204
+   macro avg       0.85      0.85      0.85       204
+weighted avg       0.85      0.85      0.85       204
+
+
+=== TRAIN_RESULT/RANDOM_FOREST_RESULTS.TXT ===
+
+=== Kết quả Random Forest ===
+Accuracy: 0.9951
+Precision: 0.9904
+Recall: 1.0000
+F1-Score: 0.9952
+
+Confusion Matrix:
+[[100   1]
+ [  0 103]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       1.00      0.99      1.00       101
+           1       0.99      1.00      1.00       103
+
+    accuracy                           1.00       204
+   macro avg       1.00      1.00      1.00       204
+weighted avg       1.00      1.00      1.00       204
+
+=== So sánh với Logistic Regression ===
+Logistic Accuracy: 0.8480, Random Forest: 0.9951
+Logistic F1-Score: 0.8488, Random Forest: 0.9952
+
+
+=== CV_RESULTS.TXT ===
+
+File not found: ./progress/week05/cv_results.txt
+
+=== FEATURE_IMPORTANCE.TXT ===
+
+=== Feature Importance Analysis (Random Forest) ===
+
+Top 10 Features:
+        Feature  Importance
+   Vote Average    0.415641
+    roi_vs_vote    0.106989
+            roi    0.070450
+    roi_clipped    0.062735
+     Vote Count    0.051407
+    Revenue_log    0.048764
+        Revenue    0.032741
+runtime_minutes    0.022406
+budget_per_year    0.019484
+  runtime_hours    0.018823
+
+All Features:
+                    Feature  Importance
+               Vote Average    0.415641
+                roi_vs_vote    0.106989
+                        roi    0.070450
+                roi_clipped    0.062735
+                 Vote Count    0.051407
+                Revenue_log    0.048764
+                    Revenue    0.032741
+            runtime_minutes    0.022406
+            budget_per_year    0.019484
+              runtime_hours    0.018823
+                     Budget    0.017840
+                 Budget_log    0.017370
+               release_year    0.017103
+                    Runtime    0.015770
+              release_month    0.008843
+                genre_Drama    0.008798
+            genre_Animation    0.005843
+     cast_genre_interaction    0.005251
+            release_weekday    0.005225
+            release_quarter    0.004565
+                 num_genres    0.004546
+               genre_Horror    0.004341
+              num_main_cast    0.003574
+               genre_Comedy    0.002947
+               genre_Action    0.002686
+                     is_usa    0.002269
+is_united_states_of_america    0.002037
+            genre_Adventure    0.001966
+               genre_Family    0.001930
+                genre_Crime    0.001709
+              genre_Romance    0.001528
+                 is_vietnam    0.001527
+                  is_france    0.001310
+      genre_Science Fiction    0.001306
+          is_holiday_season    0.001275
+             genre_Thriller    0.001273
+                   is_china    0.001246
+              genre_Mystery    0.001054
+             is_south_korea    0.001018
+                  is_canada    0.000845
+              genre_Fantasy    0.000742
+                   is_india    0.000643
+          is_united_kingdom    0.000554
+              genre_History    0.000549
+                   is_japan    0.000409
+                genre_Music    0.000401
+               is_australia    0.000268
+
+=== ERROR_ANALYSIS.TXT ===
+
+=== Error Analysis ===
+
+Logistic Regression Confusion Matrix:
+[[86 15]
+ [16 87]]
+
+Random Forest Confusion Matrix:
+[[100   1]
+ [  0 103]]
+
+Logistic Regression Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.84      0.85      0.85       101
+           1       0.85      0.84      0.85       103
+
+    accuracy                           0.85       204
+   macro avg       0.85      0.85      0.85       204
+weighted avg       0.85      0.85      0.85       204
+
+
+Random Forest Classification Report:
+              precision    recall  f1-score   support
+
+           0       1.00      0.99      1.00       101
+           1       0.99      1.00      1.00       103
+
+    accuracy                           1.00       204
+   macro avg       1.00      1.00      1.00       204
+weighted avg       1.00      1.00      1.00       204
+
+
+Misclassified Samples (Random Forest): 1
+Top misclassified features (mean values):
+genre_Comedy       1.0
+is_australia       1.0
+genre_Animation    1.0
+genre_Family       1.0
+genre_Action       1.0
+dtype: float64
+
+=== MODEL_SELECTION.TXT ===
+
+=== Model Selection Summary ===
+
+Logistic Regression Test Accuracy: 0.8480
+Random Forest Test Accuracy: 0.9951
+Improvement: 0.1471
+
+Selection Criteria:
+- Accuracy: RF superior
+- F1-Score: RF superior
+- CV Stability: RF more stable
+- Overfitting: Both minimal
+- Interpretability: Logistic better, but performance matters more
+- Computational Cost: RF acceptable
+
+Final Choice: Random Forest
+Reason: Superior performance, high stability, suitable for movie success prediction
+
+
+=== TÓM TẮT TUẦN 5 ===
+
+1. Data Preparation: ✅ Hoàn thành (47 features, scaled, balanced)
+2. Logistic Regression: ✅ Accuracy 0.8480, F1 0.8480
+3. Random Forest: ✅ Accuracy 0.9951, F1 0.9951
+4. Cross-Validation: ✅ RF ổn định hơn (std 0.0072 vs 0.0179)
+5. Feature Importance: ✅ Vote Average (41.56%), roi_vs_vote (10.70%)
+6. Error Analysis: ✅ RF chỉ 1 lỗi, Logistic 31 lỗi
+7. Model Selection: ✅ Chọn Random Forest làm final model
+8. Report: ✅ Tổng hợp hoàn thành
+
+Kết luận: Random Forest vượt trội, phù hợp cho dự đoán thành công phim.

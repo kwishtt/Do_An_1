@@ -1,0 +1,19 @@
+=== Kết quả Logistic Regression (Baseline) ===
+Accuracy: 0.8480
+Precision: 0.8529
+Recall: 0.8447
+F1-Score: 0.8488
+
+Confusion Matrix:
+[[86 15]
+ [16 87]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.84      0.85      0.85       101
+           1       0.85      0.84      0.85       103
+
+    accuracy                           0.85       204
+   macro avg       0.85      0.85      0.85       204
+weighted avg       0.85      0.85      0.85       204

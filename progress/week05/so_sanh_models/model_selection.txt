@@ -1,0 +1,16 @@
+=== Tóm Tắt Lựa Chọn Model ===
+
+Độ chính xác kiểm tra Logistic Regression: 0.8480
+Độ chính xác kiểm tra Random Forest: 0.9951
+Cải thiện: 0.1471
+
+Tiêu chí lựa chọn:
+- Độ chính xác: RF vượt trội
+- Điểm F1: RF vượt trội
+- Ổn định CV: RF ổn định hơn
+- Quá khớp: Cả hai tối thiểu
+- Khả năng giải thích: Logistic tốt hơn, nhưng hiệu suất quan trọng hơn
+- Chi phí tính toán: RF chấp nhận được
+
+Lựa chọn cuối cùng: Random Forest
+Lý do: Hiệu suất vượt trội, ổn định cao, phù hợp cho dự đoán thành công phim

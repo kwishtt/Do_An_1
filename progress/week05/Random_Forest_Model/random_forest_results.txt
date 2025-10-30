@@ -1,0 +1,23 @@
+=== Kết quả Random Forest ===
+Accuracy: 0.9951
+Precision: 0.9904
+Recall: 1.0000
+F1-Score: 0.9952
+
+Confusion Matrix:
+[[100   1]
+ [  0 103]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       1.00      0.99      1.00       101
+           1       0.99      1.00      1.00       103
+
+    accuracy                           1.00       204
+   macro avg       1.00      1.00      1.00       204
+weighted avg       1.00      1.00      1.00       204
+
+=== So sánh với Logistic Regression ===
+Logistic Accuracy: 0.8480, Random Forest: 0.9951
+Logistic F1-Score: 0.8488, Random Forest: 0.9952
