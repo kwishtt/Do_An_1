@@ -120,27 +120,9 @@ Dự án sử dụng Git và GitHub để quản lý phiên bản và hợp tác
 
 6. **Merge sau review**:
    - Leader nhóm review và approve PR.
-   - Merge vào main: `git merge feature/[tên-branch]` (hoặc dùng GitHub UI).
+   - Merge vào main: `git merge feature/[tên-branch]`.
 
-### 👀 Xem Tiến Độ và Ai Làm Gì
-- **Xem commit history**: Trên GitHub, vào tab "Commits" hoặc chạy `git log --oneline` locally. Mỗi commit hiển thị:
-  - **Tên người commit**: Tên GitHub của bạn (vd: "John Doe").
-  - **Thời gian**: Ngày giờ commit.
-  - **Message**: Mô tả thay đổi (vd: "Hoàn thành EDA tuần 3").
-  - **Files changed**: File nào bị sửa.
-- **Xem ai làm gì**: Trong commit list, hover để thấy author. Dùng `git blame [file]` để xem từng dòng ai viết.
-- **Theo dõi tiến độ**: 
-  - Kiểm tra `report/todo.md` trên GitHub.
-  - Xem Issues: Tab "Issues" cho task và bug.
-  - Pull Requests: Xem PR đang mở/đóng.
-- **Local check**: `git status` để xem thay đổi chưa commit, `git diff` để so sánh.
 
-### 📋 Checklist Hợp Tác
-- [ ] Clone repo và cài đặt môi trường.
-- [ ] Tạo branch trước khi code.
-- [ ] Commit thường xuyên với message rõ ràng.
-- [ ] Push và tạo PR để review.
-- [ ] Kiểm tra commit history để theo dõi ai làm gì.
-- [ ] Update nhóm nếu gặp vấn đề.
+---- 
 
-Nếu gặp lỗi Git, tham khảo [Git Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf). Liên hệ leader nếu cần hỗ trợ! 🤝
+Đồ Án 1 — Nhóm 04 - KHDL HUMG
