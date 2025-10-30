@@ -56,13 +56,91 @@ Do_An/
 5. **Đọc báo cáo**: `report/BaoCaoDoAn1_Nhom04.md` cho tổng hợp, `todo.md` cho tiến độ.
 6. **Trực quan hóa**: Xem `chart/` cho biểu đồ mẫu.
 
-## ⚙️ Cài Đặt Môi Trường
+## ⚙️ Cài Đặt
 1. **Cài đặt Python 3.8+**: Tải từ [python.org](https://www.python.org/downloads/).
 
 2. **Cài thư viện cần thiết**:
    ```bash
    pip install -r requirements.txt
-   ```          
----
+   ```     
 
-*Được tạo với ❤️ bởi Nhóm 04 - Dự Án Đồ Án 1*
+## 👥 Hướng Dẫn Thành Viên Trong Nhóm Cùng Hoàn Thành Dự Án
+
+Dự án sử dụng Git và GitHub để quản lý phiên bản và hợp tác nhóm. Dưới đây là hướng dẫn chi tiết cách clone, code, push, và xem tiến độ. Mỗi commit sẽ hiển thị tên người thực hiện trên GitHub.
+
+### �️ Thiết Lập Git và GitHub
+1. **Cài đặt Git**: Tải từ [git-scm.com](https://git-scm.com/downloads).
+2. **Tạo tài khoản GitHub**: Nếu chưa có, đăng ký tại [github.com](https://github.com).
+3. **Thêm SSH Key** (tùy chọn, để push dễ dàng): Theo hướng dẫn [GitHub Docs](https://docs.github.com/en/authentication/connecting-to-github-with-ssh).
+
+### 📥 Clone Repo và Bắt Đầu
+1. **Clone repo về máy**:
+   ```bash
+   git clone https://github.com/kwishtt/Do_An_1.git
+   cd Do_An_1
+   ```
+   - Repo sẽ tải về thư mục `Do_An_1` trên máy bạn.
+
+2. **Cập nhật repo** (nếu đã clone):
+   ```bash
+   git pull origin main
+   ```
+   - Lấy thay đổi mới nhất từ main branch.
+
+### 💻 Quy Trình Code và Push
+1. **Tạo branch cá nhân** (để tránh xung đột):
+   ```bash
+   git checkout -b feature/[tên-nhiệm-vụ]  # vd: git checkout -b feature/week03-eda
+   ```
+   - Branch giúp bạn làm việc riêng mà không ảnh hưởng main.
+
+2. **Code và test**:
+   - Mở file (vd: `progress/week04/feature_engineering.ipynb`) trong VS Code hoặc Jupyter.
+   - Thực hiện thay đổi, chạy code để đảm bảo hoạt động.
+   - Lưu file.
+
+3. **Commit thay đổi**:
+   ```bash
+   git add .  # Thêm tất cả thay đổi
+   git commit -m "Hoàn thành [mô tả ngắn]: vd: Thêm feature engineering cho tuần 4"
+   ```
+   - Commit message nên rõ ràng, bao gồm tên bạn (GitHub sẽ tự động ghi tên từ config).
+
+4. **Push lên GitHub**:
+   ```bash
+   git push origin feature/[tên-branch]
+   ```
+   - Thay đổi sẽ lên branch của bạn trên GitHub.
+
+5. **Tạo Pull Request (PR)**:
+   - Vào GitHub repo, tab "Pull requests" > "New pull request".
+   - Chọn branch của bạn so với main.
+   - Thêm mô tả: "Hoàn thành tuần 4, thêm feature engineering."
+   - Tag đồng đội để review.
+
+6. **Merge sau review**:
+   - Leader nhóm review và approve PR.
+   - Merge vào main: `git merge feature/[tên-branch]` (hoặc dùng GitHub UI).
+
+### 👀 Xem Tiến Độ và Ai Làm Gì
+- **Xem commit history**: Trên GitHub, vào tab "Commits" hoặc chạy `git log --oneline` locally. Mỗi commit hiển thị:
+  - **Tên người commit**: Tên GitHub của bạn (vd: "John Doe").
+  - **Thời gian**: Ngày giờ commit.
+  - **Message**: Mô tả thay đổi (vd: "Hoàn thành EDA tuần 3").
+  - **Files changed**: File nào bị sửa.
+- **Xem ai làm gì**: Trong commit list, hover để thấy author. Dùng `git blame [file]` để xem từng dòng ai viết.
+- **Theo dõi tiến độ**: 
+  - Kiểm tra `report/todo.md` trên GitHub.
+  - Xem Issues: Tab "Issues" cho task và bug.
+  - Pull Requests: Xem PR đang mở/đóng.
+- **Local check**: `git status` để xem thay đổi chưa commit, `git diff` để so sánh.
+
+### 📋 Checklist Hợp Tác
+- [ ] Clone repo và cài đặt môi trường.
+- [ ] Tạo branch trước khi code.
+- [ ] Commit thường xuyên với message rõ ràng.
+- [ ] Push và tạo PR để review.
+- [ ] Kiểm tra commit history để theo dõi ai làm gì.
+- [ ] Update nhóm nếu gặp vấn đề.
+
+Nếu gặp lỗi Git, tham khảo [Git Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf). Liên hệ leader nếu cần hỗ trợ! 🤝
