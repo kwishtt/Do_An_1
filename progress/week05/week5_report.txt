@@ -52,7 +52,25 @@ Logistic F1-Score: 0.8488, Random Forest: 0.9952
 
 === CV_RESULTS.TXT ===
 
-File not found: ./progress/week05/cv_results.txt
+=== 5-Fold Cross-Validation Results ===
+
+Logistic Regression:
+  Accuracy: 0.8441 ± 0.0351 (std: 0.0179)
+    Scores: [0.83333333 0.83333333 0.82843137 0.87745098 0.84803922]
+  F1-Score: 0.8416 ± 0.0333 (std: 0.0170)
+    Scores: [0.82653061 0.83       0.83091787 0.87179487 0.84878049]
+  Overfitting: Acc gap 0.0311, F1 gap 0.0327
+
+Random Forest:
+  Accuracy: 0.9941 ± 0.0141 (std: 0.0072)
+    Scores: [0.99509804 1.         0.98039216 1.         0.99509804]
+  F1-Score: 0.9941 ± 0.0141 (std: 0.0072)
+    Scores: [0.99507389 1.         0.98039216 1.         0.99516908]
+  Overfitting: Acc gap 0.0059, F1 gap 0.0059
+
+=== So sánh ===
+Accuracy: Logistic 0.8441, RF 0.9941 (RF tốt hơn: 0.1500)
+F1-Score: Logistic 0.8416, RF 0.9941 (RF tốt hơn: 0.1525)
 
 === FEATURE_IMPORTANCE.TXT ===
 
@@ -186,13 +204,13 @@ Reason: Superior performance, high stability, suitable for movie success predict
 
 === TÓM TẮT TUẦN 5 ===
 
-1. Data Preparation: ✅ Hoàn thành (47 features, scaled, balanced)
-2. Logistic Regression: ✅ Accuracy 0.8480, F1 0.8480
-3. Random Forest: ✅ Accuracy 0.9951, F1 0.9951
-4. Cross-Validation: ✅ RF ổn định hơn (std 0.0072 vs 0.0179)
-5. Feature Importance: ✅ Vote Average (41.56%), roi_vs_vote (10.70%)
-6. Error Analysis: ✅ RF chỉ 1 lỗi, Logistic 31 lỗi
-7. Model Selection: ✅ Chọn Random Forest làm final model
-8. Report: ✅ Tổng hợp hoàn thành
+1. Data Preparation: Hoàn thành (47 features, scaled, balanced)
+2. Logistic Regression: Accuracy 0.8480, F1 0.8480
+3. Random Forest: Accuracy 0.9951, F1 0.9951
+4. Cross-Validation: RF ổn định hơn (std 0.0072 vs 0.0179)
+5. Feature Importance: Vote Average (41.56%), roi_vs_vote (10.70%)
+6. Error Analysis: RF chỉ 1 lỗi, Logistic 31 lỗi
+7. Model Selection: Chọn Random Forest làm final model
+8. Report: Tổng hợp hoàn thành
 
 Kết luận: Random Forest vượt trội, phù hợp cho dự đoán thành công phim.
