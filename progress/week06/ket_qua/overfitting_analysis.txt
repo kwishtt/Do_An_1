@@ -1,0 +1,25 @@
+=== Overfitting Analysis - Tuần 6 ===
+
+=== Train vs Test Performance ===
+Train Accuracy: 1.0000
+Test Accuracy: 0.9951
+Accuracy Gap: 0.0049
+
+Train F1-Score: 1.0000
+Test F1-Score: 0.9952
+F1 Gap: 0.0048
+
+Overfitting Status: No Significant Overfitting
+Primary Recommendation: Model ổn định, có thể sử dụng
+
+=== Learning Curve Analysis ===
+Optimal training size: 652 samples
+At optimal size - Train F1: 1.0000
+At optimal size - Val F1: 0.9988
+
+=== Detailed Recommendations ===
+1. Model hiện tại ổn định, không cần điều chỉnh
+
+=== Files Generated ===
+Learning curves chart: ./chart/week06/overfitting_analysis.png
+Analysis report: ./progress/week06/overfitting_analysis.txt

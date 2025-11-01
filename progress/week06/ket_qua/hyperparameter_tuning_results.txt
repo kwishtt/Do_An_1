@@ -1,0 +1,40 @@
+=== Kết quả Hyperparameter Tuning - Tuần 6 ===
+
+=== Best Parameters ===
+n_estimators: 100
+min_samples_split: 2
+min_samples_leaf: 1
+max_features: None
+max_depth: 5
+
+Best CV F1-Score: 0.9988
+Tuning Time: 49.78 seconds
+
+=== Test Set Performance ===
+Accuracy: 0.9951
+Precision: 0.9904
+Recall: 1.0000
+F1-Score: 0.9952
+
+Confusion Matrix:
+[[100   1]
+ [  0 103]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       1.00      0.99      1.00       101
+           1       0.99      1.00      1.00       103
+
+    accuracy                           1.00       204
+   macro avg       1.00      1.00      1.00       204
+weighted avg       1.00      1.00      1.00       204
+
+=== So sánh với Baseline ===
+Baseline Accuracy: 0.9951
+Tuned Accuracy: 0.9951
+Improvement: 0.0000 (+0.00%)
+
+Baseline F1-Score: 0.9952
+Tuned F1-Score: 0.9952
+F1 Improvement: 0.0000 (+0.00%)
