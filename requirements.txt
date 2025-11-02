@@ -3,3 +3,9 @@ numpy
 seaborn
 matplotlib
 scikit-learn
+flask 
+requests 
+flask_sqlalchemy
+gunicorn
+flask_bcrypt
+flask_login
