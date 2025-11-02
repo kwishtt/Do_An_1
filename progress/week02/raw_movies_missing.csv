@@ -1,0 +1,18 @@
+,missing_count,missing_percent,dtype
+Stars,1737,79.21,object
+Director,1730,78.89,object
+Overview,110,5.02,object
+Id,0,0.0,int64
+Title,0,0.0,object
+Revenue,0,0.0,float64
+Budget,0,0.0,float64
+Original Title,0,0.0,object
+Original Language,0,0.0,object
+Release Date,0,0.0,object
+Runtime,0,0.0,int64
+Vote Average,0,0.0,float64
+Vote Count,0,0.0,int64
+Production Companies,0,0.0,object
+Genres,0,0.0,object
+Spoken Languages,0,0.0,object
+Production Countries,0,0.0,object
