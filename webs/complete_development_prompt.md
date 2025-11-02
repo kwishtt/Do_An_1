@@ -14,6 +14,7 @@
 🎯 MỤC TIÊU: Website dự đoán thành công phim với AI (99.52% accuracy)
 👥 TARGET USER: Nhà sản xuất phim, đầu tư viên, sinh viên điện ảnh
 🚀 APPROACH: No-login required, instant prediction, UX-first design
+🎨 DESIGN INSPIRATION: Make10000Hours.com clean aesthetic
 ```
 
 ### **Core Features**
@@ -33,6 +34,15 @@
 - Database: CSV files (1020 movies, 47 features)
 - No authentication required
 - Real-time predictions
+
+✅ DESIGN DNA (Make10000Hours Inspired):
+- Clean typography with generous white space
+- Soft subtle gradients and glass effects
+- Icon-driven feature presentation
+- Card-based information architecture
+- Smooth animations and micro-interactions
+- Minimal color palette with strategic accents
+- Single-page smooth scrolling layout
 ```
 
 ---
