@@ -1,0 +1,43 @@
+=== Feature Importance Analysis - Tuần 6 ===
+
+=== Top 15 Features ===
+          feature  importance   category  target_correlation
+     Vote Average    0.765254    Quality            0.357842
+      roi_clipped    0.120917  Financial            0.200256
+              roi    0.111841  Financial            0.288594
+      roi_vs_vote    0.001988  Financial            0.702328
+       Vote Count    0.000000    Quality            0.419295
+          Runtime    0.000000    Content            0.001782
+           Budget    0.000000  Financial            0.106544
+    release_month    0.000000       Time            0.063232
+  release_weekday    0.000000       Time            0.224319
+  release_quarter    0.000000       Time            0.103755
+is_holiday_season    0.000000 Geographic            0.001507
+  runtime_minutes    0.000000    Content            0.288594
+    runtime_hours    0.000000    Content            0.288594
+     release_year    0.000000       Time            0.133976
+          Revenue    0.000000  Financial            0.062529
+
+=== Feature Efficiency Analysis ===
+Features cần thiết cho 80% importance: 44/47 (93.6%)
+Features cần thiết cho 90% importance: 9/47 (19.1%)
+
+=== Category Analysis ===
+Quality: 0.765 (76.5%)
+Financial: 0.235 (23.5%)
+Content: 0.000 (0.0%)
+Geographic: 0.000 (0.0%)
+Time: 0.000 (0.0%)
+
+=== Original vs Engineered Features ===
+Original Features Importance: 0.765 (76.5%)
+Engineered Features Importance: 0.235 (23.5%)
+Other Features Importance: -0.000 (-0.0%)
+
+=== High Correlation + High Importance Features ===
+     feature  importance  target_correlation
+Vote Average    0.765254            0.357842
+=== Files Generated ===
+Feature importance analysis: ./chart/week06/feature_importance_analysis.png
+Correlation heatmap: ./chart/week06/correlation_heatmap.png
+Importance vs correlation: ./chart/week06/importance_vs_correlation.png
