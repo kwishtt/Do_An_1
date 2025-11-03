@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự Đoán Thành Công Phim - AI Độ Chính Xác 99.5%</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js và Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- HEADER - Ultra Clean & Minimal -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-brand">
+                <div class="logo">
+                    <span class="logo-icon">🎬</span>
+                    <span class="logo-text">FilmPredict</span>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="#features" class="nav-link">Tính năng</a>
+                <a href="#how-it-works" class="nav-link">Cách hoạt động</a>
+                <a href="#demo" class="nav-link">Demo</a>
+                <button class="theme-toggle" id="theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <a href="#app" class="btn-primary nav-cta">Dự đoán ngay</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION - Make10000Hours Aesthetic -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Dự Đoán Thành Công Phim 
+                    <span class="gradient-text">Với AI Độ Chính Xác 99.5%</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Giúp nhà sản xuất, đầu tư và phân phối phim đưa ra quyết định thông minh dựa trên dữ liệu. 
+                    <strong>Không cần đăng ký, dự đoán ngay lập tức.</strong>
+                </p>
+                
+                <!-- CTA Buttons - Clean Design -->
+                <div class="hero-cta">
+                    <a href="#app" class="btn-primary hero-btn">
+                        <span class="btn-icon">🚀</span>
+                        Dự đoán miễn phí
+                    </a>
+                    <a href="#demo" class="btn-secondary hero-btn">
+                        <span class="btn-icon">📊</span>
+                        Xem demo
+                    </a>
+                </div>
+                
+                <!-- Trust Indicators -->
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">1,020+</span>
+                        <span class="stat-label">phim đã phân tích</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">99.5%</span>
+                        <span class="stat-label">độ chính xác</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">47</span>
+                        <span class="stat-label">yếu tố phân tích</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hero Visual - Interactive Dashboard Preview -->
+            <div class="hero-visual">
+                <div class="dashboard-preview glassmorphism">
+                    <div class="preview-header">
+                        <div class="preview-controls">
+                            <div class="control-dot red"></div>
+                            <div class="control-dot yellow"></div>
+                            <div class="control-dot green"></div>
+                        </div>
+                        <div class="preview-title">Kết quả dự đoán</div>
+                    </div>
+                    
+                    <div class="preview-content">
+                        <div class="prediction-card mini">
+                            <div class="card-header">
+                                <span class="movie-title">🎬 Mai (2024)</span>
+                                <span class="success-badge">✅ 87% Thành công</span>
+                            </div>
+                            <div class="preview-metrics">
+                                <div class="metric">
+                                    <span class="metric-label">ROI dự kiến</span>
+                                    <span class="metric-value success">2.4x</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Mức rủi ro</span>
+                                    <span class="metric-value medium">Trung bình</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Điểm chất lượng</span>
+                                    <span class="metric-value">7.2/10</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Mini Chart Preview -->
+                            <div class="mini-chart">
+                                <div class="chart-bars">
+                                    <div class="bar" style="--height: 76%"></div>
+                                    <div class="bar" style="--height: 24%"></div>
+                                    <div class="bar" style="--height: 45%"></div>
+                                    <div class="bar" style="--height: 67%"></div>
+                                </div>
+                                <div class="chart-label">Phân tích yếu tố</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION - Icon-driven Cards -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header center">
+                <h2 class="section-title">Tất cả những gì bạn cần để dự đoán thành công phim</h2>
+                <p class="section-subtitle">
+                    Phân tích AI chuyên sâu. Dự đoán chính xác. Khuyến nghị thông minh. Báo cáo chi tiết.
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <!-- Feature 1 - AI Prediction -->
+                <div class="feature-card glassmorphism">
+                    <div class="feature-icon gradient-bg">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="feature-title">Dự đoán AI chính xác 99.5%</h3>
+                    <p class="feature-description">
+                        AI được huấn luyện trên 1,020+ phim Việt Nam và quốc tế. 
+                        Phân tích 47 yếu tố từ Vote Average, ROI, thể loại đến thời điểm phát hành.
+                    </p>
+                    <div class="feature-stats">
+                        <span class="stat">🎬 1,020+ phim</span>
+                        <span class="stat">📊 47 yếu tố</span>
+                    </div>
+                </div>
+
+                <!-- Feature 2 - Data Analysis -->
+                <div class="feature-card glassmorphism">
+                    <div class="feature-icon gradient-bg">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="feature-title">Phân tích dữ liệu chuyên sâu</h3>
+                    <p class="feature-description">
+                        6 loại biểu đồ tương tác: feature importance, correlation matrix, 
+                        genre performance, budget analysis và market insights.
+                    </p>
+                    <div class="feature-stats">
+                        <span class="stat">📈 6 biểu đồ</span>
+                        <span class="stat">🔗 Tương quan</span>
+                    </div>
+                </div>
+
+                <!-- Feature 3 - Business Insights -->
+                <div class="feature-card glassmorphism">
+                    <div class="feature-icon gradient-bg">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="feature-title">Khuyến nghị kinh doanh</h3>
+                    <p class="feature-description">
+                        Lời khuyên cụ thể cho nhà sản xuất, đầu tư viên và phân phối viên. 
+                        Tối ưu hóa ngân sách, thời điểm phát hành và chiến lược marketing.
+                    </p>
+                    <div class="feature-stats">
+                        <span class="stat">💰 Tối ưu ROI</span>
+                        <span class="stat">⏰ Timing</span>
+                    </div>
+                </div>
+
+                <!-- Feature 4 - Vietnam Market -->
+                <div class="feature-card glassmorphism">
+                    <div class="feature-icon gradient-bg">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <h3 class="feature-title">Thị trường Việt Nam</h3>
+                    <p class="feature-description">
+                        Chuyên biệt cho thị trường điện ảnh Việt Nam. 
+                        Hiểu rõ xu hướng, mùa vụ và sở thích khán giả địa phương.
+                    </p>
+                    <div class="feature-stats">
+                        <span class="stat">🎭 Văn hóa VN</span>
+                        <span class="stat">📅 Mùa vụ</span>
+                    </div>
+                </div>
+
+                <!-- Feature 5 - Real-time -->
+                <div class="feature-card glassmorphism">
+                    <div class="feature-icon gradient-bg">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Kết quả tức thì</h3>
+                    <p class="feature-description">
+                        Không cần đăng ký hay đăng nhập. Nhập thông tin phim, 
+                        nhận kết quả dự đoán và phân tích chi tiết trong 3 giây.
+                    </p>
+                    <div class="feature-stats">
+                        <span class="stat">🚫 Không đăng ký</span>
+                        <span class="stat">⚡ 3 giây</span>
+                    </div>
+                </div>
+
+                <!-- Feature 6 - Multi-theme -->
+                <div class="feature-card glassmorphism">
+                    <div class="feature-icon gradient-bg">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <h3 class="feature-title">Giao diện hiện đại</h3>
+                    <p class="feature-description">
+                        Thiết kế clean, tối giản với hỗ trợ dark/light mode. 
+                        Responsive hoàn hảo trên mọi thiết bị từ mobile đến desktop.
+                    </p>
+                    <div class="feature-stats">
+                        <span class="stat">🌗 Dark/Light</span>
+                        <span class="stat">📱 Responsive</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PREDICTION APP SECTION -->
+    <section class="app-section" id="app">
+        <div class="container">
+            <div class="section-header center">
+                <h2 class="section-title">🎬 Dự Đoán Thành Công Phim</h2>
+                <p class="section-subtitle">
+                    Nhập thông tin phim để nhận được dự đoán chính xác với độ tin cậy cao
+                </p>
+            </div>
+
+            <div class="main-content">
+                <!-- STEP 1: Input Form Page -->
+                <div id="input-page" class="page-container active">
+                    <div class="page-header">
+                        <h2 class="page-title">🎬 Thông Tin Phim</h2>
+                        <p class="page-subtitle">
+                            Nhập thông tin phim để nhận được dự đoán chính xác với độ tin cậy cao
+                        </p>
+                        <div class="progress-indicator">
+                            <div class="step active">
+                                <i class="fas fa-edit"></i>
+                                <span class="step-label">Nhập thông tin</span>
+                            </div>
+                            <div class="step-divider"></div>
+                            <div class="step">
+                                <i class="fas fa-chart-line"></i>
+                                <span class="step-label">Xem kết quả</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-container-full">
+                        <form id="prediction-form" class="prediction-form">
+                            <!-- Basic Information Section -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-film"></i> Thông Tin Cơ Bản</h3>
+                                <div class="form-grid two-cols">
+                                    <div class="form-group">
+                                        <label for="title">
+                                            <i class="fas fa-tag"></i>
+                                            Tên Phim
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-film input-icon"></i>
+                                            <input type="text" id="title" name="title" placeholder="Nhập tên phim..." required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="vote_average">
+                                            <i class="fas fa-star"></i>
+                                            Điểm Đánh Giá (1-10)
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <div class="range-container">
+                                            <input type="range" id="vote_average" name="vote_average" min="1" max="10" step="0.1" value="6.5">
+                                            <div class="range-value">6.5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-grid two-cols">
+                                    <div class="form-group">
+                                        <label for="budget">
+                                            <i class="fas fa-dollar-sign"></i>
+                                            Ngân Sách (tỷ VND)
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <div class="range-container">
+                                            <input type="range" id="budget" name="budget" min="1" max="500" step="1" value="50">
+                                        <div class="range-value">50 tỷ</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="runtime">
+                                        <i class="fas fa-clock"></i>
+                                        Thời Lượng (phút)
+                                        <span class="required-star">*</span>
+                                    </label>
+                                    <div class="range-container">
+                                        <input type="range" id="runtime" name="runtime" min="60" max="240" step="5" value="120">
+                                        <div class="range-value">120 phút</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Genres Section -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-theater-masks"></i> Thể Loại & Phong Cách</h3>
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-list"></i>
+                                    Thể Loại Phim (chọn nhiều)
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="genres-chips-container" id="genres-chips">
+                                    <button type="button" class="genre-chip" data-genre="Action">
+                                        <span class="chip-icon">🎬</span>
+                                        <span class="chip-text">Action</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Adventure">
+                                        <span class="chip-icon">🗺️</span>
+                                        <span class="chip-text">Adventure</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Animation">
+                                        <span class="chip-icon">🎨</span>
+                                        <span class="chip-text">Animation</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Comedy">
+                                        <span class="chip-icon">😄</span>
+                                        <span class="chip-text">Comedy</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Crime">
+                                        <span class="chip-icon">🔍</span>
+                                        <span class="chip-text">Crime</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Documentary">
+                                        <span class="chip-icon">📹</span>
+                                        <span class="chip-text">Documentary</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Drama">
+                                        <span class="chip-icon">🎭</span>
+                                        <span class="chip-text">Drama</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Family">
+                                        <span class="chip-icon">👨‍👩‍👧‍👦</span>
+                                        <span class="chip-text">Family</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Fantasy">
+                                        <span class="chip-icon">🧙‍♂️</span>
+                                        <span class="chip-text">Fantasy</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Horror">
+                                        <span class="chip-icon">👻</span>
+                                        <span class="chip-text">Horror</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Music">
+                                        <span class="chip-icon">🎵</span>
+                                        <span class="chip-text">Music</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Mystery">
+                                        <span class="chip-icon">🕵️</span>
+                                        <span class="chip-text">Mystery</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Romance">
+                                        <span class="chip-icon">💕</span>
+                                        <span class="chip-text">Romance</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Science Fiction">
+                                        <span class="chip-icon">🚀</span>
+                                        <span class="chip-text">Sci-Fi</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Thriller">
+                                        <span class="chip-icon">⚡</span>
+                                        <span class="chip-text">Thriller</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="War">
+                                        <span class="chip-icon">⚔️</span>
+                                        <span class="chip-text">War</span>
+                                    </button>
+                                    <button type="button" class="genre-chip" data-genre="Western">
+                                        <span class="chip-icon">🤠</span>
+                                        <span class="chip-text">Western</span>
+                                    </button>
+                                </div>
+                                <!-- Hidden input to store selected genres -->
+                                <input type="hidden" id="genres" name="genres" required>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information Section -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-globe"></i> Thông Tin Bổ Sung</h3>
+                            <div class="form-group full-width">
+                                <label for="release_month">
+                                    <i class="fas fa-calendar"></i>
+                                    Tháng Phát Hành
+                                </label>
+                                <div class="custom-select-wrapper">
+                                    <select id="release_month" name="release_month" class="custom-select">
+                                        <option value="1">🎊 Tháng 1 (Tết Nguyên Đán)</option>
+                                        <option value="2">💝 Tháng 2 (Valentine)</option>
+                                        <option value="3">🌸 Tháng 3</option>
+                                        <option value="4">🌧️ Tháng 4 (Giỗ Tổ Hùng Vương)</option>
+                                        <option value="5">🏖️ Tháng 5 (Nghỉ lễ 30/4-1/5)</option>
+                                        <option value="6">👶 Tháng 6 (Ngày Quốc tế Thiếu nhi)</option>
+                                        <option value="7">☀️ Tháng 7 (Hè)</option>
+                                        <option value="8">🎒 Tháng 8 (Tựu trường)</option>
+                                        <option value="9">🏫 Tháng 9 (Quốc khánh 2/9)</option>
+                                        <option value="10">🍂 Tháng 10</option>
+                                        <option value="11">📚 Tháng 11 (Ngày Nhà giáo VN)</option>
+                                        <option value="12">🎄 Tháng 12 (Giáng sinh & Tết Dương lịch)</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-arrow"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="vote_count">
+                                    <i class="fas fa-users"></i>
+                                    Số Lượt Đánh Giá Dự Kiến
+                                </label>
+                                <div class="range-container">
+                                    <input type="range" id="vote_count" name="vote_count" min="100" max="50000" step="100" value="5000">
+                                    <div class="range-value">5,000</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn-full">
+                                <i class="fas fa-magic"></i>
+                                <span>Dự Đoán Thành Công</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- STEP 2: Results Page -->
+            <div id="results-page" class="page-container">
+                <div class="page-header">
+                    <button class="back-btn" id="back-to-form">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Quay lại</span>
+                    </button>
+                    <h2 class="page-title">🎯 Kết Quả Dự Đoán</h2>
+                    <p class="page-subtitle">
+                        Phân tích AI hoàn tất - Xem kết quả chi tiết bên dưới
+                    </p>
+                    <div class="progress-indicator">
+                        <div class="step completed">
+                            <i class="fas fa-check-circle"></i>
+                            <span class="step-label">Nhập thông tin</span>
+                        </div>
+                        <div class="step-divider active"></div>
+                        <div class="step active">
+                            <i class="fas fa-chart-line"></i>
+                            <span class="step-label">Xem kết quả</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-container-full">
+                    <!-- Movie Title Card -->
+                    <div id="movie-title-card" class="movie-title-card">
+                        <h3 id="result-movie-title" class="result-movie-title">Tên Phim</h3>
+                    </div>
+
+                    <!-- Main Prediction Result -->
+                    <div class="prediction-result-card">
+                        <div id="prediction-badge" class="prediction-badge success">
+                            <i class="fas fa-check-circle"></i>
+                            <span class="badge-text">THÀNH CÔNG</span>
+                        </div>
+
+                        <!-- Confidence Circle -->
+                        <div class="confidence-section">
+                            <div class="confidence-circle">
+                                <svg>
+                                    <circle class="progress-bg" cx="80" cy="80" r="70"></circle>
+                                    <circle class="progress-circle" cx="80" cy="80" r="70"></circle>
+                                </svg>
+                                <div id="confidence-value" class="confidence-value">0%</div>
+                                <div class="confidence-label">Độ Tin Cậy</div>
+                            </div>
+                            <div class="confidence-description">
+                                Model AI đánh giá phim có khả năng thành công dựa trên phân tích các yếu tố quan trọng.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Metrics Section -->
+                    <div class="detailed-metrics-section">
+                        <h3 class="section-heading"><i class="fas fa-chart-bar"></i> Chi Tiết Phân Tích</h3>
+                        <div class="metrics-grid-detailed">
+                            <div class="metric-card-detailed">
+                                <div class="metric-icon-large">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <span class="metric-label">ROI Dự Kiến</span>
+                                    <span id="predicted-roi" class="metric-value-large success">0x</span>
+                                    <span class="metric-description">Tỷ suất sinh lời trên đầu tư</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card-detailed">
+                                <div class="metric-icon-large">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <span class="metric-label">Doanh Thu Dự Kiến</span>
+                                    <span id="predicted-revenue" class="metric-value-large">0 tỷ</span>
+                                    <span class="metric-description">Ước tính tổng doanh thu</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card-detailed">
+                                <div class="metric-icon-large">
+                                    <i class="fas fa-balance-scale"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <span class="metric-label">Điểm Hòa Vốn</span>
+                                    <span id="break-even" class="metric-value-large">0 tỷ</span>
+                                    <span class="metric-description">Doanh thu cần đạt để hòa vốn</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card-detailed">
+                                <div class="metric-icon-large">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <span class="metric-label">Mức Độ Rủi Ro</span>
+                                    <span id="risk-level" class="metric-value-large warning">-</span>
+                                    <span class="metric-description">Đánh giá rủi ro đầu tư</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card-detailed">
+                                <div class="metric-icon-large">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <span class="metric-label">Điểm Đánh Giá</span>
+                                    <span id="rating-display" class="metric-value-large">0.0</span>
+                                    <span class="metric-description">Chất lượng dự kiến</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card-detailed">
+                                <div class="metric-icon-large">
+                                    <i class="fas fa-target"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <span class="metric-label">Tiềm Năng Thị Trường</span>
+                                    <span id="market-potential" class="metric-value-large">-</span>
+                                    <span class="metric-description">Đánh giá tổng quan</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Business Insights -->
+                    <div class="insights-section">
+                        <h3 class="section-heading"><i class="fas fa-lightbulb"></i> Khuyến Nghị Cho Nhà Sản Xuất</h3>
+                        <div class="insights-grid" id="business-insights">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Charts Dashboard -->
+                    <div class="charts-section">
+                        <h3 class="section-heading"><i class="fas fa-chart-pie"></i> Phân Tích Biểu Đồ</h3>
+                        <div class="charts-grid">
+                            <!-- Genre Performance Chart -->
+                            <div class="chart-card">
+                                <h4><i class="fas fa-theater-masks"></i> Hiệu Suất Theo Thể Loại</h4>
+                                <canvas id="genre-performance-chart"></canvas>
+                            </div>
+                            
+                            <!-- Budget vs Success Chart -->
+                            <div class="chart-card">
+                                <h4><i class="fas fa-money-bill-trend-up"></i> Ngân Sách vs Thành Công</h4>
+                                <canvas id="budget-success-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="results-actions">
+                        <button class="action-btn secondary" id="try-again-btn">
+                            <i class="fas fa-redo"></i>
+                            <span>Dự đoán phim khác</span>
+                        </button>
+                        <button class="action-btn primary" id="export-results-btn">
+                            <i class="fas fa-download"></i>
+                            <span>Tải báo cáo</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header center">
+                <h2 class="section-title">Cách hoạt động</h2>
+                <p class="section-subtitle">
+                    3 bước đơn giản để có dự đoán chính xác về thành công phim
+                </p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card glassmorphism">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">📝</div>
+                    <h3>Nhập thông tin phim</h3>
+                    <p>Cung cấp các thông tin cơ bản như tên phim, thể loại, ngân sách, thời lượng và điểm chất lượng dự kiến</p>
+                </div>
+                
+                <div class="step-card glassmorphism">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">🤖</div>
+                    <h3>AI phân tích dữ liệu</h3>
+                    <p>Hệ thống AI phân tích 47 yếu tố khác nhau và so sánh với 1,020+ phim trong cơ sở dữ liệu</p>
+                </div>
+                
+                <div class="step-card glassmorphism">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">📊</div>
+                    <h3>Nhận kết quả chi tiết</h3>
+                    <p>Xem dự đoán thành công, biểu đồ phân tích và khuyến nghị cụ thể cho dự án phim của bạn</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">🎬</span>
+                        <span class="logo-text">FilmPredict</span>
+                    </div>
+                    <p>Dự đoán thành công phim với AI độ chính xác cao</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Sản phẩm</h4>
+                        <a href="#features">Tính năng</a>
+                        <a href="#app">Dự đoán</a>
+                        <a href="#how-it-works">Cách hoạt động</a>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4>Công nghệ</h4>
+                        <a href="#">Random Forest AI</a>
+                        <a href="#">Phân tích dữ liệu</a>
+                        <a href="#">Machine Learning</a>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4>Thông tin</h4>
+                        <a href="#">Về chúng tôi</a>
+                        <a href="#">Liên hệ</a>
+                        <a href="#">Chính sách</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 FilmPredict. Dự án nghiên cứu dự đoán thành công phim với AI.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Đang phân tích dữ liệu...</p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
