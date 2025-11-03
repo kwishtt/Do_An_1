@@ -374,6 +374,8 @@
 
 html {
   scroll-behavior: smooth;
+  background: transparent;
+  min-height: 100%;
 }
 
 body {
@@ -381,8 +383,13 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   color: var(--text-primary);
-  background: var(--bg-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background: linear-gradient(135deg, #e0e7ff 0%, #fce7f3 50%, #ddd6fe 100%) !important;
+  min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="dark"] body {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%) !important;
 }
 
 /* ========== UTILITY CLASSES ========== */
@@ -862,6 +869,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   min-height: calc(100vh - 8rem);
   position: relative;
+  background: transparent;
 }
 
 .page-container {
@@ -870,6 +878,7 @@ h1, h2, h3, h4, h5, h6 {
   min-height: calc(100vh - 8rem);
   padding: 2rem 0;
   animation: fadeIn 0.6s ease-out;
+  background: transparent;
 }
 
 .page-container.active {
@@ -2650,36 +2659,6 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
 }
 
-.confidence-circle::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 220px;
-  height: 220px;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(
-    circle at center,
-    rgba(37, 99, 235, 0.25) 0%,
-    rgba(37, 99, 235, 0.15) 20%,
-    rgba(37, 99, 235, 0.08) 40%,
-    rgba(37, 99, 235, 0.03) 60%,
-    rgba(37, 99, 235, 0.01) 80%,
-    transparent 100%
-  );
-  border-radius: 50%;
-  clip-path: circle(50% at center);
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 1s ease;
-  filter: blur(30px);
-  will-change: opacity;
-}
-
-.confidence-circle.glowing::before {
-  opacity: 1;
-}
-
 .confidence-circle svg {
   position: absolute;
   width: 100%;
@@ -2698,54 +2677,6 @@ h1, h2, h3, h4, h5, h6 {
   stroke-dashoffset: 440;
   transition: stroke-dashoffset 2s ease-in-out;
   filter: drop-shadow(0 0 12px rgba(37, 99, 235, 0.6));
-}
-
-/* Enhanced glow for high confidence */
-.confidence-circle.high-confidence::before {
-  width: 250px;
-  height: 250px;
-  background: radial-gradient(
-    circle at center,
-    rgba(37, 99, 235, 0.35) 0%,
-    rgba(37, 99, 235, 0.22) 20%,
-    rgba(37, 99, 235, 0.13) 40%,
-    rgba(37, 99, 235, 0.06) 60%,
-    rgba(37, 99, 235, 0.02) 80%,
-    transparent 100%
-  );
-  clip-path: circle(50% at center);
-  filter: blur(35px);
-}
-
-/* Dark mode glow adjustments */
-[data-theme="dark"] .confidence-circle::before {
-  background: radial-gradient(
-    circle at center,
-    rgba(96, 165, 250, 0.3) 0%,
-    rgba(96, 165, 250, 0.18) 20%,
-    rgba(96, 165, 250, 0.1) 40%,
-    rgba(96, 165, 250, 0.04) 60%,
-    rgba(96, 165, 250, 0.01) 80%,
-    transparent 100%
-  );
-  clip-path: circle(50% at center);
-  filter: blur(30px);
-}
-
-[data-theme="dark"] .confidence-circle.high-confidence::before {
-  width: 250px;
-  height: 250px;
-  background: radial-gradient(
-    circle at center,
-    rgba(96, 165, 250, 0.4) 0%,
-    rgba(96, 165, 250, 0.25) 20%,
-    rgba(96, 165, 250, 0.15) 40%,
-    rgba(96, 165, 250, 0.07) 60%,
-    rgba(96, 165, 250, 0.02) 80%,
-    transparent 100%
-  );
-  clip-path: circle(50% at center);
-  filter: blur(35px);
 }
 
 .progress-bg {

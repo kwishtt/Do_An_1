@@ -63,10 +63,6 @@ const App = {
       if (inputPage) inputPage.classList.remove('active');
       if (resultsPage) {
         resultsPage.classList.add('active');
-        // Scroll to top only when first showing results
-        setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100);
       }
       this.currentPage = 'results';
       this.updateProgressIndicator('results');
@@ -483,10 +479,9 @@ const App = {
       
       // Add glow effects based on confidence level
       setTimeout(() => {
-        // Add glowing class for animation
-        confidenceCircle.classList.add('glowing');
+        // Removed glowing class - no glow effect needed
         
-        // Add high confidence class for stronger glow
+        // Add high confidence class for visual distinction
         if (confidence >= 70) {
           confidenceCircle.classList.add('high-confidence');
         } else {
