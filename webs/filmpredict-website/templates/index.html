@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dự Đoán Thành Công Phim - AI Độ Chính Xác 99.5%</title>
+    <title>Đánh Giá Thành Công Phim Đang Chiếu - AI Độ Chính Xác 99.5%</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -46,12 +46,13 @@
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">
-                    Dự Đoán Thành Công Phim 
+                    Đánh Giá Thành Công Phim Đang Chiếu
                     <span class="gradient-text">Với AI Độ Chính Xác 99.5%</span>
                 </h1>
                 <p class="hero-subtitle">
-                    Giúp nhà sản xuất, đầu tư và phân phối phim đưa ra quyết định thông minh dựa trên dữ liệu. 
-                    <strong>Không cần đăng ký, dự đoán ngay lập tức.</strong>
+                    Nhập thông tin phim <strong>đang chiếu</strong> để dự đoán thành công cuối cùng. 
+                    Chỉ cần 3 thông tin chính: <strong>Vote Average (quan trọng nhất - 76.53%), Revenue hiện tại, và Budget</strong>.
+                    Không cần đăng ký, dự đoán ngay lập tức.
                 </p>
                 
                 <!-- CTA Buttons - Clean Design -->
@@ -77,8 +78,12 @@
                         <span class="stat-label">độ chính xác</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">47</span>
-                        <span class="stat-label">yếu tố phân tích</span>
+                        <span class="stat-number">3 fields</span>
+                        <span class="stat-label">dễ dàng nhập liệu</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Vote Average</span>
+                        <span class="stat-label">yếu tố quan trọng nhất (76.53%)</span>
                     </div>
                 </div>
             </div>
@@ -276,195 +281,279 @@
 
                     <div class="form-container-full">
                         <form id="prediction-form" class="prediction-form">
-                            <!-- Basic Information Section -->
-                            <div class="form-section">
-                                <h3><i class="fas fa-film"></i> Thông Tin Cơ Bản</h3>
-                                <div class="form-grid two-cols">
-                                    <div class="form-group">
-                                        <label for="title">
-                                            <i class="fas fa-tag"></i>
-                                            Tên Phim
-                                            <span class="required-star">*</span>
-                                        </label>
-                                        <div class="input-with-icon">
-                                            <i class="fas fa-film input-icon"></i>
-                                            <input type="text" id="title" name="title" placeholder="Nhập tên phim..." required>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label for="vote_average">
-                                            <i class="fas fa-star"></i>
-                                            Điểm Đánh Giá (1-10)
-                                            <span class="required-star">*</span>
-                                        </label>
-                                        <div class="range-container">
-                                            <input type="range" id="vote_average" name="vote_average" min="1" max="10" step="0.1" value="6.5">
-                                            <div class="range-value">6.5</div>
-                                        </div>
-                                    </div>
+                            <!-- Important Note -->
+                            <div class="info-banner">
+                                <i class="fas fa-info-circle"></i>
+                                <div class="info-content">
+                                    <strong>Lưu ý quan trọng:</strong> Tool này dành cho phim <strong>ĐANG CHIẾU</strong>. 
+                                    Bạn cần nhập thông tin thực tế hiện tại (Vote Average từ TMDB/IMDb và Revenue hiện tại) 
+                                    để dự đoán thành công cuối cùng của phim.
                                 </div>
+                            </div>
+
+                            <!-- REQUIRED Fields Section -->
+                            <div class="form-section featured">
+                                <h3>
+                                    <i class="fas fa-star"></i> 
+                                    Thông Tin Bắt Buộc 
+                                    <span class="badge-required">3 fields chính</span>
+                                </h3>
                                 
-                                <div class="form-grid two-cols">
-                                    <div class="form-group">
-                                        <label for="budget">
-                                            <i class="fas fa-dollar-sign"></i>
-                                            Ngân Sách (tỷ VND)
-                                            <span class="required-star">*</span>
-                                        </label>
-                                        <div class="range-container">
-                                            <input type="range" id="budget" name="budget" min="1" max="500" step="1" value="50">
-                                        <div class="range-value">50 tỷ</div>
-                                    </div>
-                                </div>
-                                
+                                <!-- Title -->
                                 <div class="form-group">
-                                    <label for="runtime">
-                                        <i class="fas fa-clock"></i>
-                                        Thời Lượng (phút)
+                                    <label for="title">
+                                        <i class="fas fa-film"></i>
+                                        Tên Phim
                                         <span class="required-star">*</span>
                                     </label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-film input-icon"></i>
+                                        <input type="text" id="title" name="title" 
+                                               placeholder="VD: Mai, Avengers: Endgame..." required>
+                                    </div>
+                                    <small class="help-text">Chỉ dùng để hiển thị kết quả</small>
+                                </div>
+                                
+                                <!-- Vote Average - MOST IMPORTANT -->
+                                <div class="form-group highlight-field">
+                                    <label for="vote_average">
+                                        <i class="fas fa-star" style="color: #ffd700;"></i>
+                                        Vote Average (TMDB/IMDb)
+                                        <span class="required-star">*</span>
+                                        <span class="importance-badge">Quan trọng nhất - 76.53%</span>
+                                        <button type="button" class="tooltip-btn" data-tooltip="vote-average">
+                                            <i class="fas fa-question-circle"></i>
+                                        </button>
+                                    </label>
                                     <div class="range-container">
-                                        <input type="range" id="runtime" name="runtime" min="60" max="240" step="5" value="120">
-                                        <div class="range-value">120 phút</div>
+                                        <input type="range" id="vote_average" name="vote_average" 
+                                               min="1" max="10" step="0.1" value="7.5">
+                                        <div class="range-value">7.5</div>
+                                    </div>
+                                    <small class="help-text">
+                                        ⭐ Yếu tố quan trọng nhất (chiếm 76.53% ảnh hưởng đến kết quả). 
+                                        Lấy từ <a href="https://www.themoviedb.org" target="_blank">TMDB</a> hoặc 
+                                        <a href="https://www.imdb.com" target="_blank">IMDb</a>
+                                    </small>
+                                    <!-- Tooltip content -->
+                                    <div class="tooltip-content" id="tooltip-vote-average">
+                                        <h4>Tại sao Vote Average quan trọng nhất?</h4>
+                                        <p>
+                                            Theo phân tích feature importance của model AI, <strong>Vote Average chiếm 76.53%</strong> 
+                                            ảnh hưởng đến prediction. Đây là điểm đánh giá trung bình từ người xem thực tế, 
+                                            phản ánh chất lượng phim một cách trực tiếp nhất.
+                                        </p>
+                                        <ul>
+                                            <li>≥ 8.0: Phim xuất sắc, rất có khả năng thành công</li>
+                                            <li>7.0-7.9: Phim tốt, khả năng thành công cao</li>
+                                            <li>6.5-6.9: Phim ổn, cần xem thêm ROI</li>
+                                            <li>&lt; 6.5: Khó đạt được thành công cao</li>
+                                        </ul>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Genres Section -->
-                        <div class="form-section">
-                            <h3><i class="fas fa-theater-masks"></i> Thể Loại & Phong Cách</h3>
-                            <div class="form-group">
-                                <label>
-                                    <i class="fas fa-list"></i>
-                                    Thể Loại Phim (chọn nhiều)
-                                    <span class="required-star">*</span>
-                                </label>
-                                <div class="genres-chips-container" id="genres-chips">
-                                    <button type="button" class="genre-chip" data-genre="Action">
-                                        <span class="chip-icon">🎬</span>
-                                        <span class="chip-text">Action</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Adventure">
-                                        <span class="chip-icon">🗺️</span>
-                                        <span class="chip-text">Adventure</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Animation">
-                                        <span class="chip-icon">🎨</span>
-                                        <span class="chip-text">Animation</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Comedy">
-                                        <span class="chip-icon">😄</span>
-                                        <span class="chip-text">Comedy</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Crime">
-                                        <span class="chip-icon">🔍</span>
-                                        <span class="chip-text">Crime</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Documentary">
-                                        <span class="chip-icon">📹</span>
-                                        <span class="chip-text">Documentary</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Drama">
-                                        <span class="chip-icon">🎭</span>
-                                        <span class="chip-text">Drama</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Family">
-                                        <span class="chip-icon">👨‍👩‍👧‍👦</span>
-                                        <span class="chip-text">Family</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Fantasy">
-                                        <span class="chip-icon">🧙‍♂️</span>
-                                        <span class="chip-text">Fantasy</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Horror">
-                                        <span class="chip-icon">👻</span>
-                                        <span class="chip-text">Horror</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Music">
-                                        <span class="chip-icon">🎵</span>
-                                        <span class="chip-text">Music</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Mystery">
-                                        <span class="chip-icon">🕵️</span>
-                                        <span class="chip-text">Mystery</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Romance">
-                                        <span class="chip-icon">💕</span>
-                                        <span class="chip-text">Romance</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Science Fiction">
-                                        <span class="chip-icon">🚀</span>
-                                        <span class="chip-text">Sci-Fi</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Thriller">
-                                        <span class="chip-icon">⚡</span>
-                                        <span class="chip-text">Thriller</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="War">
-                                        <span class="chip-icon">⚔️</span>
-                                        <span class="chip-text">War</span>
-                                    </button>
-                                    <button type="button" class="genre-chip" data-genre="Western">
-                                        <span class="chip-icon">🤠</span>
-                                        <span class="chip-text">Western</span>
-                                    </button>
+                                
+                                <!-- Revenue - For ROI calculation -->
+                                <div class="form-group">
+                                    <label for="revenue">
+                                        <i class="fas fa-chart-line"></i>
+                                        Revenue Hiện Tại (USD)
+                                        <span class="required-star">*</span>
+                                        <span class="importance-badge small">23.47%</span>
+                                        <button type="button" class="tooltip-btn" data-tooltip="revenue">
+                                            <i class="fas fa-question-circle"></i>
+                                        </button>
+                                    </label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-dollar-sign input-icon"></i>
+                                        <input type="number" id="revenue" name="revenue" 
+                                               placeholder="VD: 75000000" min="0" step="1000000" required>
+                                    </div>
+                                    <small class="help-text">
+                                        Doanh thu đã thu được đến hiện tại (có thể lấy từ 
+                                        <a href="https://www.boxofficemojo.com" target="_blank">Box Office Mojo</a> 
+                                        hoặc báo cáo rạp chiếu)
+                                    </small>
+                                    <!-- Tooltip content -->
+                                    <div class="tooltip-content" id="tooltip-revenue">
+                                        <h4>Revenue dùng để làm gì?</h4>
+                                        <p>
+                                            Revenue kết hợp với Budget để tính <strong>ROI (Return on Investment)</strong>, 
+                                            chiếm 23.47% ảnh hưởng. ROI = Revenue / Budget.
+                                        </p>
+                                        <p>Ví dụ: Phim Mai (2024)</p>
+                                        <ul>
+                                            <li>Budget: $2,503,150</li>
+                                            <li>Revenue: $22,119,910</li>
+                                            <li>ROI: 8.84x → Thành công lớn! ✅</li>
+                                        </ul>
+                                    </div>
                                 </div>
-                                <!-- Hidden input to store selected genres -->
-                                <input type="hidden" id="genres" name="genres" required>
-                            </div>
-                        </div>
-
-                        <!-- Additional Information Section -->
-                        <div class="form-section">
-                            <h3><i class="fas fa-globe"></i> Thông Tin Bổ Sung</h3>
-                            <div class="form-group full-width">
-                                <label for="release_month">
-                                    <i class="fas fa-calendar"></i>
-                                    Tháng Phát Hành
-                                </label>
-                                <div class="custom-select-wrapper">
-                                    <select id="release_month" name="release_month" class="custom-select">
-                                        <option value="1">🎊 Tháng 1 (Tết Nguyên Đán)</option>
-                                        <option value="2">💝 Tháng 2 (Valentine)</option>
-                                        <option value="3">🌸 Tháng 3</option>
-                                        <option value="4">🌧️ Tháng 4 (Giỗ Tổ Hùng Vương)</option>
-                                        <option value="5">🏖️ Tháng 5 (Nghỉ lễ 30/4-1/5)</option>
-                                        <option value="6">👶 Tháng 6 (Ngày Quốc tế Thiếu nhi)</option>
-                                        <option value="7">☀️ Tháng 7 (Hè)</option>
-                                        <option value="8">🎒 Tháng 8 (Tựu trường)</option>
-                                        <option value="9">🏫 Tháng 9 (Quốc khánh 2/9)</option>
-                                        <option value="10">🍂 Tháng 10</option>
-                                        <option value="11">📚 Tháng 11 (Ngày Nhà giáo VN)</option>
-                                        <option value="12">🎄 Tháng 12 (Giáng sinh & Tết Dương lịch)</option>
-                                    </select>
-                                    <i class="fas fa-chevron-down select-arrow"></i>
+                                
+                                <!-- Budget -->
+                                <div class="form-group">
+                                    <label for="budget">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        Budget (USD)
+                                        <span class="required-star">*</span>
+                                    </label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-dollar-sign input-icon"></i>
+                                        <input type="number" id="budget" name="budget" 
+                                               placeholder="VD: 50000000" min="1" step="1000000" required>
+                                    </div>
+                                    <small class="help-text">
+                                        Ngân sách sản xuất phim (USD). VD: 50M USD cho phim Hollywood trung bình
+                                    </small>
                                 </div>
                             </div>
-                            
-                            <div class="form-group full-width">
-                                <label for="vote_count">
-                                    <i class="fas fa-users"></i>
-                                    Số Lượt Đánh Giá Dự Kiến
-                                </label>
-                                <div class="range-container">
-                                    <input type="range" id="vote_count" name="vote_count" min="100" max="50000" step="100" value="5000">
-                                    <div class="range-value">5,000</div>
+
+                            <!-- OPTIONAL Fields Section (Collapsed by default) -->
+                            <div class="form-section optional-section">
+                                <details>
+                                    <summary>
+                                        <i class="fas fa-plus-circle"></i>
+                                        Thông tin bổ sung (không bắt buộc)
+                                        <span class="badge-optional">Các field này có ảnh hưởng rất nhỏ (~0%)</span>
+                                    </summary>
+                                    
+                                    <div class="optional-content">
+                                        <div class="form-grid two-cols">
+                                            <div class="form-group">
+                                                <label for="runtime">
+                                                    <i class="fas fa-clock"></i>
+                                                    Thời Lượng (phút)
+                                                </label>
+                                                <div class="range-container">
+                                                    <input type="range" id="runtime" name="runtime" 
+                                                           min="60" max="240" step="5" value="120">
+                                                    <div class="range-value">120 phút</div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="release_date">
+                                                    <i class="fas fa-calendar"></i>
+                                                    Ngày Phát Hành
+                                                </label>
+                                                <input type="date" id="release_date" name="releaseDate">
+                                            </div>
+                                        </div>
+
+                                        <!-- Genres Section -->
+                                        <div class="form-group">
+                                            <label>
+                                                <i class="fas fa-theater-masks"></i>
+                                                Thể Loại Phim
+                                            </label>
+                                            <div class="genres-chips-container" id="genres-chips">
+                                                <button type="button" class="genre-chip" data-genre="Action">
+                                                    <span class="chip-icon">🎬</span>
+                                                    <span class="chip-text">Action</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Adventure">
+                                                    <span class="chip-icon">🗺️</span>
+                                                    <span class="chip-text">Adventure</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Animation">
+                                                    <span class="chip-icon">🎨</span>
+                                                    <span class="chip-text">Animation</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Comedy">
+                                                    <span class="chip-icon">😄</span>
+                                                    <span class="chip-text">Comedy</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Crime">
+                                                    <span class="chip-icon">🔍</span>
+                                                    <span class="chip-text">Crime</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Drama">
+                                                    <span class="chip-icon">🎭</span>
+                                                    <span class="chip-text">Drama</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Family">
+                                                    <span class="chip-icon">👨‍👩‍👧‍👦</span>
+                                                    <span class="chip-text">Family</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Fantasy">
+                                                    <span class="chip-icon">🧙‍♂️</span>
+                                                    <span class="chip-text">Fantasy</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Horror">
+                                                    <span class="chip-icon">👻</span>
+                                                    <span class="chip-text">Horror</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Music">
+                                                    <span class="chip-icon">🎵</span>
+                                                    <span class="chip-text">Music</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Mystery">
+                                                    <span class="chip-icon">🕵️</span>
+                                                    <span class="chip-text">Mystery</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Romance">
+                                                    <span class="chip-icon">�</span>
+                                                    <span class="chip-text">Romance</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Science Fiction">
+                                                    <span class="chip-icon">�</span>
+                                                    <span class="chip-text">Sci-Fi</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="Thriller">
+                                                    <span class="chip-icon">⚡</span>
+                                                    <span class="chip-text">Thriller</span>
+                                                </button>
+                                                <button type="button" class="genre-chip" data-genre="History">
+                                                    <span class="chip-icon">📜</span>
+                                                    <span class="chip-text">History</span>
+                                                </button>
+                                            </div>
+                                            <!-- Hidden input to store selected genres -->
+                                            <input type="hidden" id="genres" name="genres">
+                                        </div>
+                                    </div>
+                                </details>
+                            </div>
+
+                            <!-- Quick Fill Buttons -->
+                            <div class="form-section quick-fill-section">
+                                <h3>
+                                    <i class="fas fa-magic"></i> 
+                                    Điền Nhanh với Ví Dụ
+                                </h3>
+                                <div class="quick-fill-buttons">
+                                    <button type="button" class="quick-fill-btn" data-example="mai">
+                                        <div class="example-icon">🎬</div>
+                                        <div class="example-text">
+                                            <strong>Mai (2024)</strong>
+                                            <small>Phim Việt Nam thành công</small>
+                                        </div>
+                                    </button>
+                                    <button type="button" class="quick-fill-btn" data-example="avengers">
+                                        <div class="example-icon">�</div>
+                                        <div class="example-text">
+                                            <strong>Avengers: Endgame</strong>
+                                            <small>Blockbuster Hollywood</small>
+                                        </div>
+                                    </button>
+                                    <button type="button" class="quick-fill-btn" data-example="indie">
+                                        <div class="example-icon">🎭</div>
+                                        <div class="example-text">
+                                            <strong>Independent Drama</strong>
+                                            <small>Phim indie nhỏ</small>
+                                        </div>
+                                    </button>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Submit Button -->
-                        <div class="form-actions">
-                            <button type="submit" class="submit-btn-full">
-                                <i class="fas fa-magic"></i>
-                                <span>Dự Đoán Thành Công</span>
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                            <!-- Submit Button -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn-submit">
+                                    <i class="fas fa-chart-line"></i>
+                                    Dự đoán thành công
+                                </button>
+                            </div>
+                        </form>
+                    </div>
             </div>
 
             <!-- STEP 2: Results Page -->

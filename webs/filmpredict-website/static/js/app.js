@@ -1660,7 +1660,168 @@ Thử dự đoán phim của bạn tại: ${window.location.href}
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   App.init();
+  setupTooltips();
+  setupQuickFillButtons();
 });
+
+// ========== NEW FUNCTIONS FOR SIMPLIFIED FORM ==========
+
+/**
+ * Setup tooltip functionality
+ */
+function setupTooltips() {
+  const tooltipBtns = document.querySelectorAll('.tooltip-btn');
+  
+  tooltipBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tooltipId = btn.getAttribute('data-tooltip');
+      const tooltipContent = document.getElementById(`tooltip-${tooltipId}`);
+      
+      if (tooltipContent) {
+        // Toggle tooltip
+        const isVisible = tooltipContent.classList.contains('show');
+        
+        // Hide all tooltips first
+        document.querySelectorAll('.tooltip-content').forEach(t => {
+          t.classList.remove('show');
+        });
+        
+        // Show this tooltip if it was hidden
+        if (!isVisible) {
+          tooltipContent.classList.add('show');
+        }
+      }
+    });
+  });
+  
+  // Close tooltips when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.tooltip-btn') && !e.target.closest('.tooltip-content')) {
+      document.querySelectorAll('.tooltip-content').forEach(t => {
+        t.classList.remove('show');
+      });
+    }
+  });
+}
+
+/**
+ * Setup quick fill buttons with example data
+ */
+function setupQuickFillButtons() {
+  const exampleData = {
+    mai: {
+      title: 'Mai (2024)',
+      voteAverage: 6.8,
+      revenue: 22119910,
+      budget: 2503150,
+      runtime: 133,
+      genres: ['Drama', 'Comedy', 'Romance']
+    },
+    avengers: {
+      title: 'Avengers: Endgame',
+      voteAverage: 8.4,
+      revenue: 2797800564,
+      budget: 356000000,
+      runtime: 181,
+      genres: ['Action', 'Adventure', 'Science Fiction']
+    },
+    indie: {
+      title: 'Independent Drama',
+      voteAverage: 7.2,
+      revenue: 3500000,
+      budget: 2000000,
+      runtime: 105,
+      genres: ['Drama']
+    }
+  };
+  
+  const quickFillBtns = document.querySelectorAll('.quick-fill-btn');
+  
+  quickFillBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const exampleKey = btn.getAttribute('data-example');
+      const data = exampleData[exampleKey];
+      
+      if (data) {
+        // Fill form fields
+        document.getElementById('title').value = data.title;
+        document.getElementById('vote_average').value = data.voteAverage;
+        document.querySelector('#vote_average + .range-value').textContent = data.voteAverage;
+        
+        document.getElementById('revenue').value = data.revenue;
+        document.getElementById('budget').value = data.budget;
+        document.getElementById('runtime').value = data.runtime;
+        document.querySelector('#runtime + .range-value').textContent = `${data.runtime} phút`;
+        
+        // Clear all genre selections first
+        document.querySelectorAll('.genre-chip').forEach(chip => {
+          chip.classList.remove('active');
+        });
+        
+        // Select genres
+        data.genres.forEach(genre => {
+          const chip = document.querySelector(`.genre-chip[data-genre="${genre}"]`);
+          if (chip) {
+            chip.classList.add('active');
+          }
+        });
+        
+        // Update hidden genres input
+        document.getElementById('genres').value = JSON.stringify(data.genres);
+        
+        // Show success message
+        App.showSuccess(`Đã điền thông tin cho "${data.title}"!`);
+        
+        // Scroll to top of form
+        const formSection = document.querySelector('.form-section.featured');
+        if (formSection) {
+          formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
+}
+
+/**
+ * Update form validation for simplified version
+ */
+function validateFormSimplified() {
+  const title = document.getElementById('title').value.trim();
+  const voteAverage = parseFloat(document.getElementById('vote_average').value);
+  const revenue = parseFloat(document.getElementById('revenue').value);
+  const budget = parseFloat(document.getElementById('budget').value);
+  
+  // Validate required fields
+  if (!title) {
+    App.showError('Vui lòng nhập tên phim');
+    return false;
+  }
+  
+  if (!voteAverage || voteAverage < 1 || voteAverage > 10) {
+    App.showError('Vote Average phải từ 1-10');
+    return false;
+  }
+  
+  if (!revenue || revenue < 0) {
+    App.showError('Revenue phải lớn hơn hoặc bằng 0');
+    return false;
+  }
+  
+  if (!budget || budget <= 0) {
+    App.showError('Budget phải lớn hơn 0');
+    return false;
+  }
+  
+  // Calculate and show current ROI if revenue > 0
+  if (revenue > 0 && budget > 0) {
+    const roi = (revenue / budget).toFixed(2);
+    console.log(`Current ROI: ${roi}x`);
+  }
+  
+  return true;
+}
 
 // Handle page visibility change
 document.addEventListener('visibilitychange', () => {
