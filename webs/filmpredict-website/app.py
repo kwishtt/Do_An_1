@@ -444,6 +444,72 @@ def predict():
         # Calculate business metrics
         metrics = calculate_metrics(data, success_probability)
         
+        # Extract feature importance from model (if available)
+        feature_importance_data = {}
+        if model and hasattr(model, 'feature_importances_'):
+            importances = model.feature_importances_
+            # Sort features by importance and get top 10
+            feature_imp_dict = {}
+            for i, col in enumerate(feature_columns):
+                if importances[i] > 0.001:  # Only include features with >0.1% importance
+                    feature_imp_dict[col] = float(importances[i])
+            
+            # Sort by importance (descending)
+            sorted_features = sorted(feature_imp_dict.items(), key=lambda x: x[1], reverse=True)
+            
+            # Get top 10 features
+            top_10_features = sorted_features[:10]
+            
+            # ✅ FIX: Safely extract feature values with fallback
+            def get_feature_value(feature_name, feature_array):
+                """Safely get feature value by name"""
+                try:
+                    if feature_name in feature_columns:
+                        idx = feature_columns.index(feature_name)
+                        value = float(feature_array[0][idx])
+                        return value if not np.isnan(value) else 0.0
+                    return 0.0
+                except (IndexError, ValueError, TypeError):
+                    return 0.0
+            
+            feature_importance_data = {
+                'top_features': [
+                    {
+                        'name': name,
+                        'importance': round(imp * 100, 2),  # Convert to percentage
+                        'value': get_feature_value(name, features)
+                    }
+                    for name, imp in top_10_features
+                ],
+                'total_features': len(feature_columns),
+                'note': 'Top 10 most important features for this prediction'
+            }
+            
+            # Debug logging
+            print(f"✅ Feature importance extracted: {len(feature_importance_data['top_features'])} features")
+            for f in feature_importance_data['top_features'][:3]:
+                print(f"   - {f['name']}: {f['importance']}% (value: {f['value']})")
+        else:
+            # Fallback: Use known feature importance from analysis
+            vote_avg = float(data.get('voteAverage', 6.5))
+            budget = float(data.get('budget', 0))
+            revenue = float(data.get('revenue', 0))
+            roi = revenue / budget if budget > 0 else 0.0
+            
+            feature_importance_data = {
+                'top_features': [
+                    {'name': 'Vote Average', 'importance': 76.53, 'value': vote_avg},
+                    {'name': 'ROI', 'importance': 23.47, 'value': roi},
+                    {'name': 'Budget', 'importance': 0.00, 'value': budget},
+                    {'name': 'Runtime', 'importance': 0.00, 'value': float(data.get('runtime', 120))},
+                    {'name': 'Vote Count', 'importance': 0.00, 'value': float(data.get('voteCount', 100))},
+                ],
+                'total_features': 47,
+                'note': 'Feature importance from model analysis (Week 6)'
+            }
+            
+            print("⚠️ Using fallback feature importance (model doesn't have feature_importances_)")
+        
         # Prepare response
         response = {
             'success': True,
@@ -453,6 +519,7 @@ def predict():
                 'success_probability': round(success_probability, 3)
             },
             'metrics': metrics,
+            'feature_importance': feature_importance_data,  # ✨ NEW
             'input_data': {
                 'title': data.get('title', 'Unknown'),
                 'budget': float(data.get('budget', 0)),

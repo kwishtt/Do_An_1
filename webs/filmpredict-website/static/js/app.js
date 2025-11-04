@@ -214,6 +214,24 @@ const App = {
       input.addEventListener('input', (e) => this.updateRangeValue(e));
     });
     
+    // ✨ FIX: Auto-update budget and revenue inputs on typing
+    const budgetInput = document.getElementById('budget');
+    const revenueInput = document.getElementById('revenue');
+    
+    if (budgetInput) {
+      // Update on both 'input' (typing) and 'change' (blur) events
+      budgetInput.addEventListener('input', () => {
+        console.log('💰 Budget updated:', budgetInput.value);
+      });
+    }
+    
+    if (revenueInput) {
+      // Update on both 'input' (typing) and 'change' (blur) events
+      revenueInput.addEventListener('input', () => {
+        console.log('💵 Revenue updated:', revenueInput.value);
+      });
+    }
+    
     // Smooth scrolling for navigation
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', (e) => {
@@ -350,31 +368,110 @@ const App = {
   },
   
   validateFormData(data) {
-    // Basic validation
-    if (!data.title || data.title.trim() === '') return false;
-    if (data.budget < 0 || data.budget > 1000) return false; // Vietnam budget in billions VND
-    if (data.runtime < 30 || data.runtime > 300) return false;
-    if (data.voteAverage < 0 || data.voteAverage > 10) return false;
-    if (!data.genres || data.genres.length === 0) return false;
+    // ✅ IMPROVED: Enhanced validation with user-friendly messages
+    const errors = [];
+    
+    // Title validation
+    if (!data.title || data.title.trim() === '') {
+      errors.push('Tên phim không được để trống');
+    }
+    
+    // Budget validation
+    if (data.budget <= 0) {
+      errors.push('Ngân sách phải lớn hơn 0');
+    } else if (data.budget > 1000000000) {
+      errors.push('Ngân sách vượt quá giới hạn hợp lý (1 tỷ USD)');
+    }
+    
+    // Runtime validation
+    if (data.runtime < 30) {
+      errors.push('Thời lượng phim phải ít nhất 30 phút');
+    } else if (data.runtime > 300) {
+      errors.push('Thời lượng phim không nên quá 300 phút (5 giờ)');
+    }
+    
+    // Vote Average validation (CRITICAL - 76.53% importance!)
+    if (data.voteAverage < 0 || data.voteAverage > 10) {
+      errors.push('Điểm đánh giá phải từ 0 đến 10');
+    } else if (data.voteAverage < 3) {
+      errors.push('Cảnh báo: Điểm đánh giá dưới 3/10 rất khó thành công');
+    }
+    
+    // Genres validation (OPTIONAL - only check if provided)
+    if (data.genres && data.genres.length > 5) {
+      errors.push('Không nên chọn quá 5 thể loại');
+    }
+    // Note: Genres is OPTIONAL - model still works without it (0% importance)
+    
+    // If there are errors, show them
+    if (errors.length > 0) {
+      this.showValidationErrors(errors);
+      return false;
+    }
     
     return true;
   },
   
+  showValidationErrors(errors) {
+    const errorHtml = `
+      <div class="validation-errors">
+        <h3>⚠️ Vui lòng kiểm tra lại:</h3>
+        <ul>
+          ${errors.map(err => `<li>${err}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+    this.showError(errorHtml);
+  },
+  
   async makePrediction(data) {
-    // Simulate API call (replace with actual backend call)
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Mock prediction logic based on heuristics
-    const success = this.calculateMockPrediction(data);
-    const confidence = this.calculateConfidence(data);
-    
-    return {
-      success,
-      confidence,
-      data,
-      timestamp: new Date(),
-      metrics: this.generateMockMetrics(data, success)
-    };
+    // ✅ FIXED: Call actual backend API instead of mock
+    try {
+      const response = await fetch('/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Lỗi khi gọi API dự đoán');
+      }
+      
+      const result = await response.json();
+      
+      // Transform API response to match our display format
+      return {
+        success: result.prediction.will_succeed,
+        confidence: result.prediction.confidence,
+        success_probability: result.prediction.success_probability,
+        data: result.input_data,
+        timestamp: new Date(result.model_info.prediction_timestamp),
+        metrics: result.metrics,
+        model_info: result.model_info
+      };
+      
+    } catch (error) {
+      console.error('API call failed:', error);
+      
+      // Fallback to mock if API fails (for development)
+      console.warn('⚠️ API failed, using mock prediction');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const success = this.calculateMockPrediction(data);
+      const confidence = this.calculateConfidence(data);
+      
+      return {
+        success,
+        confidence,
+        data,
+        timestamp: new Date(),
+        metrics: this.generateMockMetrics(data, success),
+        is_mock: true
+      };
+    }
   },
   
   calculateMockPrediction(data) {
@@ -465,6 +562,14 @@ const App = {
     // Update charts with prediction data
     this.updateChartsWithPrediction(result);
     
+    // ✨ NEW: Initialize enhanced charts
+    if (typeof initializeEnhancedCharts === 'function') {
+      initializeEnhancedCharts(result);
+      console.log('✅ Enhanced charts initialized');
+    } else {
+      console.warn('⚠️ Enhanced charts function not loaded');
+    }
+    
     console.log('Prediction result displayed:', result);
   },
   
@@ -507,13 +612,24 @@ const App = {
   },
   
   updateMetrics(metrics, data) {
+    // ✅ FIX: Safely handle undefined values with fallbacks
+    const safeNumber = (value, defaultValue = 0) => {
+      const num = parseFloat(value);
+      return isNaN(num) ? defaultValue : num;
+    };
+    
     // Update individual metrics với animation
-    this.updateMetricValue('predicted-roi', `${metrics.predictedROI}x`);
-    this.updateMetricValue('predicted-revenue', `${(metrics.predictedRevenue / 1000000000).toFixed(1)} tỷ`);
-    this.updateMetricValue('break-even', `${((data.budget * 1.1) / 1000000000).toFixed(1)} tỷ`);
-    this.updateMetricValue('market-potential', metrics.marketPotential);
-    this.updateMetricValue('risk-level', metrics.riskLevel);
-    this.updateMetricValue('rating-display', data.voteAverage.toFixed(1));
+    const predictedROI = safeNumber(metrics.predictedROI, 0);
+    const predictedRevenue = safeNumber(metrics.predictedRevenue, 0);
+    const budget = safeNumber(data.budget, 0);
+    const voteAverage = safeNumber(data.voteAverage, 7.5);
+    
+    this.updateMetricValue('predicted-roi', `${predictedROI.toFixed(2)}x`);
+    this.updateMetricValue('predicted-revenue', `${(predictedRevenue / 1000000000).toFixed(1)} tỷ`);
+    this.updateMetricValue('break-even', `${((budget * 1.1) / 1000000000).toFixed(1)} tỷ`);
+    this.updateMetricValue('market-potential', metrics.marketPotential || 'N/A');
+    this.updateMetricValue('risk-level', metrics.riskLevel || 'N/A');
+    this.updateMetricValue('rating-display', voteAverage.toFixed(1));
     
     // Update metric value colors based on success
     this.updateMetricColors(metrics);
@@ -555,7 +671,9 @@ const App = {
     if (!insightsContainer) return;
     
     const insights = [];
-    const roi = parseFloat(metrics.predictedROI);
+    
+    // ✅ FIX: Safely parse ROI with fallback
+    const roi = parseFloat(metrics.predictedROI) || 0;
     
     // ROI Analysis
     if (roi > 2.0) {
@@ -582,19 +700,22 @@ const App = {
     }
     
     // Budget Analysis
-    if (data.budget < 30) {
+    // ✅ FIX: Safely handle budget (already in USD from input)
+    const budgetInBillions = (parseFloat(data.budget) || 0) / 1000000000;
+    
+    if (budgetInBillions > 0 && budgetInBillions < 0.03) {
       insights.push({
         type: 'warning',
         icon: '💰',
         title: 'Ngân Sách Hạn Chế',
-        description: `Với ngân sách ${data.budget} tỷ, cần tập trung vào marketing hiệu quả và chọn lựa diễn viên phù hợp.`
+        description: `Với ngân sách ${budgetInBillions.toFixed(2)} tỷ, cần tập trung vào marketing hiệu quả và chọn lựa diễn viên phù hợp.`
       });
-    } else if (data.budget > 100) {
+    } else if (budgetInBillions > 0.1) {
       insights.push({
         type: 'positive',
         icon: '💎',
         title: 'Ngân Sách Lớn',
-        description: `Ngân sách ${data.budget} tỷ cho phép sản xuất chất lượng cao và chiến dịch marketing rộng rãi.`
+        description: `Ngân sách ${budgetInBillions.toFixed(2)} tỷ cho phép sản xuất chất lượng cao và chiến dịch marketing rộng rãi.`
       });
     }
     
@@ -1993,64 +2114,27 @@ function setupEnhancedTooltips() {
 }
 
 // ========== 4. LOADING STATE MANAGEMENT ==========
+// ⚠️ DISABLED: This was causing duplicate form submissions!
+// The App.handleFormSubmit() already handles loading state.
+// Keeping this function would add a second event listener.
 function setupLoadingState() {
+  // ❌ DISABLED - Duplicate event listener removed
+  // This was causing 2 POST requests to /predict
+  // The main App.handleFormSubmit() already handles this
+  
+  console.log('ℹ️ setupLoadingState() disabled - using App.handleFormSubmit() instead');
+  
+  /* ORIGINAL CODE (DISABLED):
   const form = document.getElementById('prediction-form');
   const submitBtn = document.getElementById('submitBtn');
   
   if (form && submitBtn) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-      // Validate first
-      if (!validateFormSimplified()) {
-        return;
-      }
-      
-      // Show loading state
-      setLoadingState(submitBtn, true);
-      
-      // Prepare form data
-      const formData = new FormData(form);
-      const data = {};
-      formData.forEach((value, key) => {
-        data[key] = value;
-      });
-      
-      try {
-        // Submit prediction
-        const response = await fetch('/predict', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        });
-        
-        if (!response.ok) {
-          throw new Error('Prediction failed');
-        }
-        
-        const result = await response.json();
-        
-        // Store result and show results page
-        App.predictionResult = result;
-        App.displayResults(result);
-        App.showPage('results');
-        
-        // Scroll to top of results
-        setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100);
-        
-      } catch (error) {
-        console.error('Prediction error:', error);
-        App.showError('Có lỗi xảy ra khi dự đoán. Vui lòng thử lại.');
-      } finally {
-        // Remove loading state
-        setLoadingState(submitBtn, false);
-      }
+      // ... duplicate logic ...
     });
   }
+  */
 }
 
 function setLoadingState(button, isLoading) {

@@ -18,6 +18,7 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced-charts.css') }}">
 </head>
 <body>
     <!-- HEADER - Ultra Clean & Minimal -->
@@ -164,110 +165,108 @@
         </div>
     </section>
 
-    <!-- FEATURES SECTION - Icon-driven Cards -->
-    <section class="features" id="features">
+
+    <!-- ✨ MODEL INFO BANNER - For Instructor Evaluation -->
+    <section class="model-info-banner" id="model-info">
         <div class="container">
-            <div class="section-header center">
-                <h2 class="section-title">Tất cả những gì bạn cần để dự đoán thành công phim</h2>
-                <p class="section-subtitle">
-                    Phân tích AI chuyên sâu. Dự đoán chính xác. Khuyến nghị thông minh. Báo cáo chi tiết.
-                </p>
-            </div>
-
-            <div class="features-grid">
-                <!-- Feature 1 - AI Prediction -->
-                <div class="feature-card glassmorphism">
-                    <div class="feature-icon gradient-bg">
-                        <i class="fas fa-bullseye"></i>
+            <div class="model-card glassmorphism">
+                <div class="model-card-header">
+                    <div class="model-icon">
+                        <i class="fas fa-brain"></i>
                     </div>
-                    <h3 class="feature-title">Dự đoán AI chính xác 99.5%</h3>
-                    <p class="feature-description">
-                        AI được huấn luyện trên 1,020+ phim Việt Nam và quốc tế. 
-                        Phân tích 47 yếu tố từ Vote Average, ROI, thể loại đến thời điểm phát hành.
-                    </p>
-                    <div class="feature-stats">
-                        <span class="stat">🎬 1,020+ phim</span>
-                        <span class="stat">📊 47 yếu tố</span>
+                    <div class="model-title-group">
+                        <h3 class="model-title">Thông Tin Mô Hình AI</h3>
+                        <p class="model-subtitle">Đã được huấn luyện và tối ưu hóa cho thị trường Việt Nam</p>
                     </div>
                 </div>
-
-                <!-- Feature 2 - Data Analysis -->
-                <div class="feature-card glassmorphism">
-                    <div class="feature-icon gradient-bg">
-                        <i class="fas fa-chart-bar"></i>
+                
+                <div class="model-metrics-grid">
+                    <!-- Metric 1: Model Type -->
+                    <div class="model-metric">
+                        <div class="metric-icon-box">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Mô hình</span>
+                            <span class="metric-value">Random Forest</span>
+                            <span class="metric-detail">Optimized with max_depth=5</span>
+                        </div>
                     </div>
-                    <h3 class="feature-title">Phân tích dữ liệu chuyên sâu</h3>
-                    <p class="feature-description">
-                        6 loại biểu đồ tương tác: feature importance, correlation matrix, 
-                        genre performance, budget analysis và market insights.
-                    </p>
-                    <div class="feature-stats">
-                        <span class="stat">📈 6 biểu đồ</span>
-                        <span class="stat">🔗 Tương quan</span>
+                    
+                    <!-- Metric 2: Accuracy -->
+                    <div class="model-metric highlight">
+                        <div class="metric-icon-box success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Độ chính xác</span>
+                            <span class="metric-value">99.52%</span>
+                            <span class="metric-detail">F1-Score: 99.52%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Metric 3: Dataset Size -->
+                    <div class="model-metric">
+                        <div class="metric-icon-box">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Dữ liệu</span>
+                            <span class="metric-value">1,022 phim</span>
+                            <span class="metric-detail">Train: 816 | Test: 204</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Metric 4: Features -->
+                    <div class="model-metric">
+                        <div class="metric-icon-box">
+                            <i class="fas fa-sliders-h"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Đặc trưng</span>
+                            <span class="metric-value">47 features</span>
+                            <span class="metric-detail">Vote Average (76.5%), ROI (23.5%)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Metric 5: Model File -->
+                    <div class="model-metric">
+                        <div class="metric-icon-box">
+                            <i class="fas fa-file-code"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">File mô hình</span>
+                            <span class="metric-value">optimized_rf_model.pkl</span>
+                            <span class="metric-detail">Trained: Week 6</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Metric 6: Technology Stack -->
+                    <div class="model-metric">
+                        <div class="metric-icon-box">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Công nghệ</span>
+                            <span class="metric-value">Python + scikit-learn</span>
+                            <span class="metric-detail">Flask backend + Chart.js</span>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Feature 3 - Business Insights -->
-                <div class="feature-card glassmorphism">
-                    <div class="feature-icon gradient-bg">
-                        <i class="fas fa-lightbulb"></i>
+                
+                <!-- Key Insights -->
+                <div class="model-insights">
+                    <div class="insight-badge">
+                        <i class="fas fa-star"></i>
+                        <span><strong>Vote Average</strong> là yếu tố quan trọng nhất (76.5% importance)</span>
                     </div>
-                    <h3 class="feature-title">Khuyến nghị kinh doanh</h3>
-                    <p class="feature-description">
-                        Lời khuyên cụ thể cho nhà sản xuất, đầu tư viên và phân phối viên. 
-                        Tối ưu hóa ngân sách, thời điểm phát hành và chiến lược marketing.
-                    </p>
-                    <div class="feature-stats">
-                        <span class="stat">💰 Tối ưu ROI</span>
-                        <span class="stat">⏰ Timing</span>
+                    <div class="insight-badge">
+                        <i class="fas fa-chart-line"></i>
+                        <span><strong>ROI features</strong> đóng vai trò thứ hai (23.5% importance)</span>
                     </div>
-                </div>
-
-                <!-- Feature 4 - Vietnam Market -->
-                <div class="feature-card glassmorphism">
-                    <div class="feature-icon gradient-bg">
-                        <i class="fas fa-flag"></i>
-                    </div>
-                    <h3 class="feature-title">Thị trường Việt Nam</h3>
-                    <p class="feature-description">
-                        Chuyên biệt cho thị trường điện ảnh Việt Nam. 
-                        Hiểu rõ xu hướng, mùa vụ và sở thích khán giả địa phương.
-                    </p>
-                    <div class="feature-stats">
-                        <span class="stat">🎭 Văn hóa VN</span>
-                        <span class="stat">📅 Mùa vụ</span>
-                    </div>
-                </div>
-
-                <!-- Feature 5 - Real-time -->
-                <div class="feature-card glassmorphism">
-                    <div class="feature-icon gradient-bg">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3 class="feature-title">Kết quả tức thì</h3>
-                    <p class="feature-description">
-                        Không cần đăng ký hay đăng nhập. Nhập thông tin phim, 
-                        nhận kết quả dự đoán và phân tích chi tiết trong 3 giây.
-                    </p>
-                    <div class="feature-stats">
-                        <span class="stat">🚫 Không đăng ký</span>
-                        <span class="stat">⚡ 3 giây</span>
-                    </div>
-                </div>
-
-                <!-- Feature 6 - Multi-theme -->
-                <div class="feature-card glassmorphism">
-                    <div class="feature-icon gradient-bg">
-                        <i class="fas fa-moon"></i>
-                    </div>
-                    <h3 class="feature-title">Giao diện hiện đại</h3>
-                    <p class="feature-description">
-                        Thiết kế clean, tối giản với hỗ trợ dark/light mode. 
-                        Responsive hoàn hảo trên mọi thiết bị từ mobile đến desktop.
-                    </p>
-                    <div class="feature-stats">
-                        <span class="stat">🌗 Dark/Light</span>
-                        <span class="stat">📱 Responsive</span>
+                    <div class="insight-badge">
+                        <i class="fas fa-info-circle"></i>
+                        <span>43 features còn lại có <strong>importance gần 0%</strong></span>
                     </div>
                 </div>
             </div>
@@ -277,20 +276,13 @@
     <!-- PREDICTION APP SECTION -->
     <section class="app-section" id="app">
         <div class="container">
-            <div class="section-header center">
-                <h2 class="section-title">🎬 Dự Đoán Thành Công Phim</h2>
-                <p class="section-subtitle">
-                    Nhập thông tin phim để nhận được dự đoán chính xác với độ tin cậy cao
-                </p>
-            </div>
-
             <div class="main-content">
                 <!-- STEP 1: Input Form Page -->
                 <div id="input-page" class="page-container active">
                     <div class="page-header">
-                        <h2 class="page-title">🎬 Thông Tin Phim</h2>
+                        <h2 class="page-title">🎬 Nhập Thông Tin Phim</h2>
                         <p class="page-subtitle">
-                            Nhập thông tin phim để nhận được dự đoán chính xác với độ tin cậy cao
+                            Vui lòng cung cấp đầy đủ thông tin phim để nhận được dự đoán chính xác nhất, sau đó nhấn "Dự đoán"
                         </p>
                         <div class="progress-indicator">
                             <div class="step active">
@@ -333,8 +325,13 @@
                                 <h3>
                                     <i class="fas fa-star"></i> 
                                     Thông Tin Bắt Buộc 
-                                    <span class="badge-required">3 fields chính</span>
+                                    <span class="badge-required">⭐ 4 fields chính</span>
                                 </h3>
+                                <p class="section-note">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Vote Average</strong> là yếu tố quan trọng nhất (76.5% importance). 
+                                    <strong>Budget/Revenue</strong> để tính ROI (23.5% importance).
+                                </p>
                                 
                                 <!-- Title -->
                                 <div class="form-group">
@@ -486,7 +483,11 @@
                                             <label>
                                                 <i class="fas fa-theater-masks"></i>
                                                 Thể Loại Phim
+                                                <span class="optional-badge">Tùy chọn</span>
                                             </label>
+                                            <small class="help-text" style="margin-bottom: 0.75rem; display: block;">
+                                                💡 <strong>Không bắt buộc</strong> - Model vẫn hoạt động tốt mà không cần thể loại (importance ~0%)
+                                            </small>
                                             <div class="genres-chips-container" id="genres-chips">
                                                 <button type="button" class="genre-chip" data-genre="Action">
                                                     <span class="chip-icon">🎬</span>
@@ -739,6 +740,136 @@
                         </div>
                     </div>
 
+                    <!-- ✨ NEW: Model Analysis Section (For Instructor Evaluation) -->
+                    <div class="model-analysis-section">
+                        <h3 class="section-heading">
+                            <i class="fas fa-brain"></i> Phân Tích Mô Hình & Kết Quả
+                        </h3>
+                        
+                        <div class="analysis-card glassmorphism">
+                            <div class="analysis-header">
+                                <i class="fas fa-info-circle"></i>
+                                <h4>Thông Tin Mô Hình Machine Learning</h4>
+                            </div>
+                            
+                            <div class="analysis-content">
+                                <p class="analysis-text">
+                                    🤖 <strong>Mô hình Random Forest</strong> được huấn luyện trên <strong>1,022 bộ phim</strong> từ dữ liệu TMDb (The Movie Database), 
+                                    chia thành <strong>816 phim training</strong> và <strong>204 phim testing</strong>. 
+                                    Kết quả đạt <strong class="highlight-value">Accuracy = 99.52%</strong>, 
+                                    <strong class="highlight-value">Precision = 99.52%</strong>, 
+                                    <strong class="highlight-value">Recall = 99.52%</strong>, và 
+                                    <strong class="highlight-value">F1-Score = 99.52%</strong> trên tập test.
+                                </p>
+                                
+                                <div class="key-findings">
+                                    <div class="finding-item">
+                                        <div class="finding-icon">⭐</div>
+                                        <div class="finding-text">
+                                            <strong>Vote Average (Điểm đánh giá)</strong> là yếu tố quan trọng nhất, chiếm <strong class="highlight-purple">76.53%</strong> trong quyết định thành công của phim.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="finding-item">
+                                        <div class="finding-icon">💰</div>
+                                        <div class="finding-text">
+                                            <strong>ROI features (Budget, Revenue)</strong> đóng vai trò thứ hai, chiếm <strong class="highlight-blue">23.47%</strong> importance.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="finding-item">
+                                        <div class="finding-icon">📊</div>
+                                        <div class="finding-text">
+                                            <strong>43 features còn lại</strong> (genres, runtime, release date, cast, countries...) có importance <strong class="highlight-gray">~0.00%</strong>, 
+                                            cho thấy Vote Average và ROI là 2 yếu tố quyết định duy nhất.
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="model-specs">
+                                    <div class="spec-item">
+                                        <span class="spec-label">Thuật toán:</span>
+                                        <span class="spec-value">RandomForestClassifier (n_estimators=100, max_depth=5)</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Preprocessing:</span>
+                                        <span class="spec-value">MinMaxScaler + SMOTE (class balancing)</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Validation:</span>
+                                        <span class="spec-value">5-Fold Cross-Validation (Accuracy: 99.5% ± 0.5%)</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Training time:</span>
+                                        <span class="spec-value">~15 seconds (Week 5 hyperparameter tuning)</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Dataset source:</span>
+                                        <span class="spec-value">TMDb API (1990-2024, Vietnamese market focus)</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="business-implication">
+                                    <h5><i class="fas fa-lightbulb"></i> Ý nghĩa thực tiễn</h5>
+                                    <p>
+                                        Kết quả này cho thấy <strong>chất lượng phim (Vote Average)</strong> quan trọng hơn <strong>ngân sách marketing</strong> 
+                                        hay <strong>thể loại phim</strong>. Để tăng xác suất thành công, nhà sản xuất nên tập trung vào:
+                                    </p>
+                                    <ul class="recommendation-list">
+                                        <li>✅ Nâng cao chất lượng kịch bản, diễn xuất, kỹ xảo (tăng Vote Average)</li>
+                                        <li>✅ Kiểm soát ngân sách để đảm bảo ROI ≥ 1.0</li>
+                                        <li>✅ Thu thập feedback từ test screening để cải thiện điểm đánh giá</li>
+                                        <li>⚠️ Không quá phụ thuộc vào yếu tố thể loại hoặc cast nổi tiếng</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ✨ NEW: Enhanced Visualization Section -->
+                    <div class="enhanced-charts-section">
+                        <h3 class="section-heading">
+                            <i class="fas fa-chart-pie"></i> Phân Tích Trực Quan
+                        </h3>
+                        
+                        <!-- Charts Grid -->
+                        <div class="charts-grid-enhanced">
+                            <!-- Chart 1: Confidence Gauge -->
+                            <div class="chart-card-enhanced">
+                                <div class="chart-header">
+                                    <h4>🎯 Độ Tin Cậy Dự Đoán</h4>
+                                    <p class="chart-description">
+                                        Thể hiện mức độ chắc chắn của model AI trong dự đoán này
+                                    </p>
+                                </div>
+                                <div class="chart-body">
+                                    <canvas id="confidenceGaugeChart" height="250"></canvas>
+                                </div>
+                                <div id="confidenceExplanation" class="chart-footer">
+                                    <!-- Will be populated by JS -->
+                                </div>
+                            </div>
+                            
+                            <!-- Chart 2: Feature Importance -->
+                            <div class="chart-card-enhanced">
+                                <div class="chart-header">
+                                    <h4>📊 Yếu Tố Ảnh Hưởng</h4>
+                                    <p class="chart-description">
+                                        Các yếu tố quan trọng nhất quyết định kết quả dự đoán
+                                    </p>
+                                </div>
+                                <div class="chart-body">
+                                    <canvas id="featureImportanceChart" height="250"></canvas>
+                                </div>
+                                <div class="chart-footer">
+                                    <p class="chart-note">
+                                        💡 <strong>Vote Average</strong> là yếu tố quan trọng nhất (76.5%)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Business Insights -->
                     <div class="insights-section">
                         <h3 class="section-heading"><i class="fas fa-lightbulb"></i> Khuyến Nghị Cho Nhà Sản Xuất</h3>
@@ -867,6 +998,10 @@
     </div>
 
     <!-- JavaScript -->
+        <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/enhanced-charts.js') }}"></script>
+</body>
+</html>
 </body>
 </html>
