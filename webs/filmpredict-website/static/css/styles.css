@@ -1,7 +1,13 @@
 /* ========== CSS VARIABLES ========== */
 :root {
-  /* Brand Colors - Make10000Hours Inspired */
-  --primary-blue: #2563EB;
+  /* Brand Colors - Optimized to 4 Core Colors */
+  --primary-purple: #7C3AED;     /* Primary - CTA, highlights */
+  --accent-blue: #4F46E5;        /* Accent - links, secondary */
+  --highlight-gold: #FBBF24;     /* Highlight - important info */
+  --secondary-cyan: #06B6D4;     /* Secondary - info, trust indicators */
+  
+  /* Legacy colors for backwards compatibility */
+  --primary-blue: #4F46E5;
   --secondary-purple: #7C3AED;
   --success-green: #059669;
   --warning-orange: #EA580C;
@@ -35,8 +41,8 @@
   --gradient-success: linear-gradient(135deg, #059669 0%, #10B981 100%);
   --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
   
-  /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Typography - Optimized for Vietnamese */
+  --font-family: 'Inter', 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --text-xs: 0.75rem;     /* 12px */
   --text-sm: 0.875rem;    /* 14px */
   --text-base: 1rem;      /* 16px */
@@ -1069,21 +1075,22 @@ h1, h2, h3, h4, h5, h6 {
   gap: 2rem;
 }
 
-/* Enhanced Submit Button */
-.submit-btn-full {
+/* Enhanced Submit Button - CTA with Pulse Animation */
+.submit-btn-full,
+.btn-submit {
   width: 100%;
   padding: 1.5rem 2rem;
   font-size: var(--text-lg);
   font-weight: 800;
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
   border-radius: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
-    0 12px 16px -4px rgba(37, 99, 235, 0.4),
-    0 6px 8px -2px rgba(37, 99, 235, 0.2);
+    0 10px 40px rgba(102, 126, 234, 0.4),
+    0 0 0 0 rgba(102, 126, 234, 0.5);
   position: relative;
   overflow: hidden;
   display: flex;
@@ -1092,9 +1099,26 @@ h1, h2, h3, h4, h5, h6 {
   gap: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  animation: pulse-shadow 2s ease-in-out infinite;
 }
 
-.submit-btn-full::before {
+/* Pulse Shadow Animation */
+@keyframes pulse-shadow {
+  0%, 100% { 
+    box-shadow: 
+      0 10px 40px rgba(102, 126, 234, 0.4),
+      0 5px 20px rgba(118, 75, 162, 0.3);
+  }
+  50% { 
+    box-shadow: 
+      0 15px 60px rgba(102, 126, 234, 0.6),
+      0 8px 30px rgba(118, 75, 162, 0.5);
+  }
+}
+
+/* Shimmer Effect */
+.submit-btn-full::before,
+.btn-submit::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1105,19 +1129,45 @@ h1, h2, h3, h4, h5, h6 {
   transition: left 0.6s ease;
 }
 
-.submit-btn-full:hover {
-  transform: translateY(-3px);
+/* Hover State - Enhanced */
+.submit-btn-full:hover,
+.btn-submit:hover {
+  transform: translateY(-4px) scale(1.02);
   box-shadow: 
-    0 20px 25px -5px rgba(37, 99, 235, 0.6),
-    0 10px 10px -5px rgba(37, 99, 235, 0.4);
+    0 20px 60px rgba(102, 126, 234, 0.7),
+    0 10px 30px rgba(118, 75, 162, 0.6);
+  animation: none; /* Stop pulse on hover */
 }
 
-.submit-btn-full:hover::before {
+.submit-btn-full:hover::before,
+.btn-submit:hover::before {
   left: 100%;
 }
 
-.submit-btn-full:active {
-  transform: translateY(-1px);
+/* Active/Click State */
+.submit-btn-full:active,
+.btn-submit:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 
+    0 5px 20px rgba(102, 126, 234, 0.5),
+    0 3px 10px rgba(118, 75, 162, 0.4);
+}
+
+/* Disabled State (for loading) */
+.submit-btn-full:disabled,
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  animation: none;
+  transform: none !important;
+}
+
+.submit-btn-full:disabled:hover,
+.btn-submit:disabled:hover {
+  transform: none;
+  box-shadow: 
+    0 10px 40px rgba(102, 126, 234, 0.4),
+    0 5px 20px rgba(118, 75, 162, 0.3);
 }
 
 /* Movie Title Card */
@@ -3754,6 +3804,535 @@ a:focus {
   background: var(--bg-secondary);
   border-color: var(--border-light);
 }
+
+/* ==========================================
+   🚀 UX/UI ENHANCEMENTS - SENIOR DESIGN
+   ========================================== */
+
+/* ========== 1. TRUST INDICATORS ========== */
+.trust-indicators {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin: 2rem 0 3rem 0;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.trust-item {
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.trust-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+  border-color: var(--secondary-cyan);
+}
+
+.trust-number {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--secondary-cyan) 0%, var(--primary-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+  animation: countUp 1s ease-out;
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.trust-label {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ========== 2. TAGLINE & STORYTELLING ========== */
+.hero-tagline {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 1rem auto 2rem;
+  line-height: var(--leading-relaxed);
+  animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ========== 3. FORM VALIDATION STATES ========== */
+.form-group {
+  position: relative;
+}
+
+.form-group.valid input,
+.form-group.valid .range-container {
+  border-color: var(--success-green);
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+.form-group.valid .input-with-icon input {
+  border-color: var(--success-green);
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+.form-group.valid::after {
+  content: '✓';
+  position: absolute;
+  right: 1rem;
+  top: calc(50% + 0.5rem);
+  color: var(--success-green);
+  font-size: 1.5rem;
+  font-weight: bold;
+  animation: checkmarkPop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* For inputs with icons, adjust checkmark position */
+.form-group.valid:has(.input-with-icon)::after {
+  right: 3rem;
+}
+
+@keyframes checkmarkPop {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) scale(0);
+  }
+  50% {
+    transform: translateY(-50%) scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+.form-group.error input {
+  border-color: var(--danger-red);
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(248, 113, 113, 0.05) 100%);
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.error-message {
+  display: none;
+  color: var(--danger-red);
+  font-size: var(--text-sm);
+  margin-top: 0.5rem;
+  font-weight: 500;
+  animation: slideDown 0.3s ease-out;
+}
+
+.form-group.error .error-message {
+  display: block;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== 4. PROGRESS INDICATOR ========== */
+.form-progress {
+  margin-bottom: 2rem;
+  padding: 1rem 1.5rem;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+}
+
+.progress-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--secondary-cyan) 0%, var(--primary-purple) 100%);
+  border-radius: 10px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ========== 5. ENHANCED TOOLTIP WITH CLOSE BUTTON ========== */
+.tooltip-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.tooltip-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: var(--text-primary);
+  transform: rotate(90deg);
+}
+
+.tooltip-content {
+  position: relative;
+  padding-top: 2.5rem; /* Space for close button */
+}
+
+/* ========== 6. DARK MODE TOGGLE BUTTON ========== */
+.theme-toggle {
+  position: fixed;
+  top: 5rem;
+  right: 2rem;
+  z-index: 1001;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: var(--shadow-lg);
+}
+
+.theme-toggle i {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.theme-toggle:hover i {
+  transform: rotate(180deg);
+}
+
+/* ========== 7. TESTIMONIAL SECTION ========== */
+.testimonial-section {
+  margin-top: 3rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(79, 70, 229, 0.05) 100%);
+  border-radius: 20px;
+  border-left: 4px solid var(--primary-purple);
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.testimonial-quote {
+  font-size: var(--text-lg);
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: 1rem;
+  position: relative;
+  padding-left: 2rem;
+}
+
+.testimonial-quote::before {
+  content: '"';
+  position: absolute;
+  left: 0;
+  top: -10px;
+  font-size: 3rem;
+  color: var(--primary-purple);
+  opacity: 0.3;
+  line-height: 1;
+}
+
+.testimonial-author {
+  font-size: var(--text-base);
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.testimonial-author strong {
+  color: var(--text-primary);
+}
+
+/* ========== 8. LOADING SPINNER ========== */
+.btn-loading {
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s ease; /* Smooth loading state transition */
+}
+
+.btn-loading .btn-text {
+  display: none;
+}
+
+.btn-loading .btn-spinner {
+  display: inline-flex;
+  animation: fadeIn 0.3s ease; /* Smooth spinner appearance */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.btn-spinner {
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.spinner-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ========== 9. RESPONSIVE ENHANCEMENTS ========== */
+@media (max-width: 640px) {
+  /* Trust Indicators - Stack vertically */
+  .trust-indicators {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.5rem 1rem;
+  }
+  
+  .trust-number {
+    font-size: 2rem;
+  }
+  
+  /* Quick Fill Buttons - Single column */
+  .quick-fill-buttons {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Tooltip - Prevent overflow */
+  .tooltip-content {
+    position: fixed !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    max-width: none !important;
+    z-index: 10000;
+  }
+  
+  .tooltip-content.show {
+    transform: translateY(-50%) scale(1) !important;
+  }
+  
+  /* Hero Stats - Stack vertically */
+  .hero-stats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .stat-card {
+    width: 100%;
+  }
+  
+  /* Theme Toggle - Adjust position */
+  .theme-toggle {
+    top: 4rem;
+    right: 1rem;
+    width: 44px;
+    height: 44px;
+  }
+  
+  /* CTA Button - Sticky bottom on mobile */
+  .submit-btn-full {
+    position: sticky;
+    bottom: 1rem;
+    z-index: 100;
+    box-shadow: 
+      0 -5px 20px rgba(0, 0, 0, 0.1),
+      0 10px 40px rgba(102, 126, 234, 0.5);
+  }
+  
+  /* Form Progress - Compact */
+  .form-progress {
+    padding: 0.75rem 1rem;
+  }
+  
+  .progress-text {
+    font-size: var(--text-xs);
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) and (min-width: 641px) {
+  .trust-indicators {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .trust-number {
+    font-size: 2.25rem;
+  }
+}
+
+/* ========== 10. DARK MODE VARIANTS FOR NEW ELEMENTS ========== */
+[data-theme="dark"] .trust-indicators {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%);
+  border-color: rgba(6, 182, 212, 0.3);
+}
+
+[data-theme="dark"] .trust-item {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+[data-theme="dark"] .testimonial-section {
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.08) 0%, rgba(96, 165, 250, 0.08) 100%);
+  border-left-color: #A78BFA;
+}
+
+[data-theme="dark"] .testimonial-quote::before {
+  color: #A78BFA;
+}
+
+[data-theme="dark"] .form-group.valid input {
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.08) 0%, rgba(110, 231, 183, 0.08) 100%);
+}
+
+[data-theme="dark"] .form-group.error input {
+  background: linear-gradient(135deg, rgba(248, 113, 113, 0.08) 0%, rgba(252, 165, 165, 0.08) 100%);
+}
+
+[data-theme="dark"] .tooltip-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ========== ACCESSIBILITY ENHANCEMENTS ========== */
+/* Focus states for keyboard navigation */
+.submit-btn-full:focus-visible,
+.theme-toggle:focus-visible,
+.tooltip-close:focus-visible {
+  outline: 3px solid var(--primary-purple);
+  outline-offset: 3px;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .submit-btn-full {
+    animation: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .trust-indicators,
+  .trust-item,
+  .form-group {
+    border-width: 2px;
+  }
+  
+  .submit-btn-full {
+    border: 2px solid currentColor;
+  }
+}
+
+/* ==========================================
+   END OF UX/UI ENHANCEMENTS
+   ========================================== */
 
 [data-theme="dark"] .quick-fill-btn {
   background: var(--bg-secondary);

@@ -13,7 +13,7 @@ const App = {
     this.setupEventListeners();
     this.setupTwoPageFlow();
     // Don't setup charts on init - they will be created when needed
-    this.setupFormValidation();
+    // this.setupFormValidation(); // ❌ REMOVED - Method không tồn tại, validation handled by setupRealTimeValidation()
     this.updateDashboardPreview();
     console.log('FilmPredict App initialized successfully');
   },
@@ -1657,17 +1657,14 @@ Thử dự đoán phim của bạn tại: ${window.location.href}
   }
 }
 
-// Initialize app when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  App.init();
-  setupTooltips();
-  setupQuickFillButtons();
-});
+// ❌ REMOVED: Old DOMContentLoaded listener - merged into new one at end of file
+// This was causing duplicate App.init() calls
 
 // ========== NEW FUNCTIONS FOR SIMPLIFIED FORM ==========
 
 /**
- * Setup tooltip functionality
+ * Setup tooltip functionality (OLD VERSION - kept for backwards compatibility)
+ * Note: setupEnhancedTooltips() is the new version with close button support
  */
 function setupTooltips() {
   const tooltipBtns = document.querySelectorAll('.tooltip-btn');
@@ -1839,3 +1836,438 @@ document.addEventListener('visibilitychange', () => {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = App;
 }
+
+// ==========================================
+// 🚀 UX/UI ENHANCEMENTS - SENIOR DESIGN
+// ==========================================
+
+// ========== 1. REAL-TIME VALIDATION ==========
+function setupRealTimeValidation() {
+  const requiredFields = document.querySelectorAll('[data-required="true"] input');
+  
+  requiredFields.forEach(input => {
+    // Validate on input change
+    input.addEventListener('input', (e) => validateField(e.target));
+    input.addEventListener('blur', (e) => validateField(e.target));
+  });
+}
+
+function validateField(input) {
+  const formGroup = input.closest('.form-group');
+  const value = input.value.trim();
+  let isValid = true;
+  let errorMessage = '';
+  
+  // Check if field is empty
+  if (input.hasAttribute('required') && !value) {
+    isValid = false;
+    errorMessage = 'Trường này là bắt buộc';
+  }
+  
+  // Specific validations
+  if (input.id === 'vote_average') {
+    const vote = parseFloat(value);
+    if (vote < 0 || vote > 10) {
+      isValid = false;
+      errorMessage = 'Vote Average phải từ 0 đến 10';
+    }
+  }
+  
+  if (input.id === 'revenue') {
+    const revenue = parseFloat(value);
+    if (revenue < 0) {
+      isValid = false;
+      errorMessage = 'Revenue không được âm';
+    }
+  }
+  
+  if (input.id === 'budget') {
+    const budget = parseFloat(value);
+    if (budget <= 0) {
+      isValid = false;
+      errorMessage = 'Budget phải lớn hơn 0';
+    }
+  }
+  
+  // Update UI
+  if (isValid && value) {
+    formGroup.classList.remove('error');
+    formGroup.classList.add('valid');
+  } else if (!isValid) {
+    formGroup.classList.remove('valid');
+    formGroup.classList.add('error');
+    const errorElement = formGroup.querySelector('.error-message');
+    if (errorElement) {
+      errorElement.textContent = errorMessage;
+    }
+  } else {
+    formGroup.classList.remove('valid', 'error');
+  }
+  
+  // Update progress
+  updateFormProgress();
+  
+  return isValid;
+}
+
+// ========== 2. FORM PROGRESS INDICATOR ==========
+function updateFormProgress() {
+  const requiredFields = document.querySelectorAll('[data-required="true"] input');
+  let filledCount = 0;
+  
+  requiredFields.forEach(input => {
+    const value = input.value.trim();
+    if (value && validateField(input)) {
+      filledCount++;
+    }
+  });
+  
+  const totalRequired = 3; // Vote Average, Revenue, Budget
+  const percentage = (filledCount / totalRequired) * 100;
+  
+  // Update progress bar
+  const progressBar = document.getElementById('progressBarFill');
+  const progressCount = document.getElementById('progressCount');
+  
+  if (progressBar) {
+    progressBar.style.width = `${percentage}%`;
+  }
+  
+  if (progressCount) {
+    progressCount.textContent = `${filledCount}/${totalRequired} fields bắt buộc`;
+  }
+}
+
+// ========== 3. ENHANCED TOOLTIP SYSTEM ==========
+function setupEnhancedTooltips() {
+  const tooltipButtons = document.querySelectorAll('.tooltip-btn');
+  const tooltipContents = document.querySelectorAll('.tooltip-content');
+  
+  tooltipButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const tooltipId = btn.getAttribute('data-tooltip');
+      const content = document.getElementById(`tooltip-${tooltipId}`);
+      
+      // Close all other tooltips
+      tooltipContents.forEach(t => {
+        if (t !== content) {
+          t.classList.remove('show');
+        }
+      });
+      
+      // Toggle this tooltip
+      if (content) {
+        content.classList.toggle('show');
+      }
+    });
+  });
+  
+  // Close buttons
+  const closeButtons = document.querySelectorAll('.tooltip-close');
+  closeButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const tooltip = btn.closest('.tooltip-content');
+      if (tooltip) {
+        tooltip.classList.remove('show');
+      }
+    });
+  });
+  
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.tooltip-btn') && !e.target.closest('.tooltip-content')) {
+      tooltipContents.forEach(t => t.classList.remove('show'));
+    }
+  });
+  
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      tooltipContents.forEach(t => t.classList.remove('show'));
+    }
+  });
+}
+
+// ========== 4. LOADING STATE MANAGEMENT ==========
+function setupLoadingState() {
+  const form = document.getElementById('prediction-form');
+  const submitBtn = document.getElementById('submitBtn');
+  
+  if (form && submitBtn) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Validate first
+      if (!validateFormSimplified()) {
+        return;
+      }
+      
+      // Show loading state
+      setLoadingState(submitBtn, true);
+      
+      // Prepare form data
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = value;
+      });
+      
+      try {
+        // Submit prediction
+        const response = await fetch('/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        
+        if (!response.ok) {
+          throw new Error('Prediction failed');
+        }
+        
+        const result = await response.json();
+        
+        // Store result and show results page
+        App.predictionResult = result;
+        App.displayResults(result);
+        App.showPage('results');
+        
+        // Scroll to top of results
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+        
+      } catch (error) {
+        console.error('Prediction error:', error);
+        App.showError('Có lỗi xảy ra khi dự đoán. Vui lòng thử lại.');
+      } finally {
+        // Remove loading state
+        setLoadingState(submitBtn, false);
+      }
+    });
+  }
+}
+
+function setLoadingState(button, isLoading) {
+  if (isLoading) {
+    button.disabled = true;
+    button.classList.add('btn-loading');
+  } else {
+    button.disabled = false;
+    button.classList.remove('btn-loading');
+  }
+}
+
+// ========== 5. DARK MODE TOGGLE ==========
+function setupDarkModeToggle() {
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
+  const html = document.documentElement;
+  
+  // Load saved theme
+  const savedTheme = localStorage.getItem('filmpredict-theme') || 'light';
+  html.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(themeIcon, savedTheme);
+  
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('filmpredict-theme', newTheme);
+      updateThemeIcon(themeIcon, newTheme);
+      
+      // Update App state
+      App.currentTheme = newTheme;
+      
+      // Show success message
+      const themeName = newTheme === 'dark' ? 'tối' : 'sáng';
+      App.showSuccess(`Đã chuyển sang chế độ ${themeName}`);
+    });
+  }
+}
+
+function updateThemeIcon(icon, theme) {
+  if (icon) {
+    if (theme === 'dark') {
+      icon.className = 'fas fa-sun';
+    } else {
+      icon.className = 'fas fa-moon';
+    }
+  }
+}
+
+// ========== 6. TRUST INDICATORS ANIMATION ==========
+function animateTrustIndicators() {
+  const trustNumbers = document.querySelectorAll('.trust-number');
+  
+  const observerOptions = {
+    threshold: 0.5,
+    rootMargin: '0px'
+  };
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const element = entry.target;
+        const text = element.textContent;
+        
+        // Animate numbers (if numeric)
+        if (text.includes('%') || text.includes(',')) {
+          animateNumber(element, text);
+        }
+        
+        observer.unobserve(element);
+      }
+    });
+  }, observerOptions);
+  
+  trustNumbers.forEach(num => observer.observe(num));
+}
+
+function animateNumber(element, finalText) {
+  const hasPercent = finalText.includes('%');
+  const hasComma = finalText.includes(',');
+  
+  let finalNumber;
+  if (hasPercent) {
+    finalNumber = parseFloat(finalText.replace('%', ''));
+  } else if (hasComma) {
+    finalNumber = parseInt(finalText.replace(',', ''));
+  } else {
+    return; // Not a number, skip animation
+  }
+  
+  const duration = 1500;
+  const steps = 60;
+  const stepValue = finalNumber / steps;
+  let currentNumber = 0;
+  let currentStep = 0;
+  
+  const interval = setInterval(() => {
+    currentNumber += stepValue;
+    currentStep++;
+    
+    let displayText;
+    if (hasPercent) {
+      displayText = currentNumber.toFixed(1) + '%';
+    } else if (hasComma) {
+      displayText = Math.floor(currentNumber).toLocaleString();
+    }
+    
+    element.textContent = displayText;
+    
+    if (currentStep >= steps) {
+      element.textContent = finalText;
+      clearInterval(interval);
+    }
+  }, duration / steps);
+}
+
+// ========== 7. QUICK FILL ENHANCEMENTS ==========
+function setupQuickFillEnhancements() {
+  const quickFillButtons = document.querySelectorAll('.quick-fill-btn');
+  
+  quickFillButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Add visual feedback
+      btn.classList.add('filling');
+      
+      setTimeout(() => {
+        btn.classList.remove('filling');
+        
+        // Update progress after quick fill
+        setTimeout(() => {
+          updateFormProgress();
+        }, 100);
+      }, 500);
+    });
+  });
+}
+
+// ========== 8. ACCESSIBILITY ENHANCEMENTS ==========
+function setupAccessibility() {
+  // Add ARIA labels
+  const form = document.getElementById('prediction-form');
+  if (form) {
+    form.setAttribute('aria-label', 'Biểu mẫu dự đoán thành công phim');
+  }
+  
+  // Ensure all interactive elements have proper focus indicators
+  const interactiveElements = document.querySelectorAll('button, a, input, select, textarea');
+  interactiveElements.forEach(el => {
+    if (!el.hasAttribute('aria-label') && !el.hasAttribute('aria-labelledby')) {
+      // Add default aria-label if missing
+      const text = el.textContent.trim() || el.placeholder || el.value;
+      if (text) {
+        el.setAttribute('aria-label', text);
+      }
+    }
+  });
+  
+  // Announce page changes to screen readers
+  const announcer = document.createElement('div');
+  announcer.setAttribute('role', 'status');
+  announcer.setAttribute('aria-live', 'polite');
+  announcer.setAttribute('aria-atomic', 'true');
+  announcer.className = 'sr-only';
+  document.body.appendChild(announcer);
+  
+  // Store announcer in App
+  App.announcer = announcer;
+}
+
+function announce(message) {
+  if (App.announcer) {
+    App.announcer.textContent = '';
+    setTimeout(() => {
+      App.announcer.textContent = message;
+    }, 100);
+  }
+}
+
+// ========== 9. INITIALIZE ALL ENHANCEMENTS ==========
+function initializeEnhancements() {
+  console.log('🚀 Initializing UX/UI enhancements...');
+  
+  // Setup all enhancements
+  setupRealTimeValidation();
+  setupEnhancedTooltips(); // ✅ FIXED: Use enhanced tooltips instead of old setupTooltips()
+  setupLoadingState();
+  setupDarkModeToggle();
+  setupQuickFillEnhancements();
+  setupAccessibility();
+  
+  // Initial progress update
+  updateFormProgress();
+  
+  // Animate trust indicators when visible
+  animateTrustIndicators();
+  
+  console.log('✅ All enhancements initialized successfully!');
+}
+
+// ========== 10. INITIALIZE WHEN DOM IS READY ==========
+// ✅ FIXED: Merged duplicate DOMContentLoaded listeners
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize original App
+  App.init();
+  
+  // Initialize new enhancements (includes setupEnhancedTooltips)
+  initializeEnhancements();
+  
+  // Setup old quick fill buttons (from original code)
+  setupQuickFillButtons();
+  
+  console.log('🎬 FilmPredict App with Enhancements ready!');
+});
+
+// ==========================================
+// END OF UX/UI ENHANCEMENTS
+// ==========================================
