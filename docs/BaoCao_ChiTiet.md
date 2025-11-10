@@ -28,7 +28,7 @@ Phát triển mô hình dự đoán nhị phân để xác định khả năng t
 - **Feature Engineering:** Tạo 47 features từ dữ liệu gốc
   - Thời gian: `release_year`, `release_month`, `release_quarter`
   - Tài chính: `roi`, `roi_clipped`, `budget_per_year`
-  - Nội dung: `num_genres`, `num_main_cast`, genre dummies
+  - Nội dung: `num_genres`, `num_main_cast`
   - Features độc đáo: `roi_vs_vote`, `cast_genre_interaction`
 
 **Bài học rút ra được:**
