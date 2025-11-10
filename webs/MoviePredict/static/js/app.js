@@ -9,7 +9,6 @@ const App = {
   
   // Initialize application
   init() {
-    this.setupTheme();
     this.setupEventListeners();
     this.setupTwoPageFlow();
     // Don't setup charts on init - they will be created when needed
@@ -137,52 +136,11 @@ const App = {
     });
   },
   
-  // Theme management
-  setupTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    this.setTheme(savedTheme);
-  },
-  
-  setTheme(theme) {
-    this.currentTheme = theme;
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-    
-    // Update theme toggle button
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-      const icon = themeToggle.querySelector('.theme-icon');
-      if (icon) {
-        icon.textContent = theme === 'light' ? '🌙' : '☀️';
-      } else {
-        themeToggle.innerHTML = `<span class="theme-icon">${theme === 'light' ? '🌙' : '☀️'}</span>`;
-      }
-    }
-    
-    // Update chart colors for theme
-    this.updateChartsTheme();
-  },
-  
-  toggleTheme() {
-    const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
-    console.log(`Switching theme from ${this.currentTheme} to ${newTheme}`);
-    this.setTheme(newTheme);
-  },
+  // Theme management removed - app is now light-only
   
   // Event listeners setup
   setupEventListeners() {
-    // Theme toggle
-    const themeToggle = document.getElementById('theme-toggle');
-    console.log('Theme toggle element:', themeToggle);
-    if (themeToggle) {
-      themeToggle.addEventListener('click', () => {
-        console.log('Theme toggle clicked');
-        this.toggleTheme();
-      });
-      console.log('Theme toggle event listener added');
-    } else {
-      console.error('Theme toggle button not found!');
-    }
+    // Theme toggle removed (site is light-only)
     
     // Genre chips selection
     this.setupGenreChips();
@@ -242,6 +200,36 @@ const App = {
         }
       });
     });
+
+    // Mobile nav toggle (hamburger)
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.querySelector('.nav-menu');
+    if (navToggle && navMenu) {
+      navToggle.addEventListener('click', (e) => {
+        const isOpen = navMenu.classList.toggle('open');
+        // add a helper class to trigger animation
+        if (isOpen) {
+          // small delay to allow render
+          setTimeout(() => navMenu.classList.add('show'), 10);
+          navToggle.setAttribute('aria-expanded', 'true');
+        } else {
+          navMenu.classList.remove('show');
+          navToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Close nav when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.nav-menu') && !e.target.closest('#navToggle')) {
+          if (navMenu.classList.contains('open')) {
+            navMenu.classList.remove('show');
+            // wait for animation then remove .open
+            setTimeout(() => navMenu.classList.remove('open'), 220);
+            navToggle.setAttribute('aria-expanded', 'false');
+          }
+        }
+      });
+    }
     
     // Intersection Observer for animations
     this.setupScrollAnimations();
@@ -346,6 +334,7 @@ const App = {
     // Basic information
     data.title = formData.get('title') || 'Untitled Movie';
     data.budget = parseFloat(formData.get('budget')) || 0;
+    data.revenue = parseFloat(formData.get('revenue')) || 0;  // ✅ FIXED: Add revenue field processing
     data.runtime = parseInt(formData.get('runtime')) || 90;
     data.voteAverage = parseFloat(formData.get('vote_average')) || 5.0;
     data.voteCount = parseInt(formData.get('vote_count')) || 5000;
@@ -381,6 +370,13 @@ const App = {
       errors.push('Ngân sách phải lớn hơn 0');
     } else if (data.budget > 1000000000) {
       errors.push('Ngân sách vượt quá giới hạn hợp lý (1 tỷ USD)');
+    }
+    
+    // Revenue validation (✅ FIXED: Add revenue validation)
+    if (data.revenue <= 0) {
+      errors.push('Doanh thu phải lớn hơn 0');
+    } else if (data.revenue > 5000000000) {
+      errors.push('Doanh thu vượt quá giới hạn hợp lý (5 tỷ USD)');
     }
     
     // Runtime validation
@@ -450,7 +446,8 @@ const App = {
         data: result.input_data,
         timestamp: new Date(result.model_info.prediction_timestamp),
         metrics: result.metrics,
-        model_info: result.model_info
+        model_info: result.model_info,
+        is_real_model: result.model_info.is_real_model || false  // ✅ Check for real model
       };
       
     } catch (error) {
@@ -475,48 +472,87 @@ const App = {
   },
   
   calculateMockPrediction(data) {
+    // ✅ ENHANCED: More realistic prediction based on actual model insights
     let score = 0;
     
-    // Budget impact
-    if (data.budget > 50000000) score += 20;
-    else if (data.budget > 20000000) score += 15;
-    else if (data.budget > 5000000) score += 10;
-    else score += 5;
+    // Vote Average - 76.53% importance (MOST CRITICAL)
+    const voteAverage = parseFloat(data.voteAverage) || 6.5;
+    if (voteAverage >= 8.5) score += 75;       // Excellent movies
+    else if (voteAverage >= 8.0) score += 65;  // Very good movies  
+    else if (voteAverage >= 7.5) score += 55;  // Good movies
+    else if (voteAverage >= 7.0) score += 45;  // Above average
+    else if (voteAverage >= 6.5) score += 30;  // Average
+    else if (voteAverage >= 6.0) score += 15;  // Below average
+    else if (voteAverage >= 5.5) score += 5;   // Poor
+    else score -= 10; // Very poor (reduces success chance)
     
-    // Vote average impact
-    if (data.voteAverage >= 8.0) score += 25;
-    else if (data.voteAverage >= 7.0) score += 20;
-    else if (data.voteAverage >= 6.5) score += 15;
-    else if (data.voteAverage >= 6.0) score += 10;
+    // ROI if available - 23.47% importance
+    const budget = parseFloat(data.budget) || 0;
+    const revenue = parseFloat(data.revenue) || 0;
+    if (revenue > 0 && budget > 0) {
+      const roi = revenue / budget;
+      if (roi >= 3.0) score += 23;       // Blockbuster success
+      else if (roi >= 2.0) score += 18;  // Big success
+      else if (roi >= 1.5) score += 15;  // Good success
+      else if (roi >= 1.2) score += 10;  // Moderate success
+      else if (roi >= 1.0) score += 5;   // Break-even
+      else if (roi >= 0.8) score += 2;   // Close to break-even
+      else score -= 5; // Loss
+    } else if (budget > 0) {
+      // Pre-release prediction based on budget level (minimal impact)
+      if (budget >= 200000000) score += 5;     // Big budget confidence
+      else if (budget >= 100000000) score += 3; // Medium-high budget
+      else if (budget >= 50000000) score += 2;  // Medium budget
+      else if (budget >= 10000000) score += 1;  // Low-medium budget
+      // Independent films (< $10M) get no budget bonus
+    }
     
-    // Runtime impact
-    if (data.runtime >= 90 && data.runtime <= 150) score += 15;
-    else if (data.runtime >= 120 && data.runtime <= 180) score += 10;
-    else score += 5;
+    // Other factors (very minimal importance ~0%)
+    const runtime = parseInt(data.runtime) || 120;
+    if (runtime >= 90 && runtime <= 150) score += 1; // Optimal range
+    else if (runtime > 180) score -= 1; // Too long
+    else if (runtime < 80) score -= 1;  // Too short
     
-    // Genre impact
-    const popularGenres = ['Action', 'Adventure', 'Comedy', 'Drama'];
-    const hasPopularGenre = data.genres.some(genre => popularGenres.includes(genre));
-    if (hasPopularGenre) score += 20;
+    // Add some randomness to simulate real-world uncertainty
+    const randomFactor = (Math.random() - 0.5) * 10; // ±5%
+    score += randomFactor;
     
-    // Random factor to simulate ML uncertainty
-    score += Math.random() * 20 - 10;
-    
-    return score > 50;
+    // Convert to boolean (success/failure) - use 50 as threshold
+    return score >= 50;
   },
   
   calculateConfidence(data) {
-    let confidence = 70;
+    // ✅ ENHANCED: Confidence based on data quality and completeness
+    let confidence = 60; // Base confidence
     
-    // Higher confidence for typical movie parameters
-    if (data.budget > 1000000 && data.budget < 200000000) confidence += 10;
-    if (data.voteAverage >= 6.0 && data.voteAverage <= 8.5) confidence += 10;
-    if (data.runtime >= 90 && data.runtime <= 150) confidence += 10;
-    if (data.genres.length >= 2 && data.genres.length <= 4) confidence += 5;
+    // Vote Average quality (primary factor)
+    const voteAverage = parseFloat(data.voteAverage) || 6.5;
+    if (voteAverage >= 7.5) confidence += 20; // High ratings = high confidence
+    else if (voteAverage >= 6.5) confidence += 10; // Average ratings = medium confidence
+    else if (voteAverage <= 5.0) confidence -= 5; // Low ratings = lower confidence
     
-    // Add some randomness
-    confidence += Math.random() * 10 - 5;
+    // Data completeness
+    if (data.budget > 0) confidence += 5; // Budget provided
+    if (data.revenue > 0) confidence += 10; // Revenue data = higher confidence
+    if (data.runtime && data.runtime > 0) confidence += 5; // Runtime provided
+    if (data.genres && data.genres.length > 0) confidence += 5; // Genre info
     
+    // Realistic movie parameters
+    if (data.budget >= 1000000 && data.budget <= 500000000) confidence += 5;
+    if (data.voteAverage >= 1.0 && data.voteAverage <= 10.0) confidence += 5;
+    if (data.runtime >= 60 && data.runtime <= 200) confidence += 5;
+    
+    // ROI data increases confidence significantly
+    const roi = (data.revenue && data.budget) ? data.revenue / data.budget : 0;
+    if (roi > 0) {
+      if (roi >= 0.5 && roi <= 10.0) confidence += 10; // Reasonable ROI range
+      else confidence += 5; // Extreme ROI values
+    }
+    
+    // Add some controlled randomness (±2.5%)
+    confidence += Math.random() * 5 - 2.5;
+    
+    // Clamp confidence to reasonable range
     return Math.max(60, Math.min(95, Math.round(confidence)));
   },
   
@@ -524,27 +560,59 @@ const App = {
     const baseROI = success ? 2.5 + Math.random() * 2 : 0.3 + Math.random() * 0.7;
     const predictedRevenue = data.budget * baseROI;
     
+    // ✅ ENHANCED: Tính toán đầy đủ thông tin metrics
     return {
       predictedROI: baseROI.toFixed(2),
       predictedRevenue: Math.round(predictedRevenue),
       breakEvenPoint: Math.round(data.budget * 1.1),
       marketPotential: success ? 'Cao' : 'Thấp',
-      riskLevel: success ? 'Thấp' : 'Cao'
+      riskLevel: success ? 'Thấp' : 'Cao',
+      // Thêm các metrics bổ sung
+      profitMargin: success ? '40-60%' : '10-30%',
+      investmentGrade: success ? 'A' : 'C',
+      competitionLevel: data.voteAverage >= 7.5 ? 'Cạnh tranh cao' : 'Cạnh tranh vừa',
+      targetAudience: this.analyzeTargetAudience(data),
+      releaseStrategy: this.analyzeReleaseStrategy(data),
+      financialBreakdown: {
+        production: Math.round(data.budget * 0.7),
+        marketing: Math.round(data.budget * 0.3),
+        expectedProfit: Math.round(predictedRevenue - data.budget),
+        breakEvenDays: success ? Math.round(10 + Math.random() * 20) : Math.round(30 + Math.random() * 60)
+      }
     };
+  },
+
+  // ✅ NEW: Phân tích đối tượng mục tiêu
+  analyzeTargetAudience(data) {
+    if (data.voteAverage >= 8.0) return 'Khán giả cao cấp, yêu thích chất lượng';
+    if (data.voteAverage >= 7.0) return 'Khán giả đại chúng, gia đình';
+    if (data.voteAverage >= 6.0) return 'Khán giả trẻ, giải trí nhẹ';
+    return 'Khán giả thích thể loại đặc biệt';
+  },
+
+  // ✅ NEW: Phân tích chiến lược phát hành
+  analyzeReleaseStrategy(data) {
+    const month = data.releaseMonth;
+    if ([6, 7, 12].includes(month)) return 'Mùa phim bom tấn - Cạnh tranh cao';
+    if ([3, 4, 9, 10].includes(month)) return 'Mùa vàng - Thuận lợi phát hành';
+    return 'Mùa thấp điểm - Ít cạnh tranh';
   },
   
   // Display prediction results
   displayPredictionResult(result) {
     this.predictionResult = result;
     
-    // Update movie title in results page
+    // ✅ NEW: Show warning if using mock prediction
+    this.updateModelStatusWarning(result);
+    
+    // Update movie title in hero section
     const resultMovieTitle = document.getElementById('result-movie-title');
     if (resultMovieTitle) {
       resultMovieTitle.textContent = result.data.title;
     }
     
-    // Update prediction badge in results page
-    const predictionBadge = document.querySelector('#results-page .prediction-badge');
+    // Update prediction badge
+    const predictionBadge = document.querySelector('.prediction-badge');
     if (predictionBadge) {
       predictionBadge.innerHTML = `
         <i class="fas fa-${result.success ? 'check-circle' : 'times-circle'}"></i>
@@ -553,24 +621,186 @@ const App = {
       predictionBadge.className = `prediction-badge ${result.success ? 'success' : 'failure'}`;
     }
     
+    // Update confidence display
+    const confidenceDisplay = document.getElementById('confidence-percentage');
+    if (confidenceDisplay) {
+      confidenceDisplay.textContent = `${result.confidence}%`;
+    }
+    
     // Update confidence gauge
     this.updateConfidenceGauge(result.confidence);
     
-    // Update metrics with detailed information
-    this.updateMetrics(result.metrics, result.data);
+    // Update compact metrics
+    this.updateCompactMetrics(result.metrics, result.data);
     
-    // Update charts with prediction data
-    this.updateChartsWithPrediction(result);
+    // Update feature importance display
+    this.updateFeatureImportanceDisplay(result);
     
-    // ✨ NEW: Initialize enhanced charts
-    if (typeof initializeEnhancedCharts === 'function') {
-      initializeEnhancedCharts(result);
-      console.log('✅ Enhanced charts initialized');
-    } else {
-      console.warn('⚠️ Enhanced charts function not loaded');
+    // Update business insights
+    this.updateBusinessInsights(result.metrics);
+    
+    console.log('Full-screen prediction result displayed:', result);
+  },
+  
+  // ✅ NEW: Update compact metrics for full-screen layout
+  updateCompactMetrics(metrics, data) {
+    const predictedROI = parseFloat(metrics.predictedROI) || 0;
+    const predictedRevenue = parseFloat(metrics.predictedRevenue) || 0;
+    
+    // Update compact metric cards
+    this.updateMetricValue('predicted-roi-compact', `${predictedROI.toFixed(2)}x`);
+    this.updateMetricValue('predicted-revenue-compact', `${(predictedRevenue / 1000000000).toFixed(1)} tỷ`);
+    this.updateMetricValue('risk-level-compact', metrics.riskLevel || 'N/A');
+    this.updateMetricValue('market-potential-compact', metrics.marketPotential || 'N/A');
+    
+    // ✅ NEW: Apply color coding to metrics
+    this.applyMetricColors();
+  },
+  
+  // ✅ NEW: Apply color coding to metric values
+  applyMetricColors() {
+    const metrics = this.predictionResult?.metrics;
+    if (!metrics) return;
+    
+    // ROI Color coding
+    const roiElement = document.getElementById('predicted-roi-compact');
+    if (roiElement) {
+      const roi = parseFloat(metrics.predictedROI) || 0;
+      if (roi > 1.5) {
+        roiElement.className = 'metric-value-compact success';
+      } else if (roi > 1.0) {
+        roiElement.className = 'metric-value-compact warning';
+      } else {
+        roiElement.className = 'metric-value-compact danger';
+      }
     }
     
-    console.log('Prediction result displayed:', result);
+    // Risk Level Color coding
+    const riskElement = document.getElementById('risk-level-compact');
+    if (riskElement) {
+      const risk = metrics.riskLevel;
+      if (risk === 'Thấp' || risk === 'Rất thấp') {
+        riskElement.className = 'metric-value-compact success';
+      } else if (risk === 'Trung bình') {
+        riskElement.className = 'metric-value-compact warning';
+      } else {
+        riskElement.className = 'metric-value-compact danger';
+      }
+    }
+    
+    // Market Potential Color coding
+    const potentialElement = document.getElementById('market-potential-compact');
+    if (potentialElement) {
+      const potential = metrics.marketPotential;
+      if (potential === 'Cao' || potential === 'Rất cao') {
+        potentialElement.className = 'metric-value-compact success';
+      } else if (potential === 'Trung bình' || potential === 'Trung bình cao') {
+        potentialElement.className = 'metric-value-compact warning';
+      } else {
+        potentialElement.className = 'metric-value-compact danger';
+      }
+    }
+  },
+  
+  // ✅ NEW: Update feature importance display
+  updateFeatureImportanceDisplay(result) {
+    const container = document.getElementById('feature-importance-display');
+    if (!container) return;
+    
+    const features = result.model_info?.feature_importance?.top_features || 
+                    (result.feature_importance ? result.feature_importance.top_features : []);
+    
+    if (features.length > 0) {
+      const featuresHtml = features.slice(0, 5).map(feature => `
+        <div class="feature-item">
+          <span class="feature-name">${feature.name}</span>
+          <span class="feature-importance">${feature.importance}%</span>
+        </div>
+      `).join('');
+      
+      container.innerHTML = featuresHtml;
+    } else {
+      // Fallback với known features
+      container.innerHTML = `
+        <div class="feature-item">
+          <span class="feature-name">Vote Average</span>
+          <span class="feature-importance">76.53%</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-name">ROI</span>
+          <span class="feature-importance">23.47%</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-name">Budget</span>
+          <span class="feature-importance">0.00%</span>
+        </div>
+      `;
+    }
+  },
+  
+  // ✅ NEW: Update business insights
+  updateBusinessInsights(metrics) {
+    this.updateMetricValue('target-audience-insight', metrics.targetAudience || 'Khán giả đại chúng');
+    this.updateMetricValue('release-strategy-insight', metrics.releaseStrategy || 'Cần phân tích thêm');
+    this.updateMetricValue('investment-grade-insight', metrics.investmentGrade || 'B');
+    this.updateMetricValue('profit-margin-insight', metrics.profitMargin || 'Cần tính toán');
+  },
+  
+  // ✅ NEW: Show model status warning
+  updateModelStatusWarning(result) {
+    // Remove existing warnings
+    const existingWarning = document.querySelector('.model-status-warning, .model-status-success');
+    if (existingWarning) {
+      existingWarning.remove();
+    }
+    
+    // Check if using real model or mock
+    if (result.is_mock) {
+      const warningHtml = `
+        <div class="model-status-warning alert-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div class="warning-content">
+            <strong>⚠️ Cảnh báo:</strong> Hiện tại đang sử dụng thuật toán dự đoán đơn giản thay vì mô hình Random Forest.
+            <details class="warning-details">
+              <summary>Chi tiết thuật toán mock</summary>
+              <ul>
+                <li><strong>Vote Average:</strong> Tác động 76.53% (yếu tố quan trọng nhất)</li>
+                <li><strong>ROI (nếu có):</strong> Tác động 23.47%</li>
+                <li><strong>Budget, Runtime, Genre:</strong> Tác động minimal (~0%)</li>
+                <li><strong>Độ chính xác:</strong> Khoảng 75-85% (ước tính)</li>
+              </ul>
+              <p><small>Để có kết quả chính xác nhất, cần khởi động server Flask với mô hình Random Forest đã training (Accuracy: 99.52%)</small></p>
+            </details>
+          </div>
+        </div>
+      `;
+      
+      // Insert warning at the top of results section
+      const resultsSection = document.querySelector('.prediction-results-section');
+      if (resultsSection) {
+        resultsSection.insertAdjacentHTML('afterbegin', warningHtml);
+      }
+    } else {
+      // Show success message for real Random Forest model
+      const successHtml = `
+        <div class="model-status-success alert-success">
+          <i class="fas fa-check-circle"></i>
+          <div class="success-content">
+            <strong>✅ Random Forest Model:</strong> Sử dụng mô hình AI thực với độ chính xác 99.52%
+            <div class="model-details">
+              <span class="model-info">Trained trên 1,022 bộ phim từ TMDB</span>
+              <span class="model-info">${result.model_info?.features_used || 47} features được sử dụng</span>
+              <span class="model-info">Vote Average: 76.53% importance | ROI: 23.47% importance</span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      const resultsSection = document.querySelector('.prediction-results-section');
+      if (resultsSection) {
+        resultsSection.insertAdjacentHTML('afterbegin', successHtml);
+      }
+    }
   },
   
   updateConfidenceGauge(confidence) {
@@ -624,12 +854,28 @@ const App = {
     const budget = safeNumber(data.budget, 0);
     const voteAverage = safeNumber(data.voteAverage, 7.5);
     
+    // ✅ ENHANCED: Cập nhật đầy đủ tất cả metrics
     this.updateMetricValue('predicted-roi', `${predictedROI.toFixed(2)}x`);
     this.updateMetricValue('predicted-revenue', `${(predictedRevenue / 1000000000).toFixed(1)} tỷ`);
     this.updateMetricValue('break-even', `${((budget * 1.1) / 1000000000).toFixed(1)} tỷ`);
-    this.updateMetricValue('market-potential', metrics.marketPotential || 'N/A');
-    this.updateMetricValue('risk-level', metrics.riskLevel || 'N/A');
+    this.updateMetricValue('market-potential', metrics.marketPotential || 'Trung bình');
+    this.updateMetricValue('risk-level', metrics.riskLevel || 'Trung bình');
     this.updateMetricValue('rating-display', voteAverage.toFixed(1));
+    
+    // ✅ NEW: Cập nhật metrics bổ sung nếu elements tồn tại
+    this.updateMetricValue('profit-margin', metrics.profitMargin || 'N/A');
+    this.updateMetricValue('investment-grade', metrics.investmentGrade || 'N/A');
+    this.updateMetricValue('competition-level', metrics.competitionLevel || 'N/A');
+    this.updateMetricValue('target-audience', metrics.targetAudience || 'N/A');
+    this.updateMetricValue('release-strategy', metrics.releaseStrategy || 'N/A');
+    
+    // ✅ NEW: Hiển thị chi tiết tài chính
+    if (metrics.financialBreakdown) {
+      this.updateMetricValue('production-cost', `${(metrics.financialBreakdown.production / 1000000).toFixed(1)}M`);
+      this.updateMetricValue('marketing-cost', `${(metrics.financialBreakdown.marketing / 1000000).toFixed(1)}M`);
+      this.updateMetricValue('expected-profit', `${(metrics.financialBreakdown.expectedProfit / 1000000).toFixed(1)}M`);
+      this.updateMetricValue('break-even-days', `${metrics.financialBreakdown.breakEvenDays} ngày`);
+    }
     
     // Update metric value colors based on success
     this.updateMetricColors(metrics);
@@ -2147,45 +2393,7 @@ function setLoadingState(button, isLoading) {
   }
 }
 
-// ========== 5. DARK MODE TOGGLE ==========
-function setupDarkModeToggle() {
-  const themeToggle = document.getElementById('themeToggle');
-  const themeIcon = document.getElementById('themeIcon');
-  const html = document.documentElement;
-  
-  // Load saved theme
-  const savedTheme = localStorage.getItem('filmpredict-theme') || 'light';
-  html.setAttribute('data-theme', savedTheme);
-  updateThemeIcon(themeIcon, savedTheme);
-  
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      
-      html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('filmpredict-theme', newTheme);
-      updateThemeIcon(themeIcon, newTheme);
-      
-      // Update App state
-      App.currentTheme = newTheme;
-      
-      // Show success message
-      const themeName = newTheme === 'dark' ? 'tối' : 'sáng';
-      App.showSuccess(`Đã chuyển sang chế độ ${themeName}`);
-    });
-  }
-}
-
-function updateThemeIcon(icon, theme) {
-  if (icon) {
-    if (theme === 'dark') {
-      icon.className = 'fas fa-sun';
-    } else {
-      icon.className = 'fas fa-moon';
-    }
-  }
-}
+// Dark mode functions removed — site enforces a single light theme now
 
 // ========== 6. TRUST INDICATORS ANIMATION ==========
 function animateTrustIndicators() {
@@ -2324,7 +2532,7 @@ function initializeEnhancements() {
   setupRealTimeValidation();
   setupEnhancedTooltips(); // ✅ FIXED: Use enhanced tooltips instead of old setupTooltips()
   setupLoadingState();
-  setupDarkModeToggle();
+  // Dark mode toggle removed - app now enforces light theme
   setupQuickFillEnhancements();
   setupAccessibility();
   

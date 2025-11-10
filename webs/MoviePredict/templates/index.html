@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="light">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đánh Giá Thành Công Phim Đang Chiếu - AI Độ Chính Xác 99.5%</title>
+    <title>Movies Predict</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -26,20 +26,26 @@
         <div class="container">
             <div class="nav-brand">
                 <div class="logo">
-                    <span class="logo-icon">🎬</span>
-                    <span class="logo-text">FilmPredict</span>
+                    <span class="logo-icon">📺</span>
+                    <span class="logo-text">Movies Predict</span>
                 </div>
             </div>
+            <!-- Mobile hamburger toggle -->
+            <button id="navToggle" class="nav-toggle" aria-label="Mở menu" aria-expanded="false">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
             <nav class="nav-menu">
-                <a href="#app" class="btn-primary nav-cta">Dự đoán ngay</a>
+                <a href="#hero" class="nav-link">Trang Chủ</a>
+                <a href="#model-info" class="nav-link">Mô Hình AI</a>
+                <a href="#app" class="nav-link">Dự Đoán Phim</a>
+
             </nav>
         </div>
     </header>
     
-    <!-- Dark Mode Toggle Button - Fixed Position -->
-    <button class="theme-toggle" id="themeToggle" ariRomana-label="Toggle Dark Mode">
-        <i class="fas fa-moon" id="themeIcon"></i>
-    </button>
+
 
     <!-- HERO SECTION - Make10000Hours Aesthetic -->
     <section class="hero" id ="hero">
@@ -401,7 +407,7 @@
                                     <div class="input-with-icon">
                                         <i class="fas fa-dollar-sign input-icon"></i>
                                         <input type="number" id="revenue" name="revenue" 
-                                               placeholder="VD: 75000000" min="0" step="1000000" required data-required="true">
+                                               placeholder="VD: 75000000" min="0" step="any" required data-required="true">
                                     </div>
                                     <small class="help-text">
                                         Doanh thu đã thu được đến hiện tại (có thể lấy từ 
@@ -437,7 +443,7 @@
                                     <div class="input-with-icon">
                                         <i class="fas fa-dollar-sign input-icon"></i>
                                         <input type="number" id="budget" name="budget" 
-                                               placeholder="VD: 50000000" min="1" step="1000000" required data-required="true">
+                                               placeholder="VD: 50000000" min="1" step="any" required data-required="true">
                                     </div>
                                     <small class="help-text">
                                         Ngân sách sản xuất phim (USD). VD: 50M USD cho phim Hollywood trung bình
@@ -584,34 +590,148 @@
                     </div>
             </div>
 
-            <!-- STEP 2: Results Page -->
+            <!-- STEP 2: Results Page - Full Screen Layout -->
             <div id="results-page" class="page-container">
                 <div class="page-header">
                     <button class="back-btn" id="back-to-form">
                         <i class="fas fa-arrow-left"></i>
                         <span>Quay lại</span>
                     </button>
-                    <h2 class="page-title">🎯 Kết Quả Dự Đoán</h2>
-                    <p class="page-subtitle">
-                        Phân tích AI hoàn tất - Xem kết quả chi tiết bên dưới
-                    </p>
-                    <div class="progress-indicator">
-                        <div class="step completed">
-                            <i class="fas fa-check-circle"></i>
-                            <span class="step-label">Nhập thông tin</span>
-                        </div>
-                        <div class="step-divider active"></div>
-                        <div class="step active">
-                            <i class="fas fa-chart-line"></i>
-                            <span class="step-label">Xem kết quả</span>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="results-container-full">
-                    <!-- Movie Title Card -->
-                    <div id="movie-title-card" class="movie-title-card">
-                        <h3 id="result-movie-title" class="result-movie-title">Tên Phim</h3>
+                    <!-- Hero Section -->
+                    <section class="prediction-hero">
+                        <div class="prediction-hero-content">
+                            <h1 id="result-movie-title" class="movie-title-display">Tên Phim</h1>
+                            
+                            <div class="prediction-status">
+                                <div class="prediction-badge success">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span class="badge-text">THÀNH CÔNG</span>
+                                </div>
+                            </div>
+                            
+                            <div class="confidence-display" id="confidence-percentage">85%</div>
+                            <p class="confidence-label">Độ tin cậy dự đoán</p>
+                            
+                            <!-- Confidence gauge (existing) -->
+                            <div class="confidence-gauge" style="margin-top: 2rem;">
+                                <svg class="gauge-svg" viewBox="0 0 200 200" style="max-width: 200px;">
+                                    <circle cx="100" cy="100" r="90" stroke="var(--border-light)" stroke-width="10" fill="none"></circle>
+                                    <circle id="confidence-circle" cx="100" cy="100" r="90" stroke="var(--primary-blue)" stroke-width="10" 
+                                            fill="none" stroke-dasharray="565" stroke-dashoffset="565" 
+                                            transform="rotate(-90 100 100)" class="gauge-progress"></circle>
+                                </svg>
+                                <div class="gauge-text">
+                                    <span id="confidence-text">85</span><small>%</small>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Main Content Grid -->
+                    <div class="results-main-grid">
+                        <!-- Left Column: Key Metrics -->
+                        <section class="metrics-section-full">
+                            <h3 class="section-title">
+                                <i class="fas fa-chart-line"></i>
+                                Chỉ Số Quan Trọng
+                            </h3>
+                            
+                            <div class="metrics-grid-compact">
+                                <div class="metric-card-compact">
+                                    <i class="fas fa-chart-line metric-icon-compact"></i>
+                                    <div id="predicted-roi-compact" class="metric-value-compact">0x</div>
+                                    <div class="metric-label-compact">ROI Dự Kiến</div>
+                                </div>
+                                
+                                <div class="metric-card-compact">
+                                    <i class="fas fa-money-bill-wave metric-icon-compact"></i>
+                                    <div id="predicted-revenue-compact" class="metric-value-compact">0 tỷ</div>
+                                    <div class="metric-label-compact">Doanh Thu</div>
+                                </div>
+                                
+                                <div class="metric-card-compact">
+                                    <i class="fas fa-shield-alt metric-icon-compact"></i>
+                                    <div id="risk-level-compact" class="metric-value-compact">-</div>
+                                    <div class="metric-label-compact">Mức Rủi Ro</div>
+                                </div>
+                                
+                                <div class="metric-card-compact">
+                                    <i class="fas fa-target metric-icon-compact"></i>
+                                    <div id="market-potential-compact" class="metric-value-compact">-</div>
+                                    <div class="metric-label-compact">Tiềm Năng</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Right Column: Feature Importance -->
+                        <section class="analysis-section-full">
+                            <h3 class="section-title">
+                                <i class="fas fa-brain"></i>
+                                Phân Tích AI
+                            </h3>
+                            
+                            <div class="feature-importance-list" id="feature-importance-display">
+                                <div class="feature-item">
+                                    <span class="feature-name">Vote Average</span>
+                                    <span class="feature-importance">76.53%</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-name">ROI</span>
+                                    <span class="feature-importance">23.47%</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-name">Budget</span>
+                                    <span class="feature-importance">0.00%</span>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Business Insights Section -->
+                    <section class="insights-section-full">
+                        <h3 class="section-title">
+                            <i class="fas fa-lightbulb"></i>
+                            Thông Tin Chi Tiết
+                        </h3>
+                        
+                        <div class="insights-grid">
+                            <div class="insight-card">
+                                <h4 class="insight-title">
+                                    <i class="fas fa-users"></i>
+                                    Đối Tượng Khán Giả
+                                </h4>
+                                <p class="insight-content" id="target-audience-insight">-</p>
+                            </div>
+                            
+                            <div class="insight-card">
+                                <h4 class="insight-title">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Chiến Lược Phát Hành
+                                </h4>
+                                <p class="insight-content" id="release-strategy-insight">-</p>
+                            </div>
+                            
+                            <div class="insight-card">
+                                <h4 class="insight-title">
+                                    <i class="fas fa-award"></i>
+                                    Xếp Hạng Đầu Tư
+                                </h4>
+                                <p class="insight-content" id="investment-grade-insight">-</p>
+                            </div>
+                            
+                            <div class="insight-card">
+                                <h4 class="insight-title">
+                                    <i class="fas fa-percentage"></i>
+                                    Biên Lợi Nhuận
+                                </h4>
+                                <p class="insight-content" id="profit-margin-insight">-</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
                     </div>
 
                     <!-- Main Prediction Result -->
@@ -637,6 +757,9 @@
                         </div>
                     </div>
 
+                    <!-- Legacy detailed sections (hidden in new layout) -->
+                    <div class="legacy-results-sections" style="display: none;">
+                    
                     <!-- Detailed Metrics Section -->
                     <div class="detailed-metrics-section">
                         <h3 class="section-heading"><i class="fas fa-chart-bar"></i> Chi Tiết Phân Tích</h3>
@@ -706,6 +829,81 @@
                                     <span class="metric-description">Đánh giá tổng quan</span>
                                 </div>
                             </div>
+                            
+                            <!-- ✅ NEW: Additional detailed metrics -->
+                            <div class="metric-card-detailed">
+                                <div class="metric-icon-large">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <span class="metric-label">Biên Lợi Nhuận</span>
+                                    <span id="profit-margin" class="metric-value-large">-</span>
+                                    <span class="metric-description">Tỷ lệ lợi nhuận dự kiến</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card-detailed">
+                                <div class="metric-icon-large">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <span class="metric-label">Xếp Hạng Đầu Tư</span>
+                                    <span id="investment-grade" class="metric-value-large">-</span>
+                                    <span class="metric-description">Mức độ an toàn đầu tư</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card-detailed">
+                                <div class="metric-icon-large">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <span class="metric-label">Đối Tượng Mục Tiêu</span>
+                                    <span id="target-audience" class="metric-value-large small-text">-</span>
+                                    <span class="metric-description">Phân khúc khán giả chính</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card-detailed">
+                                <div class="metric-icon-large">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <div class="metric-content">
+                                    <span class="metric-label">Chiến Lược Phát Hành</span>
+                                    <span id="release-strategy" class="metric-value-large small-text">-</span>
+                                    <span class="metric-description">Thời điểm ra mắt tối ưu</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- ✅ NEW: Financial Breakdown Section -->
+                        <div class="financial-section">
+                            <h4 class="subsection-heading">
+                                <i class="fas fa-calculator"></i> Phân Tích Tài Chính Chi Tiết
+                            </h4>
+                            <div class="financial-grid">
+                                <div class="financial-item">
+                                    <i class="fas fa-film"></i>
+                                    <span class="financial-label">Chi phí sản xuất</span>
+                                    <span id="production-cost" class="financial-value">-</span>
+                                </div>
+                                <div class="financial-item">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <span class="financial-label">Chi phí marketing</span>
+                                    <span id="marketing-cost" class="financial-value">-</span>
+                                </div>
+                                <div class="financial-item">
+                                    <i class="fas fa-coins"></i>
+                                    <span class="financial-label">Lợi nhuận dự kiến</span>
+                                    <span id="expected-profit" class="financial-value">-</span>
+                                </div>
+                                <div class="financial-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span class="financial-label">Thời gian hòa vốn</span>
+                                    <span id="break-even-days" class="financial-value">-</span>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </div>
 
@@ -877,7 +1075,10 @@
                         </button>
                     </div>
                 </div>
-            </div>
+                
+                    </div> <!-- End legacy-results-sections -->
+                    
+            </div> <!-- End results-page -->
         </div>
     </section>
 
@@ -905,7 +1106,7 @@
 
                     <div class="link-group">
                         <h4>Thông tin thành viên</h4>
-                        <a href="#">1. Đinh Ngọc Khuê tôi</a>
+                        <a href="#">1. Đinh Ngọc Khuê</a>
                         <a href="#">2. Khổng Thị Hoà</a>
                         <a href="#">3. Phan Văn Huy</a>
                     </div>
