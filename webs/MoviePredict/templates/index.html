@@ -31,41 +31,54 @@
                 </div>
             </div>
             <nav class="nav-menu">
-                <a href="#features" class="nav-link">Tính năng</a>
-                <a href="#how-it-works" class="nav-link">Cách hoạt động</a>
-                <a href="#demo" class="nav-link">Demo</a>
                 <a href="#app" class="btn-primary nav-cta">Dự đoán ngay</a>
             </nav>
         </div>
     </header>
     
     <!-- Dark Mode Toggle Button - Fixed Position -->
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+    <button class="theme-toggle" id="themeToggle" ariRomana-label="Toggle Dark Mode">
         <i class="fas fa-moon" id="themeIcon"></i>
     </button>
 
     <!-- HERO SECTION - Make10000Hours Aesthetic -->
-    <section class="hero">
+    <section class="hero" id ="hero">
+        <!-- Abstract rainbow wave (SVG) - decorative only; includes soft filled gradient to blend with background -->
+        <svg class="hero-wave" viewBox="0 0 1800 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+                <linearGradient id="waveGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+                    <stop offset="0%" stop-color="#22c55e" stop-opacity="0.95" />
+                    <stop offset="20%" stop-color="#f59e0b" stop-opacity="0.95" />
+                    <stop offset="40%" stop-color="#f97316" stop-opacity="0.95" />
+                    <stop offset="60%" stop-color="#ef4444" stop-opacity="0.95" />
+                    <stop offset="80%" stop-color="#7c3aed" stop-opacity="0.95" />
+                    <stop offset="100%" stop-color="#2563eb" stop-opacity="0.95" />
+                </linearGradient>
+            </defs>
+            <!-- Soft filled background to blend the wave into the hero background -->
+            <path class="wave-fill" d="M-200,260 C100,160 320,320 600,240 C880,160 1060,300 1400,220 C1640,160 1860,260 2100,200 L2100,400 L-200,400 Z" fill="url(#waveGradient)" />
+            <g fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">
+                <path class="p1" d="M0,200 C200,120 400,260 600,200 C800,140 1000,260 1200,200 C1400,140 1600,220 1800,200" />
+                <path class="p2" d="M0,220 C180,160 380,300 600,220 C820,140 980,280 1200,220 C1420,160 1600,240 1800,220" />
+                <path class="p3" d="M0,180 C160,100 360,240 600,180 C840,120 1040,240 1200,180 C1360,120 1540,200 1800,180" />
+                <path class="p4" d="M0,140 C220,60 420,200 640,140 C860,80 1060,200 1280,140 C1500,80 1700,160 1800,140" />
+                <path class="p5" d="M0,260 C200,200 420,320 640,260 C860,200 1060,320 1280,260 C1500,200 1700,280 1800,260" />
+            </g>
+        </svg>
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">
-                    Đánh Giá Thành Công Phim Đang Chiếu
-                    <span class="gradient-text">Với AI Độ Chính Xác 99.5%</span>
+                    Dự Đoán Tỉ Lệ Thành Công Của Phim Chiếu Rạp Tại Việt Nam
+                    <span class="gradient-text">Với Độ Chính Xác Lên Tới 99.5%</span>
                 </h1>
                 
                 <!-- Tagline - Emotional Storytelling -->
                 <p class="hero-tagline">
-                    Dự đoán độ thành công của phim điện ảnh Việt bằng AI học máy. 
-                    Công nghệ phân tích dữ liệu từ hơn 1,022 bộ phim giúp nhà sản xuất, 
-                    nhà đầu tư và rạp chiếu đưa ra quyết định thông minh hơn.
+                    Dự đoán độ thành công của phim điện ảnh Việt bằng học máy. 
+                    Sử dụng mô hình <strong>Random Forest</strong> với dữ liệu từ hơn 1K+ bộ phim giúp nhà sản xuất, 
+                    nhà đầu tư và rạp chiếu đưa ra lựa chọn sáng suốt hơn.
                 </p>
-                
-                <p class="hero-subtitle">
-                    Nhập thông tin phim <strong>đang chiếu</strong> để dự đoán thành công cuối cùng. 
-                    Chỉ cần 3 thông tin chính: <strong>Vote Average (quan trọng nhất - 76.53%), Revenue hiện tại, và Budget</strong>.
-                    Không cần đăng ký, dự đoán ngay lập tức.
-                </p>
-                
+                   
                 <!-- Trust Indicators - NEW -->
                 <div class="trust-indicators">
                     <div class="trust-item">
@@ -85,12 +98,8 @@
                 <!-- CTA Buttons - Clean Design -->
                 <div class="hero-cta">
                     <a href="#app" class="btn-primary hero-btn">
-                        <span class="btn-icon">🚀</span>
-                        Dự đoán miễn phí
-                    </a>
-                    <a href="#demo" class="btn-secondary hero-btn">
-                        <span class="btn-icon">📊</span>
-                        Xem demo
+                        <span class="btn-icon">🎥</span>
+                        Dự đoán ngay
                     </a>
                 </div>
                 
@@ -131,7 +140,7 @@
                         <div class="prediction-card mini">
                             <div class="card-header">
                                 <span class="movie-title">🎬 Mai (2024)</span>
-                                <span class="success-badge">✅ 87% Thành công</span>
+                                <span class="success-badge">87% Thành công</span>
                             </div>
                             <div class="preview-metrics">
                                 <div class="metric">
@@ -176,7 +185,7 @@
                     </div>
                     <div class="model-title-group">
                         <h3 class="model-title">Thông Tin Mô Hình AI</h3>
-                        <p class="model-subtitle">Đã được huấn luyện và tối ưu hóa cho thị trường Việt Nam</p>
+                        <p class="model-subtitle">Được huấn luyện, tối ưu với độ chính xác cao</p>
                     </div>
                 </div>
                 
@@ -235,9 +244,9 @@
                             <i class="fas fa-file-code"></i>
                         </div>
                         <div class="metric-info">
-                            <span class="metric-label">File mô hình</span>
-                            <span class="metric-value">optimized_rf_model.pkl</span>
-                            <span class="metric-detail">Trained: Week 6</span>
+                            <span class="metric-label">Kết quả mô hình</span>
+                            <span class="metric-value">optimized_rf_model</span>
+                            <span class="metric-detail">Tối ưu nhất</span>
                         </div>
                     </div>
                     
@@ -249,7 +258,7 @@
                         <div class="metric-info">
                             <span class="metric-label">Công nghệ</span>
                             <span class="metric-value">Python + scikit-learn</span>
-                            <span class="metric-detail">Flask backend + Chart.js</span>
+                            <span class="metric-detail">Flask + HTML & CSS</span>
                         </div>
                     </div>
                 </div>
@@ -258,15 +267,15 @@
                 <div class="model-insights">
                     <div class="insight-badge">
                         <i class="fas fa-star"></i>
-                        <span><strong>Vote Average</strong> là yếu tố quan trọng nhất (76.5% importance)</span>
+                        <span><strong>Vote Average</strong> là yếu tố quan trọng nhất (chiếm 76.5% )</span>
                     </div>
                     <div class="insight-badge">
                         <i class="fas fa-chart-line"></i>
-                        <span><strong>ROI features</strong> đóng vai trò thứ hai (23.5% importance)</span>
+                        <span><strong>ROI features</strong> đóng vai trò thứ hai (chiếm 23.5% )</span>
                     </div>
                     <div class="insight-badge">
                         <i class="fas fa-info-circle"></i>
-                        <span>43 features còn lại có <strong>importance gần 0%</strong></span>
+                        <span>43 features còn lại có <strong>độ quan trọng gần như 0%</strong></span>
                     </div>
                 </div>
             </div>
@@ -309,16 +318,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Form Progress Indicator - NEW -->
-                            <div class="form-progress" id="formProgress">
-                                <div class="progress-text">
-                                    <span><i class="fas fa-tasks"></i> Tiến độ điền form</span>
-                                    <span id="progressCount">0/3 fields bắt buộc</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
-                                </div>
-                            </div>
 
                             <!-- REQUIRED Fields Section -->
                             <div class="form-section featured">
@@ -422,7 +421,8 @@
                                         <ul>
                                             <li>Budget: $2,503,150</li>
                                             <li>Revenue: $22,119,910</li>
-                                            <li>ROI: 8.84x → Thành công lớn! ✅</li>
+                                            <li>ROI: 8.84x</li>
+                                            <li> Điều này cho thấy phim đã rất thành công về mặt tài chính!</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -534,11 +534,11 @@
                                                     <span class="chip-text">Mystery</span>
                                                 </button>
                                                 <button type="button" class="genre-chip" data-genre="Romance">
-                                                    <span class="chip-icon">�</span>
+                                                    <span class="chip-icon">😘</span>
                                                     <span class="chip-text">Romance</span>
                                                 </button>
                                                 <button type="button" class="genre-chip" data-genre="Science Fiction">
-                                                    <span class="chip-icon">�</span>
+                                                    <span class="chip-icon">😘</span>
                                                     <span class="chip-text">Sci-Fi</span>
                                                 </button>
                                                 <button type="button" class="genre-chip" data-genre="Thriller">
@@ -557,43 +557,12 @@
                                 </details>
                             </div>
 
-                            <!-- Quick Fill Buttons -->
-                            <div class="form-section quick-fill-section">
-                                <h3>
-                                    <i class="fas fa-magic"></i> 
-                                    Điền Nhanh với Ví Dụ
-                                </h3>
-                                <div class="quick-fill-buttons">
-                                    <button type="button" class="quick-fill-btn" data-example="mai">
-                                        <div class="example-icon">🎬</div>
-                                        <div class="example-text">
-                                            <strong>Mai (2024)</strong>
-                                            <small>Phim Việt Nam thành công</small>
-                                        </div>
-                                    </button>
-                                    <button type="button" class="quick-fill-btn" data-example="avengers">
-                                        <div class="example-icon">�</div>
-                                        <div class="example-text">
-                                            <strong>Avengers: Endgame</strong>
-                                            <small>Blockbuster Hollywood</small>
-                                        </div>
-                                    </button>
-                                    <button type="button" class="quick-fill-btn" data-example="indie">
-                                        <div class="example-icon">🎭</div>
-                                        <div class="example-text">
-                                            <strong>Independent Drama</strong>
-                                            <small>Phim indie nhỏ</small>
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
-
                             <!-- Submit Button với Loading State -->
                             <div class="form-actions">
                                 <button type="submit" class="submit-btn-full" id="submitBtn">
                                     <span class="btn-text">
                                         <i class="fas fa-chart-line"></i>
-                                        Dự đoán thành công
+                                        Tiến hành dự đoán
                                     </span>
                                     <span class="btn-spinner">
                                         <i class="fas fa-spinner spinner-icon"></i>
@@ -912,40 +881,6 @@
         </div>
     </section>
 
-    <!-- HOW IT WORKS SECTION -->
-    <section class="how-it-works" id="how-it-works">
-        <div class="container">
-            <div class="section-header center">
-                <h2 class="section-title">Cách hoạt động</h2>
-                <p class="section-subtitle">
-                    3 bước đơn giản để có dự đoán chính xác về thành công phim
-                </p>
-            </div>
-
-            <div class="steps-grid">
-                <div class="step-card glassmorphism">
-                    <div class="step-number">1</div>
-                    <div class="step-icon">📝</div>
-                    <h3>Nhập thông tin phim</h3>
-                    <p>Cung cấp các thông tin cơ bản như tên phim, thể loại, ngân sách, thời lượng và điểm chất lượng dự kiến</p>
-                </div>
-                
-                <div class="step-card glassmorphism">
-                    <div class="step-number">2</div>
-                    <div class="step-icon">🤖</div>
-                    <h3>AI phân tích dữ liệu</h3>
-                    <p>Hệ thống AI phân tích 47 yếu tố khác nhau và so sánh với 1,020+ phim trong cơ sở dữ liệu</p>
-                </div>
-                
-                <div class="step-card glassmorphism">
-                    <div class="step-number">3</div>
-                    <div class="step-icon">📊</div>
-                    <h3>Nhận kết quả chi tiết</h3>
-                    <p>Xem dự đoán thành công, biểu đồ phân tích và khuyến nghị cụ thể cho dự án phim của bạn</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- FOOTER -->
     <footer class="footer">
@@ -953,38 +888,32 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <div class="logo">
-                        <span class="logo-icon">🎬</span>
-                        <span class="logo-text">FilmPredict</span>
+                        <span class="logo-icon">📺</span>
+                        <span class="logo-text">Movie Predict</span>
                     </div>
-                    <p>Dự đoán thành công phim với AI độ chính xác cao</p>
+                    <p>Dự án đầu tay của nhóm 04 - Bộ môn Đồ Án 1 - Khoa Học Dự Liệu - HUMG</p>
                 </div>
                 
                 <div class="footer-links">
                     <div class="link-group">
                         <h4>Sản phẩm</h4>
-                        <a href="#features">Tính năng</a>
+                        <a href="#hero">Trang chủ</a>
                         <a href="#app">Dự đoán</a>
-                        <a href="#how-it-works">Cách hoạt động</a>
+
                     </div>
                     
+
                     <div class="link-group">
-                        <h4>Công nghệ</h4>
-                        <a href="#">Random Forest AI</a>
-                        <a href="#">Phân tích dữ liệu</a>
-                        <a href="#">Machine Learning</a>
-                    </div>
-                    
-                    <div class="link-group">
-                        <h4>Thông tin</h4>
-                        <a href="#">Về chúng tôi</a>
-                        <a href="#">Liên hệ</a>
-                        <a href="#">Chính sách</a>
+                        <h4>Thông tin thành viên</h4>
+                        <a href="#">1. Đinh Ngọc Khuê tôi</a>
+                        <a href="#">2. Khổng Thị Hoà</a>
+                        <a href="#">3. Phan Văn Huy</a>
                     </div>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2025 FilmPredict. Dự án nghiên cứu dự đoán thành công phim với AI.</p>
+                <p>&copy; 2025 Movie Predict. Đồ Án 1 - HUMG.</p>
             </div>
         </div>
     </footer>

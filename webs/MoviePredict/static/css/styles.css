@@ -395,7 +395,88 @@ body {
 }
 
 [data-theme="dark"] body {
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%) !important;
+  background: linear-gradient(135deg, #0f172a 0%, #121226 45%, #0b1220 100%) !important;
+}
+
+/* ========== Site-wide subtle background band to visually link sections ========== */
+body::before {
+  content: '';
+  position: fixed;
+  left: -10%;
+  right: -10%;
+  top: 0;
+  height: 48vh; /* covers top area and fades down */
+  background: linear-gradient(90deg,
+    rgba(255, 99, 71, 0.06) 0%,
+    rgba(255, 165, 0, 0.05) 15%,
+    rgba(255, 221, 0, 0.05) 30%,
+    rgba(34, 197, 94, 0.04) 45%,
+    rgba(37, 99, 235, 0.04) 60%,
+    rgba(99, 102, 241, 0.035) 75%,
+    rgba(236, 72, 153, 0.03) 90%
+  );
+  transform: rotate(-6deg) translateY(-6%);
+  filter: blur(54px) saturate(110%);
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: -1; /* behind all content */
+  transition: opacity 0.45s ease, filter 0.45s ease, transform 0.45s ease;
+}
+
+[data-theme="dark"] body::before {
+  background: linear-gradient(90deg,
+    rgba(46, 64, 255, 0.04) 0%,
+    rgba(99, 102, 241, 0.035) 25%,
+    rgba(139, 92, 246, 0.03) 50%,
+    rgba(79, 70, 229, 0.025) 75%,
+    rgba(34, 197, 94, 0.02) 100%
+  );
+  filter: blur(80px) saturate(120%);
+  opacity: 0.55;
+}
+
+/* Make main sections transparent so the site-level band shows through and links pages visually */
+.app-section,
+.features,
+.model-info-banner,
+.how-it-works,
+.charts-section,
+.insights-section {
+  background: transparent !important;
+  border: none !important;
+  transition: background 0.45s ease, border-color 0.45s ease;
+}
+
+/* Add subtle separators so content still reads as sections */
+.app-section::after,
+.features::after,
+.model-info-banner::after,
+.how-it-works::after,
+.charts-section::after,
+.insights-section::after {
+  content: '';
+  display: block;
+  height: 1px;
+  width: 100%;
+  margin-top: 2.5rem;
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(0,0,0,0.06));
+  opacity: 0.6;
+}
+
+/* Dark-mode separator tweak */
+[data-theme="dark"] .app-section::after,
+[data-theme="dark"] .features::after,
+[data-theme="dark"] .model-info-banner::after,
+[data-theme="dark"] .how-it-works::after,
+[data-theme="dark"] .charts-section::after,
+[data-theme="dark"] .insights-section::after {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(0,0,0,0.18));
+  opacity: 0.5;
+}
+
+/* Smooth transitions when toggling theme or navigating */
+section, .page-container, .main-content {
+  transition: background 0.45s ease, color 0.35s ease, opacity 0.35s ease, transform 0.45s ease;
 }
 
 /* ========== UTILITY CLASSES ========== */
@@ -587,6 +668,121 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 100vh;
   display: flex;
   align-items: center;
+  position: relative; /* allow decorative pseudo-element */
+  overflow: hidden;   /* contain blurred stripe */
+}
+
+/* Decorative diagonal blurred rainbow stripe behind the hero content */
+.hero::before {
+  content: '';
+  position: absolute;
+  left: -10%;
+  top: -25%;
+  width: 140%;
+  height: 55%;
+  background: linear-gradient(90deg,
+    rgba(255, 99, 71, 0.30) 0%,   /* tomato - stronger */
+    rgba(255, 165, 0, 0.28) 14%,  /* orange */
+    rgba(255, 221, 0, 0.26) 28%,  /* yellow */
+    rgba(34, 197, 94, 0.24) 44%,  /* green */
+    rgba(37, 99, 235, 0.20) 60%,  /* blue */
+    rgba(99, 102, 241, 0.18) 76%, /* indigo */
+    rgba(236, 72, 153, 0.16) 92%  /* pink */
+  );
+  transform: rotate(-8deg);
+  filter: blur(36px); /* a bit sharper for stronger presence */
+  opacity: 1;
+  pointer-events: none;
+  z-index: 0; /* sits behind content but above page background */
+  mix-blend-mode: normal;
+}
+
+/* Ensure hero content is above the decorative stripe */
+.hero > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dark theme variant: subtler, cooler-tinted stripe */
+[data-theme="dark"] .hero::before {
+  /* Cooler, softer background band for dark theme */
+  background: linear-gradient(90deg,
+    rgba(46, 64, 255, 0.08) 0%,   /* soft blue */
+    rgba(99, 102, 241, 0.07) 25%,
+    rgba(139, 92, 246, 0.06) 50%, /* muted purple */
+    rgba(79, 70, 229, 0.05) 75%,
+    rgba(34, 197, 94, 0.04) 100%  /* very subtle green hint */
+  );
+  filter: blur(72px); /* very soft, spreads gently */
+  opacity: 0.5;      /* lower so it doesn't compete with content */
+}
+
+/* ========== ABSTRACT WAVE SVG (inside .hero) ========== */
+.hero-wave {
+  position: absolute;
+  left: 50%;
+  top: 6%;
+  width: 160%;
+  height: 40%;
+  transform: translateX(-50%) scale(1.02);
+  z-index: 0; /* behind content */
+  pointer-events: none;
+  opacity: 1; /* stronger on light theme */
+  filter: blur(6px) saturate(125%);
+  mix-blend-mode: overlay; /* blend with hero background */
+}
+
+.hero-wave g path {
+  stroke-opacity: 0.8; /* slightly reduced so strokes blend with fill */
+  stroke-width: 1.6;   /* moderately thick but not overpowering */
+}
+
+.hero-wave .wave-fill {
+  mix-blend-mode: overlay;
+  opacity: 0.55; /* visible but soft */
+  filter: blur(18px) saturate(115%);
+  transform-origin: center;
+}
+
+/* Light theme palette - soft pastel rainbow */
+.hero-wave .p1 { stroke: rgba(34,197,94,0.30); }   /* green - stronger */
+.hero-wave .p2 { stroke: rgba(255,206,84,0.28); }  /* yellow */
+.hero-wave .p3 { stroke: rgba(236,72,153,0.30); }  /* pink */
+.hero-wave .p4 { stroke: rgba(99,102,241,0.26); }  /* indigo */
+.hero-wave .p5 { stroke: rgba(37,99,235,0.24); }   /* blue */
+
+/* Make the wave lines thinner and add a subtle translucent fill effect */
+.hero-wave g { mix-blend-mode: screen; }
+
+/* Dark theme variant - brighter, slightly more saturated neon lines */
+[data-theme="dark"] .hero-wave {
+  filter: blur(6px) saturate(150%) contrast(1.05);
+  opacity: 0.95;
+}
+
+[data-theme="dark"] .hero-wave {
+  /* Dark theme: make the wave glow softly, but less saturated and more unified */
+  filter: blur(6px) saturate(140%) contrast(1.02) drop-shadow(0 8px 18px rgba(30,60,120,0.18));
+  opacity: 0.9;
+}
+
+[data-theme="dark"] .hero-wave .p1 { stroke: rgba(80, 200, 170, 0.20); } /* teal */
+[data-theme="dark"] .hero-wave .p2 { stroke: rgba(200, 170, 90, 0.12); }  /* muted gold */
+[data-theme="dark"] .hero-wave .p3 { stroke: rgba(230, 110, 160, 0.22); } /* magenta */
+[data-theme="dark"] .hero-wave .p4 { stroke: rgba(140, 120, 255, 0.22); } /* soft indigo */
+[data-theme="dark"] .hero-wave .p5 { stroke: rgba(100, 150, 255, 0.18); } /* cool blue */
+
+[data-theme="dark"] .hero-wave { mix-blend-mode: screen; }
+[data-theme="dark"] .hero-wave .wave-fill {
+  mix-blend-mode: screen;
+  opacity: 0.32; /* softer fill so strokes are more visible */
+  filter: blur(20px) saturate(150%);
+}
+
+/* Responsive adjustments so wave looks good on narrow screens */
+@media (max-width: 768px) {
+  .hero-wave { top: 2%; height: 55%; width: 220%; filter: blur(10px); }
+  .hero-wave g path { stroke-width: 1.0; }
 }
 
 .hero-content {
