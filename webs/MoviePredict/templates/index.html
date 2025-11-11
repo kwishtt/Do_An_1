@@ -21,27 +21,32 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced-charts.css') }}">
 </head>
 <body>
-    <!-- HEADER - Ultra Clean & Minimal -->
-    <header class="header">
+    <!-- HEADER - Modern Nav Island -->
+    <header class="header" role="banner">
         <div class="container">
-            <div class="nav-brand">
-                <div class="logo">
-                    <span class="logo-icon">📺</span>
+            <div class="nav-island" aria-label="Primary navigation island">
+                <!-- Left: Brand -->
+                <a href="#hero" class="logo" aria-label="Movies Predict Home">
+                    <span class="logo-icon" aria-hidden="true">📺</span>
                     <span class="logo-text">Movies Predict</span>
+                </a>
+
+                <!-- Center: Navigation links -->
+                <nav class="nav-menu" role="navigation" aria-label="Primary">
+                    <a href="#hero" class="nav-link">Trang Chủ</a>
+                    <a href="#model-info" class="nav-link">Mô Hình AI</a>
+                </nav>
+
+                <!-- Right: Actions (search optional, theme, CTA, mobile toggle) -->
+                <div class="nav-actions">
+                    <a href="#app" class="btn-primary nav-cta">Dự đoán ngay</a>
+                    <button id="navToggle" class="nav-toggle" aria-label="Mở menu" aria-expanded="false">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
                 </div>
             </div>
-            <!-- Mobile hamburger toggle -->
-            <button id="navToggle" class="nav-toggle" aria-label="Mở menu" aria-expanded="false">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
-            <nav class="nav-menu">
-                <a href="#hero" class="nav-link">Trang Chủ</a>
-                <a href="#model-info" class="nav-link">Mô Hình AI</a>
-                <a href="#app" class="nav-link">Dự Đoán Phim</a>
-
-            </nav>
         </div>
     </header>
     
@@ -72,106 +77,197 @@
             </g>
         </svg>
         <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Dự Đoán Tỉ Lệ Thành Công Của Phim Chiếu Rạp Tại Việt Nam
-                    <span class="gradient-text">Với Độ Chính Xác Lên Tới 99.5%</span>
-                </h1>
-                
-                <!-- Tagline - Emotional Storytelling -->
-                <p class="hero-tagline">
-                    Dự đoán độ thành công của phim điện ảnh Việt bằng học máy. 
-                    Sử dụng mô hình <strong>Random Forest</strong> với dữ liệu từ hơn 1K+ bộ phim giúp nhà sản xuất, 
-                    nhà đầu tư và rạp chiếu đưa ra lựa chọn sáng suốt hơn.
-                </p>
-                   
-                <!-- Trust Indicators - NEW -->
-                <div class="trust-indicators">
-                    <div class="trust-item">
-                        <span class="trust-number">99.5%</span>
-                        <span class="trust-label">Độ chính xác</span>
-                    </div>
-                    <div class="trust-item">
-                        <span class="trust-number">1,022</span>
-                        <span class="trust-label">Phim đã phân tích</span>
-                    </div>
-                    <div class="trust-item">
-                        <span class="trust-number">&lt;60s</span>
-                        <span class="trust-label">Thời gian dự đoán</span>
-                    </div>
-                </div>
-                
-                <!-- CTA Buttons - Clean Design -->
-                <div class="hero-cta">
-                    <a href="#app" class="btn-primary hero-btn">
-                        <span class="btn-icon">🎥</span>
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Dự Đoán Tỉ Lệ Thành Công Của Phim Chiếu Rạp Tại Việt Nam
+                        <span class="gradient-text">Với Độ Chính Xác Lên Tới 99.5%</span>
+                    </h1>
+                    
+                    <!-- Tagline - Emotional Storytelling -->
+                    <p class="hero-tagline">
+                        Dự đoán độ thành công của phim điện ảnh Việt bằng học máy. 
+                        Sử dụng mô hình <strong>Random Forest</strong> với dữ liệu từ hơn 1K+ bộ phim giúp nhà sản xuất, 
+                        nhà đầu tư và rạp chiếu đưa ra lựa chọn sáng suốt hơn.
+                    </p>
+                    
+                    <!-- CTA Button -->
+                    <a href="#app" class="btn-primary hero-btn-cta">
+                        <span class="btn-icon"></span>
                         Dự đoán ngay
                     </a>
                 </div>
                 
-                <!-- Trust Indicators -->
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <span class="stat-number">1,020+</span>
-                        <span class="stat-label">phim đã phân tích</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">99.5%</span>
-                        <span class="stat-label">độ chính xác</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">3 fields</span>
-                        <span class="stat-label">dễ dàng nhập liệu</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">Vote Average</span>
-                        <span class="stat-label">yếu tố quan trọng nhất (76.53%)</span>
+                <!-- Team Cards - Right Side -->
+                <div class="team-cards-wrapper">
+                    <div class="team-container-card">
+                        <div class="team-cards">
+                            <div class="member-card">
+                                <img src="{{ url_for('static', filename='images/member1.jpg') }}" alt="Đinh Ngọc Khuê" class="member-photo">
+                                <div class="member-info">
+                                    <h4 class="member-name">Đinh Ngọc Khuê</h4>
+                                    <p class="member-role">Đại ca lớp 12a</p>
+                                </div>
+                            </div>
+                            <div class="member-card">
+                                <img src="{{ url_for('static', filename='images/member2.jpg') }}" alt="Khổng Thị Hoà" class="member-photo">
+                                <div class="member-info">
+                                    <h4 class="member-name">Khổng Thị Hoà</h4>
+                                    <p class="member-role">Múa phụ hoạ</p>
+                                </div>
+                            </div>
+                            <div class="member-card">
+                                <img src="{{ url_for('static', filename='images/member3.jpg') }}" alt="Phan Văn Huy" class="member-photo">
+                                <div class="member-info">
+                                    <h4 class="member-name">Phan Văn Huy</h4>
+                                    <p class="member-role">Bù nhìn rơm</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Hero Visual - Interactive Dashboard Preview -->
-            <div class="hero-visual">
-                <div class="dashboard-preview glassmorphism">
-                    <div class="preview-header">
-                        <div class="preview-controls">
-                            <div class="control-dot red"></div>
-                            <div class="control-dot yellow"></div>
-                            <div class="control-dot green"></div>
-                        </div>
-                        <div class="preview-title">Kết quả dự đoán</div>
-                    </div>
-                    
-                    <div class="preview-content">
-                        <div class="prediction-card mini">
-                            <div class="card-header">
-                                <span class="movie-title">🎬 Mai (2024)</span>
-                                <span class="success-badge">87% Thành công</span>
-                            </div>
-                            <div class="preview-metrics">
-                                <div class="metric">
-                                    <span class="metric-label">ROI dự kiến</span>
-                                    <span class="metric-value success">2.4x</span>
+            <!-- Centered Card Section -->
+            <div class="centered-card-section">
+                <div class="container">
+                    <div class="centered-card-wrapper">
+                        <!-- Combined Trust Indicators and Dashboard Preview Card - Centered -->
+                        <div class="combined-preview-card glassmorphism">
+                            <!-- Trust Indicators - Vertical Layout -->
+                            <div class="trust-indicators-vertical">
+                                <h3 class="indicators-title">Thống kê hệ thống</h3>
+                                <div class="trust-item-vertical">
+                                    <span class="trust-number">99.5%</span>
+                                    <span class="trust-label">Độ chính xác</span>
                                 </div>
-                                <div class="metric">
-                                    <span class="metric-label">Mức rủi ro</span>
-                                    <span class="metric-value medium">Trung bình</span>
+                                <div class="trust-item-vertical">
+                                    <span class="trust-number">1,022</span>
+                                    <span class="trust-label">Phim đã phân tích</span>
                                 </div>
-                                <div class="metric">
-                                    <span class="metric-label">Điểm chất lượng</span>
-                                    <span class="metric-value">7.2/10</span>
+                                <div class="trust-item-vertical">
+                                    <span class="trust-number">&lt;60s</span>
+                                    <span class="trust-label">Thời gian dự đoán</span>
                                 </div>
                             </div>
                             
-                            <!-- Mini Chart Preview -->
-                            <div class="mini-chart">
-                                <div class="chart-bars">
-                                    <div class="bar" style="--height: 76%"></div>
-                                    <div class="bar" style="--height: 24%"></div>
-                                    <div class="bar" style="--height: 45%"></div>
-                                    <div class="bar" style="--height: 67%"></div>
+                            <!-- Dashboard Preview Section -->
+                            <div class="dashboard-section">
+                                <div class="preview-header">
+                                    <div class="preview-controls">
+                                        <div class="control-dot red"></div>
+                                        <div class="control-dot yellow"></div>
+                                        <div class="control-dot green"></div>
+                                    </div>
+                                    <div class="preview-title">Kết quả dự đoán mẫu</div>
                                 </div>
-                                <div class="chart-label">Phân tích yếu tố</div>
+                                
+                                <div class="preview-content">
+                                    <div class="prediction-card mini">
+                                        <div class="card-header">
+                                            <span class="movie-title">🎬 Mai (2024)</span>
+                                            <span class="success-badge">87% Thành công</span>
+                                        </div>
+                                        <div class="preview-metrics">
+                                            <div class="metric">
+                                                <span class="metric-label">ROI dự kiến</span>
+                                                <span class="metric-value success">2.4x</span>
+                                            </div>
+                                            <div class="metric">
+                                                <span class="metric-label">Mức rủi ro</span>
+                                                <span class="metric-value medium">Trung bình</span>
+                                            </div>
+                                            <div class="metric">
+                                                <span class="metric-label">Điểm chất lượng</span>
+                                                <span class="metric-value">7.2/10</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Mini Chart Preview -->
+                                        <div class="mini-chart">
+                                            <div class="chart-bars">
+                                                <div class="bar" style="--height: 76%"></div>
+                                                <div class="bar" style="--height: 24%"></div>
+                                                <div class="bar" style="--height: 45%"></div>
+                                                <div class="bar" style="--height: 67%"></div>
+                                            </div>
+                                            <div class="chart-label">Phân tích yếu tố</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Centered Card Section - Moved outside hero for better centering -->
+    <section class="centered-card-section">
+        <div class="container">
+            <div class="centered-card-wrapper">
+                <!-- Combined Trust Indicators and Dashboard Preview Card - Centered -->
+                <div class="combined-preview-card glassmorphism">
+                    <!-- Trust Indicators - Vertical Layout -->
+                    <div class="trust-indicators-vertical">
+                        <h3 class="indicators-title">Thống kê hệ thống</h3>
+                        <div class="trust-item-vertical">
+                            <span class="trust-number">99.5%</span>
+                            <span class="trust-label">Độ chính xác</span>
+                        </div>
+                        <div class="trust-item-vertical">
+                            <span class="trust-number">1,022</span>
+                            <span class="trust-label">Phim đã phân tích</span>
+                        </div>
+                        <div class="trust-item-vertical">
+                            <span class="trust-number">&lt;60s</span>
+                            <span class="trust-label">Thời gian dự đoán</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Dashboard Preview Section -->
+                    <div class="dashboard-section">
+                        <div class="preview-header">
+                            <div class="preview-controls">
+                                <div class="control-dot red"></div>
+                                <div class="control-dot yellow"></div>
+                                <div class="control-dot green"></div>
+                            </div>
+                            <div class="preview-title">Kết quả dự đoán mẫu</div>
+                        </div>
+                        
+                        <div class="preview-content">
+                            <div class="prediction-card mini">
+                                <div class="card-header">
+                                    <span class="movie-title">🎬 Mai (2024)</span>
+                                    <span class="success-badge">87% Thành công</span>
+                                </div>
+                                <div class="preview-metrics">
+                                    <div class="metric">
+                                        <span class="metric-label">ROI dự kiến</span>
+                                        <span class="metric-value success">2.4x</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-label">Mức rủi ro</span>
+                                        <span class="metric-value medium">Trung bình</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-label">Điểm chất lượng</span>
+                                        <span class="metric-value">7.2/10</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Mini Chart Preview -->
+                                <div class="mini-chart">
+                                    <div class="chart-bars">
+                                        <div class="bar" style="--height: 76%"></div>
+                                        <div class="bar" style="--height: 24%"></div>
+                                        <div class="bar" style="--height: 45%"></div>
+                                        <div class="bar" style="--height: 67%"></div>
+                                    </div>
+                                    <div class="chart-label">Phân tích yếu tố</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -209,7 +305,7 @@
                     </div>
                     
                     <!-- Metric 2: Accuracy -->
-                    <div class="model-metric highlight">
+                    <div class="model-metric">
                         <div class="metric-icon-box success">
                             <i class="fas fa-check-circle"></i>
                         </div>
@@ -592,7 +688,7 @@
 
             <!-- STEP 2: Results Page - Full Screen Layout -->
             <div id="results-page" class="page-container">
-                <div class="page-header">
+                <div class="back-btn-wrapper">
                     <button class="back-btn" id="back-to-form">
                         <i class="fas fa-arrow-left"></i>
                         <span>Quay lại</span>
@@ -612,19 +708,38 @@
                                 </div>
                             </div>
                             
-                            <div class="confidence-display" id="confidence-percentage">85%</div>
-                            <p class="confidence-label">Độ tin cậy dự đoán</p>
-                            
-                            <!-- Confidence gauge (existing) -->
-                            <div class="confidence-gauge" style="margin-top: 2rem;">
-                                <svg class="gauge-svg" viewBox="0 0 200 200" style="max-width: 200px;">
-                                    <circle cx="100" cy="100" r="90" stroke="var(--border-light)" stroke-width="10" fill="none"></circle>
-                                    <circle id="confidence-circle" cx="100" cy="100" r="90" stroke="var(--primary-blue)" stroke-width="10" 
-                                            fill="none" stroke-dasharray="565" stroke-dashoffset="565" 
-                                            transform="rotate(-90 100 100)" class="gauge-progress"></circle>
-                                </svg>
-                                <div class="gauge-text">
-                                    <span id="confidence-text">85</span><small>%</small>
+                            <!-- Confidence Card -->
+                            <div class="confidence-card glassmorphism" style="margin-top: 1.5rem;">
+                                <div class="confidence-header">
+                                    <div class="confidence-controls">
+                                        <div class="control-dot red"></div>
+                                        <div class="control-dot yellow"></div>
+                                        <div class="control-dot green"></div>
+                                    </div>
+                                    <div class="confidence-title">Độ tin cậy dự đoán</div>
+                                </div>
+                                
+                                <div class="confidence-content">
+                                    <div class="confidence-main">
+                                        <div class="confidence-percentage">
+                                            <span id="confidence-text" class="confidence-number">85</span>
+                                            <span class="confidence-symbol">%</span>
+                                        </div>
+                                        <div class="confidence-status">
+                                            <span class="status-badge success" id="confidence-status">Rất tin cậy</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="confidence-metrics">
+                                        <div class="confidence-metric">
+                                            <span class="metric-label">Mức độ</span>
+                                            <span class="metric-value high" id="confidence-level">Cao</span>
+                                        </div>
+                                        <div class="confidence-metric">
+                                            <span class="metric-label">Đánh giá</span>
+                                            <span class="metric-value" id="confidence-rating">A+</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -674,240 +789,14 @@
                             </h3>
                             
                             <div class="feature-importance-list" id="feature-importance-display">
-                                <div class="feature-item">
-                                    <span class="feature-name">Vote Average</span>
-                                    <span class="feature-importance">76.53%</span>
-                                </div>
-                                <div class="feature-item">
-                                    <span class="feature-name">ROI</span>
-                                    <span class="feature-importance">23.47%</span>
-                                </div>
-                                <div class="feature-item">
-                                    <span class="feature-name">Budget</span>
-                                    <span class="feature-importance">0.00%</span>
+                                <div class="feature-placeholder">
+                                    <p class="placeholder-text">Chưa có phân tích. Hãy nhập thông tin phim và nhấn "Dự đoán" để xem yếu tố quan trọng và gợi ý hành động.</p>
                                 </div>
                             </div>
                         </section>
                     </div>
 
-                    <!-- Business Insights Section -->
-                    <section class="insights-section-full">
-                        <h3 class="section-title">
-                            <i class="fas fa-lightbulb"></i>
-                            Thông Tin Chi Tiết
-                        </h3>
-                        
-                        <div class="insights-grid">
-                            <div class="insight-card">
-                                <h4 class="insight-title">
-                                    <i class="fas fa-users"></i>
-                                    Đối Tượng Khán Giả
-                                </h4>
-                                <p class="insight-content" id="target-audience-insight">-</p>
-                            </div>
-                            
-                            <div class="insight-card">
-                                <h4 class="insight-title">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    Chiến Lược Phát Hành
-                                </h4>
-                                <p class="insight-content" id="release-strategy-insight">-</p>
-                            </div>
-                            
-                            <div class="insight-card">
-                                <h4 class="insight-title">
-                                    <i class="fas fa-award"></i>
-                                    Xếp Hạng Đầu Tư
-                                </h4>
-                                <p class="insight-content" id="investment-grade-insight">-</p>
-                            </div>
-                            
-                            <div class="insight-card">
-                                <h4 class="insight-title">
-                                    <i class="fas fa-percentage"></i>
-                                    Biên Lợi Nhuận
-                                </h4>
-                                <p class="insight-content" id="profit-margin-insight">-</p>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-                    </div>
-
-                    <!-- Main Prediction Result -->
-                    <div class="prediction-result-card">
-                        <div id="prediction-badge" class="prediction-badge success">
-                            <i class="fas fa-check-circle"></i>
-                            <span class="badge-text">THÀNH CÔNG</span>
-                        </div>
-
-                        <!-- Confidence Circle -->
-                        <div class="confidence-section">
-                            <div class="confidence-circle">
-                                <svg>
-                                    <circle class="progress-bg" cx="80" cy="80" r="70"></circle>
-                                    <circle class="progress-circle" cx="80" cy="80" r="70"></circle>
-                                </svg>
-                                <div id="confidence-value" class="confidence-value">0%</div>
-                                <div class="confidence-label">Độ Tin Cậy</div>
-                            </div>
-                            <div class="confidence-description">
-                                Model AI đánh giá phim có khả năng thành công dựa trên phân tích các yếu tố quan trọng.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Legacy detailed sections (hidden in new layout) -->
-                    <div class="legacy-results-sections" style="display: none;">
-                    
-                    <!-- Detailed Metrics Section -->
-                    <div class="detailed-metrics-section">
-                        <h3 class="section-heading"><i class="fas fa-chart-bar"></i> Chi Tiết Phân Tích</h3>
-                        <div class="metrics-grid-detailed">
-                            <div class="metric-card-detailed">
-                                <div class="metric-icon-large">
-                                    <i class="fas fa-chart-line"></i>
-                                </div>
-                                <div class="metric-content">
-                                    <span class="metric-label">ROI Dự Kiến</span>
-                                    <span id="predicted-roi" class="metric-value-large success">0x</span>
-                                    <span class="metric-description">Tỷ suất sinh lời trên đầu tư</span>
-                                </div>
-                            </div>
-                            
-                            <div class="metric-card-detailed">
-                                <div class="metric-icon-large">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                </div>
-                                <div class="metric-content">
-                                    <span class="metric-label">Doanh Thu Dự Kiến</span>
-                                    <span id="predicted-revenue" class="metric-value-large">0 tỷ</span>
-                                    <span class="metric-description">Ước tính tổng doanh thu</span>
-                                </div>
-                            </div>
-                            
-                            <div class="metric-card-detailed">
-                                <div class="metric-icon-large">
-                                    <i class="fas fa-balance-scale"></i>
-                                </div>
-                                <div class="metric-content">
-                                    <span class="metric-label">Điểm Hòa Vốn</span>
-                                    <span id="break-even" class="metric-value-large">0 tỷ</span>
-                                    <span class="metric-description">Doanh thu cần đạt để hòa vốn</span>
-                                </div>
-                            </div>
-                            
-                            <div class="metric-card-detailed">
-                                <div class="metric-icon-large">
-                                    <i class="fas fa-shield-alt"></i>
-                                </div>
-                                <div class="metric-content">
-                                    <span class="metric-label">Mức Độ Rủi Ro</span>
-                                    <span id="risk-level" class="metric-value-large warning">-</span>
-                                    <span class="metric-description">Đánh giá rủi ro đầu tư</span>
-                                </div>
-                            </div>
-                            
-                            <div class="metric-card-detailed">
-                                <div class="metric-icon-large">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div class="metric-content">
-                                    <span class="metric-label">Điểm Đánh Giá</span>
-                                    <span id="rating-display" class="metric-value-large">0.0</span>
-                                    <span class="metric-description">Chất lượng dự kiến</span>
-                                </div>
-                            </div>
-                            
-                            <div class="metric-card-detailed">
-                                <div class="metric-icon-large">
-                                    <i class="fas fa-target"></i>
-                                </div>
-                                <div class="metric-content">
-                                    <span class="metric-label">Tiềm Năng Thị Trường</span>
-                                    <span id="market-potential" class="metric-value-large">-</span>
-                                    <span class="metric-description">Đánh giá tổng quan</span>
-                                </div>
-                            </div>
-                            
-                            <!-- ✅ NEW: Additional detailed metrics -->
-                            <div class="metric-card-detailed">
-                                <div class="metric-icon-large">
-                                    <i class="fas fa-percentage"></i>
-                                </div>
-                                <div class="metric-content">
-                                    <span class="metric-label">Biên Lợi Nhuận</span>
-                                    <span id="profit-margin" class="metric-value-large">-</span>
-                                    <span class="metric-description">Tỷ lệ lợi nhuận dự kiến</span>
-                                </div>
-                            </div>
-                            
-                            <div class="metric-card-detailed">
-                                <div class="metric-icon-large">
-                                    <i class="fas fa-award"></i>
-                                </div>
-                                <div class="metric-content">
-                                    <span class="metric-label">Xếp Hạng Đầu Tư</span>
-                                    <span id="investment-grade" class="metric-value-large">-</span>
-                                    <span class="metric-description">Mức độ an toàn đầu tư</span>
-                                </div>
-                            </div>
-                            
-                            <div class="metric-card-detailed">
-                                <div class="metric-icon-large">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div class="metric-content">
-                                    <span class="metric-label">Đối Tượng Mục Tiêu</span>
-                                    <span id="target-audience" class="metric-value-large small-text">-</span>
-                                    <span class="metric-description">Phân khúc khán giả chính</span>
-                                </div>
-                            </div>
-                            
-                            <div class="metric-card-detailed">
-                                <div class="metric-icon-large">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                                <div class="metric-content">
-                                    <span class="metric-label">Chiến Lược Phát Hành</span>
-                                    <span id="release-strategy" class="metric-value-large small-text">-</span>
-                                    <span class="metric-description">Thời điểm ra mắt tối ưu</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- ✅ NEW: Financial Breakdown Section -->
-                        <div class="financial-section">
-                            <h4 class="subsection-heading">
-                                <i class="fas fa-calculator"></i> Phân Tích Tài Chính Chi Tiết
-                            </h4>
-                            <div class="financial-grid">
-                                <div class="financial-item">
-                                    <i class="fas fa-film"></i>
-                                    <span class="financial-label">Chi phí sản xuất</span>
-                                    <span id="production-cost" class="financial-value">-</span>
-                                </div>
-                                <div class="financial-item">
-                                    <i class="fas fa-bullhorn"></i>
-                                    <span class="financial-label">Chi phí marketing</span>
-                                    <span id="marketing-cost" class="financial-value">-</span>
-                                </div>
-                                <div class="financial-item">
-                                    <i class="fas fa-coins"></i>
-                                    <span class="financial-label">Lợi nhuận dự kiến</span>
-                                    <span id="expected-profit" class="financial-value">-</span>
-                                </div>
-                                <div class="financial-item">
-                                    <i class="fas fa-clock"></i>
-                                    <span class="financial-label">Thời gian hòa vốn</span>
-                                    <span id="break-even-days" class="financial-value">-</span>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-
-                    <!-- ✨ NEW: Model Analysis Section (For Instructor Evaluation) -->
+                    <!-- Model Analysis Section -->
                     <div class="model-analysis-section">
                         <h3 class="section-heading">
                             <i class="fas fa-brain"></i> Phân Tích Mô Hình & Kết Quả
@@ -947,8 +836,7 @@
                                     <div class="finding-item">
                                         <div class="finding-icon">📊</div>
                                         <div class="finding-text">
-                                            <strong>43 features còn lại</strong> (genres, runtime, release date, cast, countries...) có importance <strong class="highlight-gray">~0.00%</strong>, 
-                                            cho thấy Vote Average và ROI là 2 yếu tố quyết định duy nhất.
+                                            <strong>43 features còn lại</strong> (genres, runtime, release date, cast, countries...) có importance <strong class="highlight-gray">~0.00%</strong>.
                                         </div>
                                     </div>
                                 </div>
@@ -967,98 +855,10 @@
                                         <span class="spec-value">5-Fold Cross-Validation (Accuracy: 99.5% ± 0.5%)</span>
                                     </div>
                                     <div class="spec-item">
-                                        <span class="spec-label">Training time:</span>
-                                        <span class="spec-value">~15 seconds (Week 5 hyperparameter tuning)</span>
-                                    </div>
-                                    <div class="spec-item">
                                         <span class="spec-label">Dataset source:</span>
                                         <span class="spec-value">TMDb API (1990-2024, Vietnamese market focus)</span>
                                     </div>
                                 </div>
-                                
-                                <div class="business-implication">
-                                    <h5><i class="fas fa-lightbulb"></i> Ý nghĩa thực tiễn</h5>
-                                    <p>
-                                        Kết quả này cho thấy <strong>chất lượng phim (Vote Average)</strong> quan trọng hơn <strong>ngân sách marketing</strong> 
-                                        hay <strong>thể loại phim</strong>. Để tăng xác suất thành công, nhà sản xuất nên tập trung vào:
-                                    </p>
-                                    <ul class="recommendation-list">
-                                        <li>✅ Nâng cao chất lượng kịch bản, diễn xuất, kỹ xảo (tăng Vote Average)</li>
-                                        <li>✅ Kiểm soát ngân sách để đảm bảo ROI ≥ 1.0</li>
-                                        <li>✅ Thu thập feedback từ test screening để cải thiện điểm đánh giá</li>
-                                        <li>⚠️ Không quá phụ thuộc vào yếu tố thể loại hoặc cast nổi tiếng</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ✨ NEW: Enhanced Visualization Section -->
-                    <div class="enhanced-charts-section">
-                        <h3 class="section-heading">
-                            <i class="fas fa-chart-pie"></i> Phân Tích Trực Quan
-                        </h3>
-                        
-                        <!-- Charts Grid -->
-                        <div class="charts-grid-enhanced">
-                            <!-- Chart 1: Confidence Gauge -->
-                            <div class="chart-card-enhanced">
-                                <div class="chart-header">
-                                    <h4>🎯 Độ Tin Cậy Dự Đoán</h4>
-                                    <p class="chart-description">
-                                        Thể hiện mức độ chắc chắn của model AI trong dự đoán này
-                                    </p>
-                                </div>
-                                <div class="chart-body">
-                                    <canvas id="confidenceGaugeChart" height="250"></canvas>
-                                </div>
-                                <div id="confidenceExplanation" class="chart-footer">
-                                    <!-- Will be populated by JS -->
-                                </div>
-                            </div>
-                            
-                            <!-- Chart 2: Feature Importance -->
-                            <div class="chart-card-enhanced">
-                                <div class="chart-header">
-                                    <h4>📊 Yếu Tố Ảnh Hưởng</h4>
-                                    <p class="chart-description">
-                                        Các yếu tố quan trọng nhất quyết định kết quả dự đoán
-                                    </p>
-                                </div>
-                                <div class="chart-body">
-                                    <canvas id="featureImportanceChart" height="250"></canvas>
-                                </div>
-                                <div class="chart-footer">
-                                    <p class="chart-note">
-                                        💡 <strong>Vote Average</strong> là yếu tố quan trọng nhất (76.5%)
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Business Insights -->
-                    <div class="insights-section">
-                        <h3 class="section-heading"><i class="fas fa-lightbulb"></i> Khuyến Nghị Cho Nhà Sản Xuất</h3>
-                        <div class="insights-grid" id="business-insights">
-                            <!-- Will be populated by JavaScript -->
-                        </div>
-                    </div>
-
-                    <!-- Charts Dashboard -->
-                    <div class="charts-section">
-                        <h3 class="section-heading"><i class="fas fa-chart-pie"></i> Phân Tích Biểu Đồ</h3>
-                        <div class="charts-grid">
-                            <!-- Genre Performance Chart -->
-                            <div class="chart-card">
-                                <h4><i class="fas fa-theater-masks"></i> Hiệu Suất Theo Thể Loại</h4>
-                                <canvas id="genre-performance-chart"></canvas>
-                            </div>
-                            
-                            <!-- Budget vs Success Chart -->
-                            <div class="chart-card">
-                                <h4><i class="fas fa-money-bill-trend-up"></i> Ngân Sách vs Thành Công</h4>
-                                <canvas id="budget-success-chart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -1075,10 +875,7 @@
                         </button>
                     </div>
                 </div>
-                
-                    </div> <!-- End legacy-results-sections -->
-                    
-            </div> <!-- End results-page -->
+            </div>
         </div>
     </section>
 
@@ -1131,7 +928,5 @@
         <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
     <script src="{{ url_for('static', filename='js/enhanced-charts.js') }}"></script>
-</body>
-</html>
 </body>
 </html>

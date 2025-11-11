@@ -3,6 +3,20 @@
    For Confidence Gauge & Feature Importance
    ======================================== */
 
+:root {
+  --card-bg: #FFFFFF;
+  --border-color: #E5E7EB;
+  --text-primary: #111827;
+  --text-secondary: #374151;
+}
+
+[data-theme="dark"] {
+  --card-bg: #1E293B;
+  --border-color: #475569;
+  --text-primary: #F8FAFC;
+  --text-secondary: #E2E8F0;
+}
+
 .enhanced-charts-section {
     margin: 48px 0;
     padding: 32px;
@@ -11,6 +25,9 @@
         rgba(118, 75, 162, 0.05) 100%);
     border-radius: 16px;
     border: 1px solid rgba(102, 126, 234, 0.1);
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 .enhanced-charts-section .section-heading {

@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import sys
 import os
 from datetime import datetime
+import logging
 
 # Add project root to path
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -12,8 +13,12 @@ from models.prediction_service import get_prediction_service
 
 app = Flask(__name__)
 
+# Setup logger
+logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] %(levelname)s: %(message)s')
+logger = logging.getLogger(__name__)
+
 # Configuration
-app.config['SECRET_KEY'] = 'your-secret-key-here'
+app.config['SECRET_KEY'] = 'not-so-secret-key-lol'
 app.config['DEBUG'] = True
 
 # Get prediction service instance
@@ -81,7 +86,8 @@ def predict():
             },
             'model_info': {
                 **prediction_result['model_info'],
-                'is_real_model': True,  # Đánh dấu đây là model thật
+                # Đánh dấu đây có đang dùng model thật hay không dựa trên trạng thái tải model
+                'is_real_model': prediction_service.model is not None,
                 'key_features': {
                     'vote_average_importance': '76.53%',
                     'roi_importance': '23.47%',
@@ -93,11 +99,10 @@ def predict():
         return jsonify(response)
         
     except Exception as e:
-        print(f"Prediction error: {e}")
-        import traceback
-        traceback.print_exc()
+        # Log exception with Vietnamese message and stack trace
+        logger.exception(f"Lỗi khi thực hiện dự đoán: {e}")
         return jsonify({
-            'error': f'Lỗi khi thực hiện prediction: {str(e)}',
+            'error': f'Lỗi khi thực hiện dự đoán: {str(e)}',
             'success': False
         }), 500
 
@@ -111,7 +116,8 @@ def model_info():
         'features_count': len(prediction_service.feature_columns) if prediction_service.feature_columns else 0,
         'features': prediction_service.feature_columns[:10] if prediction_service.feature_columns else [],
         'status': 'ready',
-        'is_real_model': True
+        # phản ánh đúng trạng thái tải model
+        'is_real_model': prediction_service.model is not None
     })
 
 @app.route('/api/sample-data')
@@ -162,14 +168,14 @@ def internal_error(error):
     }), 500
 
 if __name__ == '__main__':
-    print("="*50)
-    print("> Movie Success Prediction Service")
-    print(f"> Model Status: {'✓ Random Forest Loaded' if prediction_service.model else '✗ Not loaded'}")
-    print(f"> Model Accuracy: {prediction_service.model_accuracy*100:.2f}%")
-    print(f"> Features: {len(prediction_service.feature_columns) if prediction_service.feature_columns else 0}")
-    print("="*50)
-    print("> Starting Flask development server...")
-    print("> Open: http://localhost:5000")
-    print("="*50)
-    
+    logger.info("%s", "="*50)
+    logger.info("> Dịch vụ Dự Đoán Thành Công Phim")
+    logger.info("> Trạng thái mô hình: %s", '✓ Random Forest đã load' if prediction_service.model else '✗ Chưa load model')
+    logger.info("> Độ chính xác mô hình: %.2f%%", prediction_service.model_accuracy*100)
+    logger.info("> Số feature: %s", len(prediction_service.feature_columns) if prediction_service.feature_columns else 0)
+    logger.info("%s", "="*50)
+    logger.info("> Bắt đầu Flask server (dev)...")
+    logger.info("> Mở: http://localhost:5000")
+    logger.info("%s", "="*50)
+
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -44,7 +44,7 @@ class MoviePredictionService:
                     train_data = pickle.load(f)
                     self.scaler = train_data.get('scaler')
                     self.feature_columns = train_data.get('feature_names', [])
-                logger.info(f"✓ Scaler loaded: {len(self.feature_columns)} features")
+                logger.debug("Scaler loaded: %s features", len(self.feature_columns))
             else:
                 raise FileNotFoundError(f"train_test_data.pkl không tìm thấy tại {train_test_data_path}")
             
@@ -57,14 +57,15 @@ class MoviePredictionService:
                         self.model = model_data['model']
                     else:
                         self.model = model_data
-                logger.info("✓ Random Forest model loaded successfully")
+                # Concise info when model loaded
+                logger.info("Dùng RF: loaded — acc=%.2f%%, features=%s", self.model_accuracy*100, len(self.feature_columns) if self.feature_columns else 0)
             else:
                 # Fallback to other model files
                 fallback_path = os.path.join(project_root, 'data', 'pkl', 'random_forest_model.pkl')
                 if os.path.exists(fallback_path):
                     with open(fallback_path, 'rb') as f:
                         self.model = pickle.load(f)
-                    logger.info("✓ Fallback Random Forest model loaded")
+                    logger.info("Dùng RF (fallback): loaded — acc=%.2f%%, features=%s", self.model_accuracy*100, len(self.feature_columns) if self.feature_columns else 0)
                 else:
                     raise FileNotFoundError("Không tìm thấy file model Random Forest")
                     
@@ -195,24 +196,29 @@ class MoviePredictionService:
             # Create DataFrame with proper feature names (để tránh warning)
             feature_df = pd.DataFrame([feature_vector], columns=self.feature_columns)
             
-            # Apply scaler nếu có
+            # Apply scaler nếu có và chuẩn bị DataFrame đã scale (giữ tên cột)
             if self.scaler is not None:
                 try:
                     feature_array = self.scaler.transform(feature_df)
+                    # Keep scaled DataFrame with same column names to preserve feature names
+                    feature_df_scaled = pd.DataFrame(feature_array, columns=self.feature_columns)
                 except Exception as e:
-                    logger.warning(f"Scaler transform warning: {e}")
+                    logger.warning("Scaler transform warning: %s", e)
                     # Fallback: sử dụng raw values
                     feature_array = feature_df.values
+                    feature_df_scaled = feature_df.copy()
             else:
                 feature_array = feature_df.values
+                feature_df_scaled = feature_df.copy()
             
             # Log debugging info
-            logger.info(f"Features prepared: {feature_array.shape}")
-            logger.info(f"Vote Average: {vote_average}, Budget: {budget}, Revenue: {revenue}, ROI: {roi}")
+            # Less noisy: debug-level details
+            logger.debug("Features prepared: %s", feature_array.shape)
+            logger.debug("Inputs: vote=%s, budget=%s, revenue=%s, roi=%s", vote_average, budget, revenue, roi)
             if missing_features:
-                logger.warning(f"Missing features (set to 0): {missing_features[:5]}...")
+                logger.debug("Missing features (set to 0): %s...", missing_features[:5])
             
-            return feature_array, features
+            return feature_array, features, feature_df_scaled
             
         except Exception as e:
             logger.error(f"Lỗi khi chuẩn bị features: {e}")
@@ -236,24 +242,28 @@ class MoviePredictionService:
             if not self.model:
                 raise ValueError("Model chưa được load")
             
-            # Chuẩn bị features
-            feature_array, feature_dict = self.prepare_features(input_data)
-            
-            # Thực hiện prediction
-            prediction_proba = self.model.predict_proba(feature_array)
+            # Chuẩn bị features (trả về scaled DataFrame để giữ tên cột)
+            feature_array, feature_dict, feature_df_scaled = self.prepare_features(input_data)
+
+            # Thực hiện prediction trên DataFrame đã scale (giữ feature names) để tránh sklearn warning
+            prediction_proba = self.model.predict_proba(feature_df_scaled)
             success_probability = float(prediction_proba[0][1])  # Xác suất thành công
             prediction = int(success_probability > 0.5)
             
-            # ✅ DEBUGGING: Log prediction details
-            logger.info(f"Model prediction: {prediction} (probability: {success_probability:.4f})")
-            logger.info(f"Key inputs - Vote Average: {input_data.get('voteAverage', 0)}, Budget: {input_data.get('budget', 0)}, Revenue: {input_data.get('revenue', 0)}")
+            # Concise log when using real model
+            logger.info("Dùng RF: p=%.4f pred=%s vote=%.2f budget=%s roi=%.2f", success_probability, prediction, float(input_data.get('voteAverage', 0)), input_data.get('budget', 0), feature_dict.get('roi_clipped', 0))
             
             # ✅ SANITY CHECK: Nếu probability = 0, có thể có vấn đề với features
             if success_probability < 0.01:
-                logger.warning("Very low success probability - checking feature values...")
-                # Log top 5 feature values
-                for i, (col, val) in enumerate(zip(self.feature_columns[:5], feature_array[0][:5])):
-                    logger.warning(f"  {col}: {val}")
+                # Demote to DEBUG: only show these detailed feature values when debugging
+                logger.debug("Rất thấp p - kiểm tra giá trị feature (debug)...")
+                # Log top 5 feature values from scaled DataFrame
+                for col in self.feature_columns[:5]:
+                    try:
+                        val = float(feature_df_scaled.iloc[0][col])
+                    except Exception:
+                        val = None
+                    logger.debug("  %s: %s", col, val)
             
             # Tính confidence dựa trên probability
             if success_probability > 0.8 or success_probability < 0.2:
@@ -285,7 +295,7 @@ class MoviePredictionService:
                 }
             }
             
-            logger.info(f"Prediction completed: {result['success']} ({result['success_probability']:.2%})")
+            logger.debug("Prediction completed: %s (p=%.2f%%)", result['success'], result['success_probability']*100)
             return result
             
         except Exception as e:
@@ -295,21 +305,50 @@ class MoviePredictionService:
     def _get_feature_importance(self, feature_dict):
         """Lấy feature importance từ model"""
         try:
+            # Try to extract feature_importances_ from possible model wrappers (Pipeline, Calibrated, etc.)
+            importances = None
+
+            # Direct attribute
             if hasattr(self.model, 'feature_importances_'):
-                importances = self.model.feature_importances_
-                
-                # Tạo dict feature importance
+                importances = getattr(self.model, 'feature_importances_')
+
+            # sklearn Pipeline: search named_steps
+            if importances is None:
+                try:
+                    from sklearn.pipeline import Pipeline
+                    if isinstance(self.model, Pipeline):
+                        for step_name, step in self.model.named_steps.items():
+                            if hasattr(step, 'feature_importances_'):
+                                importances = getattr(step, 'feature_importances_')
+                                break
+                except Exception:
+                    pass
+
+            # Wrapped estimators (CalibratedClassifierCV, etc.) may store estimator_
+            if importances is None:
+                if hasattr(self.model, 'estimator_') and hasattr(self.model.estimator_, 'feature_importances_'):
+                    importances = getattr(self.model.estimator_, 'feature_importances_')
+
+            # Some wrappers use base_estimator
+            if importances is None:
+                if hasattr(self.model, 'base_estimator') and hasattr(self.model.base_estimator, 'feature_importances_'):
+                    importances = getattr(self.model.base_estimator, 'feature_importances_')
+
+            # If we found importances, build result
+            if importances is not None:
+                # Ensure importances is iterable and matches feature_columns length
                 feature_imp_dict = {}
                 for i, col in enumerate(self.feature_columns):
-                    if importances[i] > 0.001:  # Chỉ lấy features quan trọng
-                        feature_imp_dict[col] = float(importances[i])
-                
-                # Sort by importance
+                    try:
+                        imp = float(importances[i])
+                    except Exception:
+                        imp = 0.0
+                    if imp > 0.001:
+                        feature_imp_dict[col] = imp
+
                 sorted_features = sorted(feature_imp_dict.items(), key=lambda x: x[1], reverse=True)
-                
-                # Top 10 features
                 top_10_features = sorted_features[:10]
-                
+
                 return {
                     'top_features': [
                         {
@@ -322,20 +361,16 @@ class MoviePredictionService:
                     'total_features': len(self.feature_columns),
                     'note': 'Feature importance từ Random Forest model'
                 }
-            else:
-                # Fallback với known importance
-                vote_avg = float(feature_dict.get('Vote Average', 6.5))
-                roi = float(feature_dict.get('roi', 0))
-                
-                return {
-                    'top_features': [
-                        {'name': 'Vote Average', 'importance': 76.53, 'value': vote_avg},
-                        {'name': 'ROI', 'importance': 23.47, 'value': roi},
-                        {'name': 'Budget', 'importance': 0.00, 'value': feature_dict.get('Budget', 0)},
-                    ],
-                    'total_features': len(self.feature_columns),
-                    'note': 'Fallback feature importance'
-                }
+
+            # If we couldn't find any feature_importances_ in the model or wrappers,
+            # do NOT return a static/fake fallback. Return an empty top_features list and
+            # a clear note that importance values are unavailable.
+            logger.info("Không tìm thấy feature_importances_ trong model; feature importance unavailable")
+            return {
+                'top_features': [],
+                'total_features': len(self.feature_columns) if self.feature_columns else 0,
+                'note': 'Feature importance unavailable'
+            }
         except Exception as e:
             logger.error(f"Lỗi khi lấy feature importance: {e}")
             return {'top_features': [], 'total_features': 0, 'note': 'Error'}

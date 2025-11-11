@@ -317,8 +317,16 @@ const App = {
       // Update charts with new data
       this.updateChartsWithPrediction(result);
       
-      // Switch to results page instead of scrolling
+      // Switch to results page
       this.showPage('results');
+      
+      // Scroll to prediction hero card after a short delay
+      setTimeout(() => {
+        const predictionHero = document.querySelector('.prediction-hero');
+        if (predictionHero) {
+          predictionHero.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300);
       
     } catch (error) {
       console.error('Prediction error:', error);
@@ -621,13 +629,7 @@ const App = {
       predictionBadge.className = `prediction-badge ${result.success ? 'success' : 'failure'}`;
     }
     
-    // Update confidence display
-    const confidenceDisplay = document.getElementById('confidence-percentage');
-    if (confidenceDisplay) {
-      confidenceDisplay.textContent = `${result.confidence}%`;
-    }
-    
-    // Update confidence gauge
+    // Update confidence gauge (single source of truth)
     this.updateConfidenceGauge(result.confidence);
     
     // Update compact metrics
@@ -649,7 +651,7 @@ const App = {
     
     // Update compact metric cards
     this.updateMetricValue('predicted-roi-compact', `${predictedROI.toFixed(2)}x`);
-    this.updateMetricValue('predicted-revenue-compact', `${(predictedRevenue / 1000000000).toFixed(1)} tỷ`);
+    this.updateMetricValue('predicted-revenue-compact', `${(predictedRevenue / 1000000000).toFixed(4)} tỷ`);
     this.updateMetricValue('risk-level-compact', metrics.riskLevel || 'N/A');
     this.updateMetricValue('market-potential-compact', metrics.marketPotential || 'N/A');
     
@@ -711,30 +713,115 @@ const App = {
                     (result.feature_importance ? result.feature_importance.top_features : []);
     
     if (features.length > 0) {
-      const featuresHtml = features.slice(0, 5).map(feature => `
+      // When we have real feature importances, show them alongside actionable advice.
+      const featuresHtml = features.slice(0, 8).map(feature => `
         <div class="feature-item">
           <span class="feature-name">${feature.name}</span>
           <span class="feature-importance">${feature.importance}%</span>
         </div>
       `).join('');
-      
-      container.innerHTML = featuresHtml;
-    } else {
-      // Fallback với known features
-      container.innerHTML = `
-        <div class="feature-item">
-          <span class="feature-name">Vote Average</span>
-          <span class="feature-importance">76.53%</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-name">ROI</span>
-          <span class="feature-importance">23.47%</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-name">Budget</span>
-          <span class="feature-importance">0.00%</span>
+
+      // Reuse advice-generation logic (same as when no importances)
+      const metrics = result.metrics || {};
+      const data = result.data || {};
+      let adviceTitle = 'Gợi ý hành động';
+      let adviceLines = [];
+      const risk = (metrics.riskLevel || '').toLowerCase();
+      if (risk.includes('rất thấp') || risk.includes('thấp')) {
+        adviceLines.push('Rủi ro thấp → Tăng đầu tư cho marketing để tối đa hoá lợi nhuận.');
+      } else if (risk.includes('trung bình')) {
+        adviceLines.push('Rủi ro trung bình → Tập trung tối ưu marketing và phân phối, thử A/B kênh quảng cáo.');
+      } else if (risk.includes('cao')) {
+        adviceLines.push('Rủi ro cao → Giảm quy mô chi tiêu, củng cố chất lượng (kịch bản, diễn xuất), rồi tái khởi động chiến dịch.');
+      } else {
+        adviceLines.push('Không đủ dữ liệu rủi ro — kiểm tra lại thông tin đầu vào (budget, revenue, voteAverage).');
+      }
+      const roi = parseFloat(metrics.predictedROI) || 0;
+      if (roi > 1.5) {
+        adviceLines.push('ROI dự kiến cao → Ưu tiên mở rộng phân phối tại nhiều rạp và thị trường.');
+      } else if (roi > 1.0) {
+        adviceLines.push('ROI ổn → Tối ưu chi phí marketing, tập trung kênh có hiệu suất cao.');
+      } else {
+        adviceLines.push('ROI thấp → Cân nhắc giảm chi phí hoặc thay đổi chiến lược phát hành.');
+      }
+      const voteAvg = parseFloat(data.vote_average || data.voteAverage || 0);
+      if (voteAvg && voteAvg < 6.5) {
+        adviceLines.push('Điểm đánh giá thấp → Đầu tư cải thiện chất lượng (kịch bản, hậu kỳ, PR chuyên sâu).');
+      } else if (voteAvg && voteAvg >= 8.0) {
+        adviceLines.push('Điểm đánh giá cao → Khai thác PR & review, đẩy tie-in với influencers để tăng vé.');
+      }
+
+      const adviceHtml = `
+        <div class="feature-advice">
+          <div class="advice-header">
+            <strong>${adviceTitle}</strong>
+            <span class="advice-sub">Dựa trên phân tích mô hình hiện thời</span>
+          </div>
+          <ul class="advice-list">
+            ${adviceLines.map(line => `<li>${line}</li>`).join('')}
+          </ul>
         </div>
       `;
+
+      container.innerHTML = `
+        <div class="feature-advice-and-list">
+          <div class="feature-list">${featuresHtml}</div>
+          <div class="advice-side">${adviceHtml}</div>
+        </div>
+      `;
+    } else {
+      // Nếu backend không trả feature importances, hiển thị một lời góp ý hành động dựa trên metrics
+      const metrics = result.metrics || {};
+      const data = result.data || {};
+
+      // Simple advice rules
+      let adviceTitle = 'Gợi ý hành động';
+      let adviceLines = [];
+
+      // Based on risk level
+      const risk = (metrics.riskLevel || '').toLowerCase();
+      if (risk.includes('rất thấp') || risk.includes('thấp')) {
+        adviceLines.push('Rủi ro thấp → Tăng đầu tư cho marketing để tối đa hoá lợi nhuận.');
+      } else if (risk.includes('trung bình')) {
+        adviceLines.push('Rủi ro trung bình → Tập trung tối ưu marketing và phân phối, thử A/B kênh quảng cáo.');
+      } else if (risk.includes('cao')) {
+        adviceLines.push('Rủi ro cao → Giảm quy mô chi tiêu, củng cố chất lượng (kịch bản, diễn xuất), rồi tái khởi động chiến dịch.');
+      } else {
+        adviceLines.push('Không đủ dữ liệu rủi ro — kiểm tra lại thông tin đầu vào (budget, revenue, voteAverage).');
+      }
+
+      // Based on predictedROI
+      const roi = parseFloat(metrics.predictedROI) || 0;
+      if (roi > 1.5) {
+        adviceLines.push('ROI dự kiến cao → Ưu tiên mở rộng phân phối tại nhiều rạp và thị trường.');
+      } else if (roi > 1.0) {
+        adviceLines.push('ROI ổn → Tối ưu chi phí marketing, tập trung kênh có hiệu suất cao.');
+      } else {
+        adviceLines.push('ROI thấp → Cân nhắc giảm chi phí hoặc thay đổi chiến lược phát hành.');
+      }
+
+      // Based on voteAverage (quality signal)
+      const voteAvg = parseFloat(data.vote_average || data.voteAverage || 0);
+      if (voteAvg && voteAvg < 6.5) {
+        adviceLines.push('Điểm đánh giá thấp → Đầu tư cải thiện chất lượng (kịch bản, hậu kỳ, PR chuyên sâu).');
+      } else if (voteAvg && voteAvg >= 8.0) {
+        adviceLines.push('Điểm đánh giá cao → Khai thác PR & review, đẩy tie-in với influencers để tăng vé.');
+      }
+
+      // Compose HTML
+      const adviceHtml = `
+        <div class="feature-advice">
+          <div class="advice-header">
+            <strong>${adviceTitle}</strong>
+            <span class="advice-sub">Dựa trên phân tích mô hình hiện thời</span>
+          </div>
+          <ul class="advice-list">
+            ${adviceLines.map(line => `<li>${line}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+
+      container.innerHTML = adviceHtml;
     }
   },
   
@@ -804,40 +891,105 @@ const App = {
   },
   
   updateConfidenceGauge(confidence) {
-    const progressCircle = document.querySelector('.progress-circle');
-    const confidenceValue = document.getElementById('confidence-value');
-    const confidenceCircle = document.querySelector('.confidence-circle');
+    const confidenceText = document.getElementById('confidence-text');
+    const confidenceCard = document.querySelector('.confidence-card');
+    const confidenceStatus = document.getElementById('confidence-status');
+    const confidenceLevel = document.getElementById('confidence-level');
+    const confidenceRating = document.getElementById('confidence-rating');
     
-    if (progressCircle && confidenceValue && confidenceCircle) {
-      const circumference = 440; // 2 * π * 70
-      const offset = circumference - (confidence / 100) * circumference;
-      
-      // Add glow effects based on confidence level
-      setTimeout(() => {
-        // Removed glowing class - no glow effect needed
-        
-        // Add high confidence class for visual distinction
-        if (confidence >= 70) {
-          confidenceCircle.classList.add('high-confidence');
-        } else {
-          confidenceCircle.classList.remove('high-confidence');
-        }
-        
-        // Animate the progress circle
-        progressCircle.style.strokeDashoffset = offset;
-      }, 500);
-      
-      // Animate the confidence value
+    if (confidenceText && confidenceCard) {
+      // Animate the confidence number with smooth counting effect
       let currentValue = 0;
-      const increment = confidence / 50;
-      const timer = setInterval(() => {
-        currentValue += increment;
-        if (currentValue >= confidence) {
-          currentValue = confidence;
-          clearInterval(timer);
+      const startTime = Date.now();
+      const duration = 2000; // 2 seconds
+      
+      const animateNumber = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Use easing function for smooth animation
+        const easedProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+        currentValue = Math.round(easedProgress * confidence);
+        
+        confidenceText.textContent = currentValue;
+        
+        if (progress < 1) {
+          requestAnimationFrame(animateNumber);
+        } else {
+          confidenceText.textContent = confidence; // Ensure exact final value
+          
+          // Update status, level, and rating based on final confidence
+          updateConfidenceMetrics(confidence);
         }
-        confidenceValue.textContent = `${Math.round(currentValue)}%`;
-      }, 30);
+      };
+      
+      // Function to update confidence metrics
+      const updateConfidenceMetrics = (finalConfidence) => {
+        if (finalConfidence >= 85) {
+          // Very High Confidence
+          confidenceText.style.color = '#059669'; // Success green
+          if (confidenceStatus) {
+            confidenceStatus.textContent = 'Rất tin cậy';
+            confidenceStatus.className = 'status-badge success';
+          }
+          if (confidenceLevel) {
+            confidenceLevel.textContent = 'Rất cao';
+            confidenceLevel.className = 'metric-value high';
+          }
+          if (confidenceRating) {
+            confidenceRating.textContent = 'A+';
+          }
+          confidenceCard.classList.add('high-confidence');
+        } else if (finalConfidence >= 70) {
+          // High Confidence  
+          confidenceText.style.color = '#10B981'; // Success green
+          if (confidenceStatus) {
+            confidenceStatus.textContent = 'Tin cậy';
+            confidenceStatus.className = 'status-badge good';
+          }
+          if (confidenceLevel) {
+            confidenceLevel.textContent = 'Cao';
+            confidenceLevel.className = 'metric-value high';
+          }
+          if (confidenceRating) {
+            confidenceRating.textContent = 'A';
+          }
+          confidenceCard.classList.remove('high-confidence');
+        } else if (finalConfidence >= 60) {
+          // Medium Confidence
+          confidenceText.style.color = '#4F46E5'; // Primary blue
+          if (confidenceStatus) {
+            confidenceStatus.textContent = 'Khá tin cậy';
+            confidenceStatus.className = 'status-badge good';
+          }
+          if (confidenceLevel) {
+            confidenceLevel.textContent = 'Trung bình';
+            confidenceLevel.className = 'metric-value medium';
+          }
+          if (confidenceRating) {
+            confidenceRating.textContent = 'B+';
+          }
+          confidenceCard.classList.remove('high-confidence');
+        } else {
+          // Low Confidence
+          confidenceText.style.color = '#EA580C'; // Warning orange
+          if (confidenceStatus) {
+            confidenceStatus.textContent = 'Cần cân nhắc';
+            confidenceStatus.className = 'status-badge medium';
+          }
+          if (confidenceLevel) {
+            confidenceLevel.textContent = 'Thấp';
+            confidenceLevel.className = 'metric-value low';
+          }
+          if (confidenceRating) {
+            confidenceRating.textContent = 'C+';
+          }
+          confidenceCard.classList.remove('high-confidence');
+        }
+      };
+      
+      // Start number animation
+      setTimeout(animateNumber, 300);
     }
   },
   

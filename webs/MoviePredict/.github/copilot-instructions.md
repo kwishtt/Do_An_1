@@ -69,4 +69,4 @@ svc.predict({"title":"X","budget":5000000,"voteAverage":7.8})
 - `data/pkl/` for model artifacts and `prompt/` for design notes and prompts already in the repo.
 
 ---
-If anything here is unclear or you'd like me to include additional examples (e.g., sample curl requests, unit-test stubs, or mocking patterns), tell me which parts to expand and I'll iterate.
+If anything is unclear here or you want me to give more examples (e.g. sample curl request, unit test code or mock sample), let me know which part needs to be expanded and I will repeat. And answer completely in Vietnamese, no need to create tutorial files, reports. Focus on my main request
