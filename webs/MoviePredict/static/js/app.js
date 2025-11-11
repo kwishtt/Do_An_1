@@ -502,8 +502,8 @@ const App = {
       const result = await response.json();
       
       // ✅ FIXED: Use actual success_probability from model instead of calculated confidence
-      // Convert probability (0-1) to percentage (0-100)
-      const actualConfidence = Math.round(result.prediction.success_probability * 100);
+      // Convert probability (0-1) to percentage (0-100) with 2 decimal places
+      const actualConfidence = Math.round(result.prediction.success_probability * 100 * 100) / 100;
       
       console.log('✅ API Response Success:', {
         success_probability: result.prediction.success_probability,
@@ -1085,10 +1085,13 @@ const App = {
   
   updateConfidenceGauge(confidence) {
     const confidenceText = document.getElementById('confidence-text');
-    const confidenceCard = document.querySelector('.confidence-card');
+    // Find the card - could be either .confidence-card or .confidence-card-macos
+    const confidenceCard = document.querySelector('.confidence-card-macos') || document.querySelector('.confidence-card');
     const confidenceStatus = document.getElementById('confidence-status');
     const confidenceLevel = document.getElementById('confidence-level');
     const confidenceRating = document.getElementById('confidence-rating');
+    
+    console.log('updateConfidenceGauge called with:', { confidence, confidenceText, confidenceCard, confidenceStatus });
     
     if (confidenceText && confidenceCard) {
       // Animate the confidence number with smooth counting effect
@@ -1102,14 +1105,17 @@ const App = {
         
         // Use easing function for smooth animation
         const easedProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-        currentValue = Math.round(easedProgress * confidence);
+        currentValue = easedProgress * confidence;
         
-        confidenceText.textContent = currentValue;
+        // Display with 2 decimal places
+        confidenceText.textContent = currentValue.toFixed(2);
         
         if (progress < 1) {
           requestAnimationFrame(animateNumber);
         } else {
-          confidenceText.textContent = confidence; // Ensure exact final value
+          // Ensure exact final value with 2 decimal places
+          confidenceText.textContent = confidence.toFixed(2);
+          console.log('Confidence animation complete:', confidence.toFixed(2));
           
           // Update status, level, and rating based on final confidence
           updateConfidenceMetrics(confidence);
@@ -1183,6 +1189,8 @@ const App = {
       
       // Start number animation
       setTimeout(animateNumber, 300);
+    } else {
+      console.warn('updateConfidenceGauge: Missing elements', { confidenceText, confidenceCard, confidenceStatus, confidenceLevel, confidenceRating });
     }
   },
   

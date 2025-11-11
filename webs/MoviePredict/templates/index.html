@@ -16,6 +16,18 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon/favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ url_for('static', filename='favicon/favicon-64x64.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='favicon/favicon-192x192.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/favicon-180x180.png') }}">
+    <meta name="theme-color" content="#4F46E5">
+    
+    <!-- PWA manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced-charts.css') }}">
@@ -27,7 +39,7 @@
             <div class="nav-island" aria-label="Primary navigation island">
                 <!-- Left: Brand -->
                 <a href="#hero" class="logo" aria-label="Movies Predict Home">
-                    <span class="logo-icon" aria-hidden="true">📺</span>
+                    <img src="{{ url_for('static', filename='favicon/favicon.svg') }}" alt="Movie Predict Logo" class="logo-icon-svg">
                     <span class="logo-text">Movies Predict</span>
                 </a>
 
@@ -678,7 +690,7 @@
                                                 <circle cx="50" cy="50" r="45" class="progress-ring-circle"></circle>
                                             </svg>
                                             <div class="percentage-display">
-                                                <span id="confidence-text" class="confidence-number-macos">73</span>
+                                                <span id="confidence-text" class="confidence-number-macos">-</span>
                                                 <span class="confidence-symbol-macos">%</span>
                                             </div>
                                         </div>
@@ -697,7 +709,7 @@
                                             <div class="metric-icon"></div>
                                             <div class="metric-details">
                                                 <span class="metric-label">Mức Độ</span>
-                                                <span class="metric-value-macos" id="confidence-level">Cao</span>
+                                                <span class="metric-value-macos" id="confidence-level">-</span>
                                             </div>
                                         </div>
                                         
@@ -705,7 +717,7 @@
                                             <div class="metric-icon"></div>
                                             <div class="metric-details">
                                                 <span class="metric-label">Đánh Giá</span>
-                                                <span class="metric-value-macos" id="confidence-rating">A</span>
+                                                <span class="metric-value-macos" id="confidence-rating">-</span>
                                             </div>
                                         </div>
                                         

@@ -175,7 +175,7 @@ if __name__ == '__main__':
     logger.info("> Số feature: %s", len(prediction_service.feature_columns) if prediction_service.feature_columns else 0)
     logger.info("%s", "="*50)
     logger.info("> Bắt đầu Flask server (dev)...")
-    logger.info("> Mở: http://localhost:5000")
+    logger.info("> Mở: http://localhost:8000")
     logger.info("%s", "="*50)
 
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=8000, debug=True)

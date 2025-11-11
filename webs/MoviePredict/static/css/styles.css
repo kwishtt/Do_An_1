@@ -582,6 +582,19 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 1.5rem;
 }
 
+.logo-icon-svg {
+  width: 32px;
+  height: 32px;
+  display: block;
+  border-radius: 8px;
+  object-fit: contain;
+  transition: transform 240ms ease;
+}
+
+.logo:hover .logo-icon-svg {
+  transform: scale(1.05);
+}
+
 .nav-menu {
   display: inline-flex;
   align-items: center;

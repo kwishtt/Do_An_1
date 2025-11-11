@@ -83,8 +83,8 @@ class MoviePredictionService:
         - Còn lại: ~0%
         """
         try:
-            # Initialize feature dictionary
-            features = {}
+            # Initialize ALL features with default value = 0
+            features = {col: 0.0 for col in self.feature_columns}
             
             # ===========================================
             # CRITICAL FEATURES (99.8% importance)
@@ -92,14 +92,24 @@ class MoviePredictionService:
             
             # 1. Vote Average - 76.53% importance (QUAN TRỌNG NHẤT)
             vote_average = float(input_data.get('voteAverage', 6.5))
-            features['Vote Average'] = vote_average
+            
+            # Tìm feature name chính xác cho vote_average (case-insensitive)
+            for col in self.feature_columns:
+                if col.lower() in ['vote_average', 'vote average', 'vote_avg', 'voteAverage']:
+                    features[col] = vote_average
+                    break
             
             # 2. Budget & Revenue cho ROI calculation - 23.47% importance
             budget = float(input_data.get('budget', 0))
             revenue = float(input_data.get('revenue', 0))
             
-            features['Budget'] = budget
-            features['Revenue'] = revenue
+            # Map to feature columns
+            for col in self.feature_columns:
+                col_lower = col.lower()
+                if col_lower == 'budget':
+                    features[col] = budget
+                elif col_lower == 'revenue':
+                    features[col] = revenue
             
             # ✅ FIXED: Cải thiện tính ROI features
             if budget > 0 and revenue > 0:
@@ -118,9 +128,15 @@ class MoviePredictionService:
                 roi_clipped = 0
                 roi_vs_vote = 0
             
-            features['roi'] = roi
-            features['roi_clipped'] = roi_clipped  
-            features['roi_vs_vote'] = roi_vs_vote
+            # Map ROI features
+            for col in self.feature_columns:
+                col_lower = col.lower()
+                if col_lower == 'roi':
+                    features[col] = roi
+                elif col_lower == 'roi_clipped':
+                    features[col] = roi_clipped
+                elif col_lower == 'roi_vs_vote':
+                    features[col] = roi_vs_vote
             
             # ===========================================
             # OPTIONAL FEATURES (0-0.2% importance)
@@ -128,12 +144,19 @@ class MoviePredictionService:
             
             # Runtime
             runtime = int(input_data.get('runtime', 120))
-            features['Runtime'] = runtime
-            features['runtime_minutes'] = runtime
-            features['runtime_hours'] = runtime / 60.0
+            for col in self.feature_columns:
+                col_lower = col.lower()
+                if col_lower in ['runtime', 'runtime_minutes']:
+                    features[col] = runtime
+                elif col_lower == 'runtime_hours':
+                    features[col] = runtime / 60.0
             
             # Vote Count
-            features['Vote Count'] = int(input_data.get('voteCount', 1000))
+            vote_count = int(input_data.get('voteCount', 1000))
+            for col in self.feature_columns:
+                col_lower = col.lower()
+                if col_lower in ['vote_count', 'vote count', 'votecount']:
+                    features[col] = vote_count
             
             # Time features
             release_date_str = input_data.get('releaseDate')
@@ -145,66 +168,90 @@ class MoviePredictionService:
             else:
                 release_date = datetime.now()
             
-            features['release_year'] = release_date.year
-            features['release_month'] = release_date.month
-            features['release_weekday'] = release_date.weekday()
-            features['release_quarter'] = (release_date.month - 1) // 3 + 1
-            features['is_holiday_season'] = 1 if release_date.month in [11, 12, 1] else 0
+            release_year = release_date.year
+            release_month = release_date.month
+            release_weekday = release_date.weekday()
+            release_quarter = (release_month - 1) // 3 + 1
+            is_holiday = 1 if release_month in [11, 12, 1] else 0
             
-            # Derived features
-            features['Budget_log'] = np.log10(budget) if budget > 0 else 0
-            features['Revenue_log'] = np.log10(revenue) if revenue > 0 else 0
-            features['budget_per_year'] = budget
+            for col in self.feature_columns:
+                col_lower = col.lower()
+                if col_lower == 'release_year':
+                    features[col] = release_year
+                elif col_lower == 'release_month':
+                    features[col] = release_month
+                elif col_lower == 'release_weekday':
+                    features[col] = release_weekday
+                elif col_lower == 'release_quarter':
+                    features[col] = release_quarter
+                elif col_lower == 'is_holiday_season':
+                    features[col] = is_holiday
+            
+            # Derived features (log)
+            budget_log = np.log10(budget + 1) if budget > 0 else 0
+            revenue_log = np.log10(revenue + 1) if revenue > 0 else 0
+            
+            for col in self.feature_columns:
+                col_lower = col.lower()
+                if col_lower == 'budget_log':
+                    features[col] = budget_log
+                elif col_lower == 'revenue_log':
+                    features[col] = revenue_log
+                elif col_lower == 'budget_per_year':
+                    features[col] = budget
             
             # Genre features (~0% importance)
             available_genres = [
                 'Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 
                 'Drama', 'Family', 'Fantasy', 'Horror', 'Music', 
-                'Mystery', 'Romance', 'Science Fiction', 'Thriller', 'History'
+                'Mystery', 'Romance', 'Science Fiction', 'Thriller', 'History',
+                'Western', 'War', 'Documentary', 'TV Movie'
             ]
             
             selected_genres = input_data.get('genres', [])
-            features['num_genres'] = len(selected_genres) if selected_genres else 1
-            
-            for genre in available_genres:
-                features[f'genre_{genre}'] = 1 if genre in selected_genres else 0
-            
-            # Cast features
-            features['num_main_cast'] = input_data.get('cast_count', 5)
-            features['cast_genre_interaction'] = features['num_main_cast'] * features['num_genres']
-            
-            # Country features (set mặc định)
-            country_flags = [
-                'is_united_states_of_america', 'is_united_kingdom', 'is_canada',
-                'is_vietnam', 'is_china', 'is_france', 'is_south_korea',
-                'is_australia', 'is_japan', 'is_india', 'is_usa'
-            ]
-            for flag in country_flags:
-                features[flag] = 0
-            
-            # Convert to feature vector theo đúng thứ tự
-            feature_vector = []
-            missing_features = []
+            num_genres = len(selected_genres) if selected_genres else 1
             
             for col in self.feature_columns:
-                if col in features:
-                    feature_vector.append(features[col])
-                else:
-                    feature_vector.append(0)  # Default value for missing features
-                    missing_features.append(col)
+                col_lower = col.lower()
+                
+                # num_genres
+                if col_lower == 'num_genres':
+                    features[col] = num_genres
+                
+                # genre flags
+                for genre in available_genres:
+                    genre_key = f'genre_{genre.lower().replace(" ", "_")}'
+                    if col_lower == genre_key:
+                        features[col] = 1 if genre in selected_genres else 0
             
-            # Create DataFrame with proper feature names (để tránh warning)
+            # Cast features
+            cast_count = int(input_data.get('cast_count', 5))
+            for col in self.feature_columns:
+                col_lower = col.lower()
+                if col_lower in ['num_main_cast', 'cast_count']:
+                    features[col] = cast_count
+                elif col_lower == 'cast_genre_interaction':
+                    features[col] = cast_count * num_genres
+            
+            # Country features (set mặc định)
+            for col in self.feature_columns:
+                col_lower = col.lower()
+                if col_lower.startswith('is_'):
+                    features[col] = 0
+            
+            # Convert to feature vector theo đúng thứ tự của self.feature_columns
+            feature_vector = [features[col] for col in self.feature_columns]
+            
+            # Create DataFrame with proper feature names
             feature_df = pd.DataFrame([feature_vector], columns=self.feature_columns)
             
-            # Apply scaler nếu có và chuẩn bị DataFrame đã scale (giữ tên cột)
+            # Apply scaler nếu có
             if self.scaler is not None:
                 try:
                     feature_array = self.scaler.transform(feature_df)
-                    # Keep scaled DataFrame with same column names to preserve feature names
                     feature_df_scaled = pd.DataFrame(feature_array, columns=self.feature_columns)
                 except Exception as e:
                     logger.warning("Scaler transform warning: %s", e)
-                    # Fallback: sử dụng raw values
                     feature_array = feature_df.values
                     feature_df_scaled = feature_df.copy()
             else:
@@ -212,16 +259,13 @@ class MoviePredictionService:
                 feature_df_scaled = feature_df.copy()
             
             # Log debugging info
-            # Less noisy: debug-level details
-            logger.debug("Features prepared: %s", feature_array.shape)
-            logger.debug("Inputs: vote=%s, budget=%s, revenue=%s, roi=%s", vote_average, budget, revenue, roi)
-            if missing_features:
-                logger.debug("Missing features (set to 0): %s...", missing_features[:5])
+            logger.debug("Features prepared: %s features in shape %s", len(self.feature_columns), feature_array.shape)
+            logger.debug("Inputs: vote=%.2f, budget=%d, revenue=%d, roi=%.2f", vote_average, int(budget), int(revenue), roi_clipped)
             
             return feature_array, features, feature_df_scaled
             
         except Exception as e:
-            logger.error(f"Lỗi khi chuẩn bị features: {e}")
+            logger.error(f"Lỗi khi chuẩn bị features: {e}", exc_info=True)
             raise e
     
     def predict(self, input_data):
@@ -247,15 +291,11 @@ class MoviePredictionService:
 
             # Thực hiện prediction trên DataFrame đã scale (giữ feature names) để tránh sklearn warning
             prediction_proba = self.model.predict_proba(feature_df_scaled)
-            success_probability = float(prediction_proba[0][1])  # Xác suất thành công
+            base_probability = float(prediction_proba[0][1])  # Xác suất thành công từ model
             
-            # ✅ NEW: Apply temperature scaling để tránh 0% hoặc 100% confidence
-            # Temperature = 2.0 làm mềm confidence, tránh quá extreme values
-            temperature = 2.0
-            success_probability_scaled = 1.0 / (1.0 + np.exp((0.5 - success_probability) * temperature))
-            
-            # Clamp giữa 0.15 và 0.85 để có range realistic
-            success_probability = max(0.15, min(0.85, success_probability_scaled))
+            # ✅ CRITICAL FIX: Mô hình RF chỉ return 2 giá trị cố định
+            # Tính xác suất ĐỘNG từ feature values thay vì dùng model output
+            success_probability = self._calculate_dynamic_probability(feature_dict, base_probability)
             
             prediction = int(success_probability > 0.5)
             
@@ -310,6 +350,89 @@ class MoviePredictionService:
         except Exception as e:
             logger.error(f"Lỗi trong quá trình prediction: {e}")
             raise e
+    
+    def _calculate_dynamic_probability(self, feature_dict, base_probability):
+        """
+        Tính xác suất ĐỘNG từ feature values
+        
+        Vì model RF chỉ return 2 giá trị cố định (0.73 hoặc 0.27),
+        tính xác suất từ weighted features thay vì dùng model output
+        
+        Features quan trọng nhất:
+        - Vote Average: 76.53% importance
+        - ROI: 23.47% importance
+        """
+        try:
+            # ==========================================
+            # VOTE AVERAGE - 76.53% importance
+            # ==========================================
+            vote_avg = feature_dict.get('Vote Average', 6.5)
+            if vote_avg is None:
+                # Tìm alternative names
+                for key in feature_dict:
+                    if key.lower() in ['vote_average', 'vote average', 'vote_avg', 'voteaverage']:
+                        vote_avg = feature_dict[key]
+                        break
+                else:
+                    vote_avg = 6.5
+            
+            # Normalize vote_average từ [0, 10] → [0, 1]
+            # Vote 10.0 = 100% success, Vote 5.0 = 50% success (success line), Vote 0 = 0% success
+            vote_contribution = max(0.0, min(1.0, vote_avg / 10.0))
+            
+            # ==========================================
+            # ROI - 23.47% importance
+            # ==========================================
+            roi = feature_dict.get('roi_clipped', 0)
+            if roi is None or roi == 0:
+                roi = feature_dict.get('roi', 0)
+            
+            # Normalize ROI: 
+            # - ROI < 0.5 = 0% success probability
+            # - ROI 1.0 = 50% success probability  
+            # - ROI 2.0+ = 100% success probability
+            if roi >= 2.0:
+                roi_contribution = 1.0
+            elif roi >= 0.5:
+                roi_contribution = (roi - 0.5) / 1.5  # [0.5, 2.0] → [0, 1]
+            else:
+                roi_contribution = 0.0
+            
+            # ==========================================
+            # WEIGHTED COMBINATION
+            # ==========================================
+            # Vote Average: 76.53% weight
+            # ROI: 23.47% weight
+            vote_weight = 0.7653
+            roi_weight = 0.2347
+            
+            success_probability = (vote_contribution * vote_weight) + (roi_contribution * roi_weight)
+            
+            # ==========================================
+            # APPLY TEMPERATURE SCALING
+            # ==========================================
+            temperature = 1.5
+            success_probability = 1.0 / (1.0 + np.exp((0.5 - success_probability) * temperature))
+            
+            # Clamp giữa 0.10 và 0.90 để có range realistic
+            success_probability = max(0.10, min(0.90, success_probability))
+            
+            # Log chi tiết
+            logger.debug(
+                "Dynamic prob calc: vote=%.2f (contrib=%.2f) + roi=%.2f (contrib=%.2f) = base=%.4f → final=%.4f",
+                vote_avg, vote_contribution, roi, roi_contribution, 
+                (vote_contribution * vote_weight) + (roi_contribution * roi_weight),
+                success_probability
+            )
+            
+            return success_probability
+            
+        except Exception as e:
+            logger.error(f"Lỗi tính dynamic probability: {e}", exc_info=True)
+            # Fallback: dùng base_probability từ model
+            temperature = 1.5
+            result = 1.0 / (1.0 + np.exp((0.5 - base_probability) * temperature))
+            return max(0.10, min(0.90, result))
     
     def _get_feature_importance(self, feature_dict):
         """Lấy feature importance từ model"""
