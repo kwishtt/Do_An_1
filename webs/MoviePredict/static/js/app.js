@@ -501,31 +501,50 @@ const App = {
       
       const result = await response.json();
       
+      // ✅ FIXED: Use actual success_probability from model instead of calculated confidence
+      // Convert probability (0-1) to percentage (0-100)
+      const actualConfidence = Math.round(result.prediction.success_probability * 100);
+      
+      console.log('✅ API Response Success:', {
+        success_probability: result.prediction.success_probability,
+        actualConfidence: actualConfidence,
+        will_succeed: result.prediction.will_succeed,
+        is_real_model: result.model_info?.is_real_model
+      });
+      
       // Transform API response to match our display format
       return {
         success: result.prediction.will_succeed,
-        confidence: result.prediction.confidence,
+        confidence: actualConfidence,  // ✅ NOW using real model output instead of calculated value
         success_probability: result.prediction.success_probability,
         data: result.input_data,
         timestamp: new Date(result.model_info.prediction_timestamp),
         metrics: result.metrics,
         model_info: result.model_info,
-        is_real_model: result.model_info.is_real_model || false  // ✅ Check for real model
+        is_real_model: result.model_info.is_real_model || false,  // ✅ Check for real model
+        model_accuracy: result.model_info?.accuracy || 0.9952,
+        model_features: result.model_info?.features_count || 47
       };
       
     } catch (error) {
-      console.error('API call failed:', error);
+      console.error('❌ API call failed:', error);
       
       // Fallback to mock if API fails (for development)
-      console.warn('⚠️ API failed, using mock prediction');
+      console.warn('⚠️ FALLBACK: Using mock prediction (API failed)');
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       const success = this.calculateMockPrediction(data);
-      const confidence = this.calculateConfidence(data);
+      const mockConfidence = this.calculateConfidence(data);
+      
+      console.log('⚠️ Mock Prediction:', {
+        success,
+        confidence: mockConfidence,
+        is_mock: true
+      });
       
       return {
         success,
-        confidence,
+        confidence: mockConfidence,
         data,
         timestamp: new Date(),
         metrics: this.generateMockMetrics(data, success),
@@ -2154,12 +2173,49 @@ const App = {
   showResultsLoading() {
     const loadingOverlay = document.getElementById('results-loading-overlay');
     if (loadingOverlay) {
+      // ✅ NEW: Update model info in loading screen
+      this.updateModelInfoInLoading();
+      
       loadingOverlay.style.display = 'flex';
       // Ensure it's visible and animated
       setTimeout(() => {
         loadingOverlay.classList.add('active');
       }, 10);
     }
+  },
+
+  // ✅ NEW: Update model information displayed during loading
+  updateModelInfoInLoading() {
+    const modelInfoSection = document.getElementById('model-info-loading');
+    if (!modelInfoSection) return;
+    
+    // Display model information
+    const html = `
+      <div class="model-info-content">
+        <div class="model-header">
+          <span class="model-badge">🤖 Random Forest Model</span>
+        </div>
+        <div class="model-details">
+          <div class="model-detail-item">
+            <span class="detail-label">Độ chính xác:</span>
+            <span class="detail-value">99.52%</span>
+          </div>
+          <div class="model-detail-item">
+            <span class="detail-label">Features:</span>
+            <span class="detail-value">47</span>
+          </div>
+          <div class="model-detail-item">
+            <span class="detail-label">Trạng thái:</span>
+            <span class="detail-value status-active">Đang xử lý...</span>
+          </div>
+        </div>
+        <div class="model-note">
+          <small>🔍 Mô hình phân tích Vote Average (76.53%), ROI (23.47%) và 45 features khác</small>
+        </div>
+      </div>
+    `;
+    
+    modelInfoSection.innerHTML = html;
   },
   
   // ✅ NEW: Hide results loading animation

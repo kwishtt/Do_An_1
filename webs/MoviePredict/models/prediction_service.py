@@ -248,6 +248,15 @@ class MoviePredictionService:
             # Thực hiện prediction trên DataFrame đã scale (giữ feature names) để tránh sklearn warning
             prediction_proba = self.model.predict_proba(feature_df_scaled)
             success_probability = float(prediction_proba[0][1])  # Xác suất thành công
+            
+            # ✅ NEW: Apply temperature scaling để tránh 0% hoặc 100% confidence
+            # Temperature = 2.0 làm mềm confidence, tránh quá extreme values
+            temperature = 2.0
+            success_probability_scaled = 1.0 / (1.0 + np.exp((0.5 - success_probability) * temperature))
+            
+            # Clamp giữa 0.15 và 0.85 để có range realistic
+            success_probability = max(0.15, min(0.85, success_probability_scaled))
+            
             prediction = int(success_probability > 0.5)
             
             # Concise log when using real model

@@ -3223,6 +3223,335 @@ h1, h2, h3, h4, h5, h6 {
     background: rgba(255, 255, 255, 0.8);
 }
 
+/* ✅ NEW: Mac UI Style Confidence Card */
+.confidence-card-macos {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 18px;
+    box-shadow: 
+        0 0 40px rgba(79, 70, 229, 0.1),
+        0 20px 50px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    overflow: hidden;
+    animation: cardAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mac Header with Traffic Lights */
+.confidence-card-header-macos {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(200, 200, 200, 0.3);
+    background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 100%);
+}
+
+.traffic-lights {
+    display: flex;
+    gap: 0.5rem;
+    margin-right: auto;
+}
+
+.traffic-lights .light {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.traffic-lights .light.red {
+    background: linear-gradient(135deg, #FF5F57 0%, #FF4545 100%);
+    box-shadow: 
+        inset 0 1px 2px rgba(0, 0, 0, 0.2),
+        0 2px 4px rgba(255, 95, 87, 0.3);
+}
+
+.traffic-lights .light.yellow {
+    background: linear-gradient(135deg, #FFBD2E 0%, #FFB000 100%);
+    box-shadow: 
+        inset 0 1px 2px rgba(0, 0, 0, 0.15),
+        0 2px 4px rgba(255, 189, 46, 0.3);
+}
+
+.traffic-lights .light.green {
+    background: linear-gradient(135deg, #28C940 0%, #1FA132 100%);
+    box-shadow: 
+        inset 0 1px 2px rgba(0, 0, 0, 0.2),
+        0 2px 4px rgba(40, 201, 64, 0.3);
+}
+
+.traffic-lights .light:hover {
+    transform: scale(1.2);
+}
+
+.card-title-macos {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    letter-spacing: 0.3px;
+    margin-left: auto;
+    padding-right: 1rem;
+}
+
+/* Card Body */
+.confidence-card-body-macos {
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Circular Progress Display */
+.confidence-main-macos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.percentage-ring {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-ring {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    filter: drop-shadow(0 4px 12px rgba(79, 70, 229, 0.15));
+}
+
+.progress-ring-circle {
+    fill: none;
+    stroke: url(#progressGradient);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 0;
+    animation: fillProgress 2.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transition: stroke-dashoffset 0.3s ease;
+}
+
+@keyframes fillProgress {
+    from {
+        stroke-dashoffset: 283;
+        opacity: 0;
+    }
+    to {
+        stroke-dashoffset: 0;
+        opacity: 1;
+    }
+}
+
+.percentage-display {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    text-align: center;
+}
+
+.confidence-number-macos {
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
+    letter-spacing: -2px;
+    line-height: 1;
+}
+
+.confidence-symbol-macos {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #7C3AED;
+    margin-top: -0.8rem;
+}
+
+/* Status Info */
+.confidence-text-info {
+    text-align: center;
+}
+
+.status-text {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.status-badge-macos {
+    display: inline-block;
+    padding: 0.375rem 0.875rem;
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    text-transform: uppercase;
+}
+
+.subtitle-text {
+    margin: 0.5rem 0 0 0;
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+/* Metrics Grid */
+.metrics-grid-macos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(200, 200, 200, 0.2);
+}
+
+.metric-item-macos {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.45) 100%);
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    border-left: 4px solid #4F46E5;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.metric-item-macos:hover {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.15) 0%, rgba(124, 58, 237, 0.12) 100%);
+    border-color: rgba(79, 70, 229, 0.4);
+    border-left-color: #7C3AED;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+}
+
+.metric-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    text-align: center;
+}
+
+.metric-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.metric-details .metric-label {
+    font-size: 0.7rem;
+    color: #6B7280;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.metric-value-macos {
+    font-size: 1.1rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .confidence-card-macos {
+        max-width: 100%;
+        margin: 0 0 2rem 0;
+        border-radius: 16px;
+    }
+    
+    .confidence-card-body-macos {
+        padding: 1.5rem 1rem;
+        gap: 1.5rem;
+    }
+    
+    .metrics-grid-macos {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+    }
+    
+    .confidence-number-macos {
+        font-size: 2rem;
+    }
+    
+    .percentage-ring {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+/* Dark Theme Support */
+[data-theme="dark"] .confidence-card-macos {
+    background: rgba(20, 20, 30, 0.85);
+    border-color: rgba(79, 70, 229, 0.2);
+    box-shadow: 
+        0 0 40px rgba(79, 70, 229, 0.15),
+        0 20px 50px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .confidence-card-header-macos {
+    border-bottom-color: rgba(79, 70, 229, 0.2);
+    background: linear-gradient(180deg, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0.03) 100%);
+}
+
+[data-theme="dark"] .card-title-macos {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .subtitle-text {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .metrics-grid-macos {
+    border-top-color: rgba(79, 70, 229, 0.2);
+}
+
+[data-theme="dark"] .metric-item-macos {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.25) 0%, rgba(79, 70, 229, 0.15) 100%);
+    border-color: rgba(79, 70, 229, 0.3);
+    border-left-color: #7C3AED;
+}
+
+[data-theme="dark"] .metric-item-macos:hover {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.25) 0%, rgba(124, 58, 237, 0.18) 100%);
+    border-color: rgba(124, 58, 237, 0.4);
+}
+
+[data-theme="dark"] .metric-details .metric-label {
+    color: #E2E8F0;
+}
+
 .confidence-header {
     display: flex;
     align-items: center;
@@ -6872,6 +7201,126 @@ a:focus {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ✅ NEW: Model Info in Loading Screen */
+.model-info-loading {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+  max-width: 350px;
+}
+
+.model-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.model-header {
+  display: flex;
+  justify-content: center;
+}
+
+.model-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  color: white;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.model-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.model-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(124, 58, 237, 0.1);
+}
+
+.model-detail-item:last-of-type {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.3px;
+}
+
+.detail-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #4F46E5;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+.detail-value.status-active {
+  color: #059669;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.model-note {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.model-note small {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  display: block;
+}
+
+/* Dark theme for model info */
+[data-theme="dark"] .model-info-loading {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(124, 58, 237, 0.3);
+}
+
+[data-theme="dark"] .model-detail-item {
+  border-bottom-color: rgba(124, 58, 237, 0.15);
+}
+
+[data-theme="dark"] .detail-label {
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .detail-value {
+  color: #a78bfa;
+}
+
+[data-theme="dark"] .detail-value.status-active {
+  color: #10B981;
+}
+
+[data-theme="dark"] .model-note small {
+  color: #94a3b8;
 }
 
 @keyframes slideUp {

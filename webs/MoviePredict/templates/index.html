@@ -639,6 +639,11 @@
                             <div class="loading-bar">
                                 <div class="loading-bar-fill"></div>
                             </div>
+                            
+                            <!-- Model Info Section -->
+                            <div id="model-info-loading" class="model-info-loading">
+                                <!-- Filled dynamically by updateModelInfoInLoading() -->
+                            </div>
                         </div>
                     </div>
 
@@ -654,36 +659,62 @@
                                 </div>
                             </div>
                             
-                            <!-- Confidence Card -->
-                            <div class="confidence-card glassmorphism" style="margin-top: 1.5rem;">
-                                <div class="confidence-header">
-                                    <div class="confidence-controls">
-                                        <div class="control-dot red"></div>
-                                        <div class="control-dot yellow"></div>
-                                        <div class="control-dot green"></div>
+                            <!-- Confidence Card - Mac UI Style -->
+                            <div class="confidence-card-macos">
+                                <div class="confidence-card-header-macos">
+                                    <div class="traffic-lights">
+                                        <div class="light red"></div>
+                                        <div class="light yellow"></div>
+                                        <div class="light green"></div>
                                     </div>
-                                    <div class="confidence-title">Dự đoán tỉ lệ</div>
+                                    <div class="card-title-macos">Đánh Giá Kết Quả</div>
                                 </div>
                                 
-                                <div class="confidence-content">
-                                    <div class="confidence-main">
-                                        <div class="confidence-percentage">
-                                            <span id="confidence-text" class="confidence-number">85</span>
-                                            <span class="confidence-symbol">%</span>
+                                <div class="confidence-card-body-macos">
+                                    <!-- Main Percentage Display -->
+                                    <div class="confidence-main-macos">
+                                        <div class="percentage-ring">
+                                            <svg class="progress-ring" viewBox="0 0 100 100">
+                                                <circle cx="50" cy="50" r="45" class="progress-ring-circle"></circle>
+                                            </svg>
+                                            <div class="percentage-display">
+                                                <span id="confidence-text" class="confidence-number-macos">73</span>
+                                                <span class="confidence-symbol-macos">%</span>
+                                            </div>
                                         </div>
-                                        <div class="confidence-status">
-                                            <span class="status-badge success" id="confidence-status">Rất tin cậy</span>
+                                        
+                                        <div class="confidence-text-info">
+                                            <p class="status-text">
+                                                <span class="status-badge-macos" id="confidence-status">Tỉ Lệ Thành Công</span>
+                                            </p>
+                                            <p class="subtitle-text">Dựa trên Random Forest Model</p>
                                         </div>
                                     </div>
                                     
-                                    <div class="confidence-metrics">
-                                        <div class="confidence-metric">
-                                            <span class="metric-label">Mức độ</span>
-                                            <span class="metric-value high" id="confidence-level">Cao</span>
+                                    <!-- Metrics Grid -->
+                                    <div class="metrics-grid-macos">
+                                        <div class="metric-item-macos">
+                                            <div class="metric-icon"></div>
+                                            <div class="metric-details">
+                                                <span class="metric-label">Mức Độ</span>
+                                                <span class="metric-value-macos" id="confidence-level">Cao</span>
+                                            </div>
                                         </div>
-                                        <div class="confidence-metric">
-                                            <span class="metric-label">Đánh giá</span>
-                                            <span class="metric-value" id="confidence-rating">A+</span>
+                                        
+                                        <div class="metric-item-macos">
+                                            <div class="metric-icon"></div>
+                                            <div class="metric-details">
+                                                <span class="metric-label">Đánh Giá</span>
+                                                <span class="metric-value-macos" id="confidence-rating">A</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="metric-item-macos">
+                                            <div class="metric-icon"></div>
+                                            <div class="metric-details">
+                                                <span class="metric-label">Độ Chính Xác</span>
+                                                <span class="metric-value-macos">99.52%</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
