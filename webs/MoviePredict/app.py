@@ -153,7 +153,7 @@ def sample_data():
             'genres': ['Horror', 'Thriller']
         }
     ]
-    
+    # khai ngu 
     return jsonify(samples)
 
 @app.errorhandler(404)
