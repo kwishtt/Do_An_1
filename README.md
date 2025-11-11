@@ -441,7 +441,7 @@ git push origin feature/week05-modeling
 
 **Nhóm 04 - Khoa Học Dữ Liệu HUMG**
 
-- 📧 Email: group04@humg.edu.vn
+- 📧 Email: kforwork04@gmail.com
 - 🔗 GitHub: https://github.com/kwishtt/Do_An_1
 - 📚 Tài liệu: Xem folder `docs/`
 
@@ -461,8 +461,6 @@ git push origin feature/week05-modeling
 ## 🎉 Cảm Ơn Bạn Đã Theo Dõi Dự Án Này!
 
 Nếu bạn thấy dự án hữu ích, vui lòng **⭐ Star** repository này.
-
-**Chúc dự án thành công! 🚀**
 
 ---
 
