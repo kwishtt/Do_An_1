@@ -127,81 +127,7 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Centered Card Section -->
-            <div class="centered-card-section">
-                <div class="container">
-                    <div class="centered-card-wrapper">
-                        <!-- Combined Trust Indicators and Dashboard Preview Card - Centered -->
-                        <div class="combined-preview-card glassmorphism">
-                            <!-- Trust Indicators - Vertical Layout -->
-                            <div class="trust-indicators-vertical">
-                                <h5 class="indicators-title">Thống kê hệ thống</h5>
-                                <div class="trust-item-vertical">
-                                    <span class="trust-number">99.5%</span>
-                                    <span class="trust-label">Độ chính xác</span>
-                                </div>
-                                <div class="trust-item-vertical">
-                                    <span class="trust-number">1,022</span>
-                                    <span class="trust-label">Phim đã phân tích</span>
-                                </div>
-                                <div class="trust-item-vertical">
-                                    <span class="trust-number">&lt;10s</span>
-                                    <span class="trust-label">Thời gian dự đoán</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Dashboard Preview Section -->
-                            <div class="dashboard-section">
-                                <div class="preview-header">
-                                    <div class="preview-controls">
-                                        <div class="control-dot red"></div>
-                                        <div class="control-dot yellow"></div>
-                                        <div class="control-dot green"></div>
-                                    </div>
-                                    <div class="preview-title">Kết quả dự đoán mẫu</div>
-                                </div>
-                                
-                                <div class="preview-content">
-                                    <div class="prediction-card mini">
-                                        <div class="card-header">
-                                            <span class="movie-title">🎬 Mai (2024)</span>
-                                            <span class="success-badge">87% Thành công</span>
-                                        </div>
-                                        <div class="preview-metrics">
-                                            <div class="metric">
-                                                <span class="metric-label">ROI dự kiến</span>
-                                                <span class="metric-value success">2.4x</span>
-                                            </div>
-                                            <div class="metric">
-                                                <span class="metric-label">Mức rủi ro</span>
-                                                <span class="metric-value medium">Trung bình</span>
-                                            </div>
-                                            <div class="metric">
-                                                <span class="metric-label">Điểm chất lượng</span>
-                                                <span class="metric-value">7.2/10</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Mini Chart Preview -->
-                                        <div class="mini-chart">
-                                            <div class="chart-bars">
-                                                <div class="bar" style="--height: 76%"></div>
-                                                <div class="bar" style="--height: 24%"></div>
-                                                <div class="bar" style="--height: 45%"></div>
-                                                <div class="bar" style="--height: 67%"></div>
-                                            </div>
-                                            <div class="chart-label">Phân tích yếu tố</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+ 
 
     <!-- Centered Card Section - Moved outside hero for better centering -->
     <section class="centered-card-section">
@@ -221,7 +147,7 @@
                             <span class="trust-label">Phim đã phân tích</span>
                         </div>
                         <div class="trust-item-vertical">
-                            <span class="trust-number">&lt;60s</span>
+                            <span class="trust-number">&lt;4s</span>
                             <span class="trust-label">Thời gian dự đoán</span>
                         </div>
                     </div>
@@ -663,12 +589,17 @@
                             <div class="form-actions">
                                 <button type="submit" class="submit-btn-full" id="submitBtn">
                                     <span class="btn-text">
-                                        <i class="fas fa-chart-line"></i>
                                         Tiến hành dự đoán
                                     </span>
                                     <span class="btn-spinner">
                                         <i class="fas fa-spinner spinner-icon"></i>
                                         Đang phân tích...
+                                    </span>
+                                </button>
+                                <!-- Random Data Button for Testing -->
+                                <button type="button" class="submit-btn-secondary" id="randomDataBtn">
+                                    <span class="btn-text">
+                                        Random Test Data
                                     </span>
                                 </button>
                             </div>
@@ -696,6 +627,21 @@
                 </div>
 
                 <div class="results-container-full">
+                    <!-- Loading Animation Layer -->
+                    <div id="results-loading-overlay" class="results-loading-overlay" style="display: none;">
+                        <div class="results-loading-container">
+                            <div class="results-loader">
+                                <div class="loader-circle"></div>
+                                <div class="loader-circle"></div>
+                                <div class="loader-circle"></div>
+                            </div>
+                            <p class="loading-text">Đang tính toán kết quả...</p>
+                            <div class="loading-bar">
+                                <div class="loading-bar-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Hero Section -->
                     <section class="prediction-hero">
                         <div class="prediction-hero-content">
@@ -921,6 +867,60 @@
         <div class="loading-spinner">
             <div class="spinner"></div>
             <p>Đang phân tích dữ liệu...</p>
+        </div>
+    </div>
+
+    <!-- Random Data Modal Popup -->
+    <div id="random-data-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content modal-test-picker">
+            <div class="modal-header">
+                <h2>🎲 Chọn Kết Quả Test</h2>
+                <button class="modal-close" id="modal-close-btn">✕</button>
+            </div>
+            
+            <div class="modal-body">
+                <p class="modal-subtitle">Random dữ liệu sẽ được tạo. Chọn kết quả mong muốn:</p>
+                
+                <div class="modal-test-options">
+                    <!-- Success Option -->
+                    <button class="test-option success" id="test-success-btn">
+                        <div class="option-icon">✅</div>
+                        <div class="option-title">Phim Thành Công</div>
+                        <div class="option-desc">ROI cao, khán giả yêu thích</div>
+                        <div class="option-stats">
+                            <span class="stat">Vote: 8.0+</span>
+                            <span class="stat">ROI: 2.0x+</span>
+                        </div>
+                    </button>
+
+                    <!-- Average Option -->
+                    <button class="test-option average" id="test-average-btn">
+                        <div class="option-icon">😐</div>
+                        <div class="option-title">Phim Trung Bình</div>
+                        <div class="option-desc">ROI ổn, hiệu suất bình thường</div>
+                        <div class="option-stats">
+                            <span class="stat">Vote: 6.5-7.0</span>
+                            <span class="stat">ROI: 1.0-1.5x</span>
+                        </div>
+                    </button>
+
+                    <!-- Failed Option -->
+                    <button class="test-option failure" id="test-failure-btn">
+                        <div class="option-icon">❌</div>
+                        <div class="option-title">Phim Thất Bại</div>
+                        <div class="option-desc">ROI thấp, rủi ro cao</div>
+                        <div class="option-stats">
+                            <span class="stat">Vote: <6.0</span>
+                            <span class="stat">ROI: <1.0x</span>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="modal-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Dữ liệu random sẽ được điền vào biểu mẫu và tự động dự đoán</span>
+                </div>
+            </div>
         </div>
     </div>
 

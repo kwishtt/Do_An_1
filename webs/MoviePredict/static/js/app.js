@@ -172,6 +172,54 @@ const App = {
       input.addEventListener('input', (e) => this.updateRangeValue(e));
     });
     
+    // ✅ NEW: Random Data Button Handler
+    const randomDataBtn = document.getElementById('randomDataBtn');
+    if (randomDataBtn) {
+      randomDataBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.showRandomDataModal();
+      });
+    }
+    
+    // ✅ NEW: Modal close button
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener('click', () => {
+        this.hideRandomDataModal();
+      });
+    }
+    
+    // ✅ NEW: Modal test option buttons
+    const testSuccessBtn = document.getElementById('test-success-btn');
+    const testAverageBtn = document.getElementById('test-average-btn');
+    const testFailureBtn = document.getElementById('test-failure-btn');
+    
+    if (testSuccessBtn) {
+      testSuccessBtn.addEventListener('click', () => {
+        this.fillRandomData('success');
+      });
+    }
+    if (testAverageBtn) {
+      testAverageBtn.addEventListener('click', () => {
+        this.fillRandomData('average');
+      });
+    }
+    if (testFailureBtn) {
+      testFailureBtn.addEventListener('click', () => {
+        this.fillRandomData('failure');
+      });
+    }
+    
+    // Close modal when clicking outside
+    const modal = document.getElementById('random-data-modal');
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          this.hideRandomDataModal();
+        }
+      });
+    }
+    
     // ✨ FIX: Auto-update budget and revenue inputs on typing
     const budgetInput = document.getElementById('budget');
     const revenueInput = document.getElementById('revenue');
@@ -317,8 +365,11 @@ const App = {
       // Update charts with new data
       this.updateChartsWithPrediction(result);
       
-      // Switch to results page
+      // Switch to results page với loading animation
       this.showPage('results');
+      
+      // ✅ NEW: Hiển thị loading animation khi chuyển trang
+      this.showResultsLoading();
       
       // Scroll to prediction hero card after a short delay
       setTimeout(() => {
@@ -326,6 +377,10 @@ const App = {
         if (predictionHero) {
           predictionHero.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+        // Hide loading animation sau 2 giây hoặc khi scroll xong
+        setTimeout(() => {
+          this.hideResultsLoading();
+        }, 1500);
       }, 300);
       
     } catch (error) {
@@ -533,77 +588,196 @@ const App = {
     // ✅ ENHANCED: Confidence based on data quality and completeness
     let confidence = 60; // Base confidence
     
-    // Vote Average quality (primary factor)
+    // Vote Average quality (primary factor - 76.53% importance)
     const voteAverage = parseFloat(data.voteAverage) || 6.5;
-    if (voteAverage >= 7.5) confidence += 20; // High ratings = high confidence
-    else if (voteAverage >= 6.5) confidence += 10; // Average ratings = medium confidence
-    else if (voteAverage <= 5.0) confidence -= 5; // Low ratings = lower confidence
-    
-    // Data completeness
-    if (data.budget > 0) confidence += 5; // Budget provided
-    if (data.revenue > 0) confidence += 10; // Revenue data = higher confidence
-    if (data.runtime && data.runtime > 0) confidence += 5; // Runtime provided
-    if (data.genres && data.genres.length > 0) confidence += 5; // Genre info
-    
-    // Realistic movie parameters
-    if (data.budget >= 1000000 && data.budget <= 500000000) confidence += 5;
-    if (data.voteAverage >= 1.0 && data.voteAverage <= 10.0) confidence += 5;
-    if (data.runtime >= 60 && data.runtime <= 200) confidence += 5;
-    
-    // ROI data increases confidence significantly
-    const roi = (data.revenue && data.budget) ? data.revenue / data.budget : 0;
-    if (roi > 0) {
-      if (roi >= 0.5 && roi <= 10.0) confidence += 10; // Reasonable ROI range
-      else confidence += 5; // Extreme ROI values
+    if (voteAverage >= 8.5) {
+      confidence += 25; // Excellent ratings
+    } else if (voteAverage >= 8.0) {
+      confidence += 22;
+    } else if (voteAverage >= 7.5) {
+      confidence += 18;
+    } else if (voteAverage >= 7.0) {
+      confidence += 15;
+    } else if (voteAverage >= 6.5) {
+      confidence += 10;
+    } else if (voteAverage >= 6.0) {
+      confidence += 5;
+    } else if (voteAverage < 5.0) {
+      confidence -= 8;
     }
     
-    // Add some controlled randomness (±2.5%)
-    confidence += Math.random() * 5 - 2.5;
+    // Data completeness (Budget & Revenue - 23.47% importance)
+    if (data.budget > 0) confidence += 8;
+    if (data.revenue > 0) confidence += 12; // Revenue data significantly increases confidence
+    if (data.runtime && data.runtime > 0) confidence += 4;
+    if (data.genres && data.genres.length > 0) confidence += 3;
     
-    // Clamp confidence to reasonable range
-    return Math.max(60, Math.min(95, Math.round(confidence)));
+    // Realistic movie parameters
+    if (data.budget >= 1000000 && data.budget <= 500000000) confidence += 6;
+    if (data.voteAverage >= 1.0 && data.voteAverage <= 10.0) confidence += 4;
+    if (data.runtime >= 60 && data.runtime <= 200) confidence += 5;
+    
+    // ROI data increases confidence significantly (only if we have both budget & revenue)
+    if (data.revenue > 0 && data.budget > 0) {
+      const roi = data.revenue / data.budget;
+      if (roi >= 0.5 && roi <= 10.0) {
+        confidence += 12; // Reasonable ROI range
+      } else if (roi > 0) {
+        confidence += 6; // Extreme but real ROI values
+      }
+    }
+    
+    // Seasonal/Month analysis
+    try {
+      const month = parseInt(data.releaseMonth) || new Date().getMonth() + 1;
+      if ([6, 7, 12].includes(month)) {
+        confidence += 3; // High season = slightly more data to compare
+      }
+    } catch(e) {}
+    
+    // ✅ NEW: Được cả 2 yếu tố chính = Rất tự tin
+    const hasBothKeyFactors = voteAverage >= 6.5 && data.budget > 0 && data.revenue > 0;
+    if (hasBothKeyFactors) {
+      confidence += 8; // Bonus for having complete data
+    }
+    
+    // Add controlled randomness but less than before (±1.5%)
+    confidence += (Math.random() - 0.5) * 3;
+    
+    // Clamp confidence to realistic range (62-96)
+    return Math.max(62, Math.min(96, Math.round(confidence)));
   },
   
   generateMockMetrics(data, success) {
-    const baseROI = success ? 2.5 + Math.random() * 2 : 0.3 + Math.random() * 0.7;
-    const predictedRevenue = data.budget * baseROI;
+    // ✅ IMPROVED: More realistic ROI calculation based on vote average and budget
+    const voteAverage = parseFloat(data.voteAverage) || 6.5;
+    const budget = parseFloat(data.budget) || 50000000;
     
-    // ✅ ENHANCED: Tính toán đầy đủ thông tin metrics
+    // Base ROI từ vote average (primary factor - 76.53% importance)
+    let baseROI;
+    if (voteAverage >= 8.5) {
+      baseROI = 3.5 + Math.random() * 3;  // 3.5-6.5x for excellent films
+    } else if (voteAverage >= 8.0) {
+      baseROI = 2.8 + Math.random() * 2;  // 2.8-4.8x for very good films
+    } else if (voteAverage >= 7.5) {
+      baseROI = 2.0 + Math.random() * 1.5;  // 2.0-3.5x for good films
+    } else if (voteAverage >= 7.0) {
+      baseROI = 1.5 + Math.random() * 1;    // 1.5-2.5x for above average
+    } else if (voteAverage >= 6.5) {
+      baseROI = 1.2 + Math.random() * 0.8;  // 1.2-2.0x for average
+    } else if (voteAverage >= 6.0) {
+      baseROI = 0.8 + Math.random() * 0.6;  // 0.8-1.4x for below average
+    } else if (voteAverage >= 5.5) {
+      baseROI = 0.5 + Math.random() * 0.5;  // 0.5-1.0x for poor
+    } else {
+      baseROI = 0.2 + Math.random() * 0.5;  // 0.2-0.7x for very poor
+    }
+    
+    // ROI adjustment based on budget (secondary factor - 23.47% importance)
+    if (budget >= 100000000) {
+      // High budget films need bigger revenue to succeed
+      baseROI *= (0.7 + Math.random() * 0.3);  // Reduce ROI for big-budget films
+    } else if (budget <= 10000000) {
+      // Low budget films can have higher ROI
+      baseROI *= (1.1 + Math.random() * 0.4);  // Increase ROI for indie films
+    } else {
+      baseROI *= (0.9 + Math.random() * 0.3);  // Mid-budget adjustment
+    }
+    
+    const predictedRevenue = budget * baseROI;
+    
+    // ✅ ENHANCED: More realistic and detailed metrics
     return {
-      predictedROI: baseROI.toFixed(2),
+      predictedROI: Math.max(0.1, baseROI).toFixed(2),
       predictedRevenue: Math.round(predictedRevenue),
-      breakEvenPoint: Math.round(data.budget * 1.1),
-      marketPotential: success ? 'Cao' : 'Thấp',
-      riskLevel: success ? 'Thấp' : 'Cao',
-      // Thêm các metrics bổ sung
-      profitMargin: success ? '40-60%' : '10-30%',
-      investmentGrade: success ? 'A' : 'C',
+      breakEvenPoint: Math.round(budget * 1.1),
+      marketPotential: this.calculateMarketPotential(voteAverage, baseROI),
+      riskLevel: this.calculateRiskLevel(voteAverage, baseROI),
+      profitMargin: this.calculateProfitMargin(baseROI),
+      investmentGrade: this.calculateInvestmentGrade(voteAverage, baseROI),
       competitionLevel: data.voteAverage >= 7.5 ? 'Cạnh tranh cao' : 'Cạnh tranh vừa',
       targetAudience: this.analyzeTargetAudience(data),
       releaseStrategy: this.analyzeReleaseStrategy(data),
       financialBreakdown: {
-        production: Math.round(data.budget * 0.7),
-        marketing: Math.round(data.budget * 0.3),
-        expectedProfit: Math.round(predictedRevenue - data.budget),
-        breakEvenDays: success ? Math.round(10 + Math.random() * 20) : Math.round(30 + Math.random() * 60)
+        production: Math.round(budget * 0.7),
+        marketing: Math.round(budget * 0.3),
+        expectedProfit: Math.round(predictedRevenue - budget),
+        breakEvenDays: this.estimateBreakEvenDays(baseROI, voteAverage)
       }
     };
+  },
+  
+  // ✅ NEW: Calculate market potential based on realistic metrics
+  calculateMarketPotential(voteAvg, roi) {
+    if (voteAvg >= 8.0 && roi > 2.0) return 'Rất cao';
+    if (voteAvg >= 7.5 && roi > 1.5) return 'Cao';
+    if (voteAvg >= 7.0 || roi > 1.2) return 'Trung bình cao';
+    if (voteAvg >= 6.5 || roi > 1.0) return 'Trung bình';
+    if (roi > 0.8) return 'Thấp';
+    return 'Rất thấp';
+  },
+  
+  // ✅ NEW: Calculate risk level based on metrics
+  calculateRiskLevel(voteAvg, roi) {
+    if (voteAvg >= 8.0 && roi > 2.5) return 'Rất thấp';
+    if (voteAvg >= 7.5 && roi > 1.8) return 'Thấp';
+    if (voteAvg >= 7.0 && roi > 1.2) return 'Trung bình thấp';
+    if (voteAvg >= 6.5 && roi > 1.0) return 'Trung bình';
+    if (voteAvg >= 6.0 || roi > 0.8) return 'Trung bình cao';
+    if (roi > 0.5) return 'Cao';
+    return 'Rất cao';
+  },
+  
+  // ✅ NEW: Calculate profit margin
+  calculateProfitMargin(roi) {
+    const margin = (roi - 1) * 100;
+    if (margin > 150) return '150%+';
+    if (margin > 100) return '100-150%';
+    if (margin > 50) return '50-100%';
+    if (margin > 20) return '20-50%';
+    if (margin > 0) return '0-20%';
+    if (margin > -20) return '-20-0%';
+    return '-20%+';
+  },
+  
+  // ✅ NEW: Calculate investment grade
+  calculateInvestmentGrade(voteAvg, roi) {
+    if (voteAvg >= 8.0 && roi > 3.0) return 'A+';
+    if (voteAvg >= 7.5 && roi > 2.0) return 'A';
+    if (voteAvg >= 7.0 && roi > 1.5) return 'A-';
+    if (voteAvg >= 6.8 && roi > 1.2) return 'B+';
+    if (voteAvg >= 6.5 && roi > 1.0) return 'B';
+    if (voteAvg >= 6.0 || roi > 0.8) return 'B-';
+    if (voteAvg >= 5.5 || roi > 0.5) return 'C+';
+    if (roi > 0.2) return 'C';
+    return 'C-';
+  },
+  
+  // ✅ NEW: Estimate break-even days
+  estimateBreakEvenDays(roi, voteAvg) {
+    if (roi >= 3.0) return 8 + Math.floor(Math.random() * 5);   // 8-13 days
+    if (roi >= 2.0) return 12 + Math.floor(Math.random() * 8);  // 12-20 days
+    if (roi >= 1.5) return 18 + Math.floor(Math.random() * 12); // 18-30 days
+    if (roi >= 1.0) return 25 + Math.floor(Math.random() * 15); // 25-40 days
+    if (roi >= 0.7) return 35 + Math.floor(Math.random() * 25); // 35-60 days
+    return 50 + Math.floor(Math.random() * 40); // 50-90 days
   },
 
   // ✅ NEW: Phân tích đối tượng mục tiêu
   analyzeTargetAudience(data) {
-    if (data.voteAverage >= 8.0) return 'Khán giả cao cấp, yêu thích chất lượng';
-    if (data.voteAverage >= 7.0) return 'Khán giả đại chúng, gia đình';
-    if (data.voteAverage >= 6.0) return 'Khán giả trẻ, giải trí nhẹ';
-    return 'Khán giả thích thể loại đặc biệt';
+    if (data.voteAverage >= 8.5) return 'Khán giả cao cấp, yêu thích chất lượng 🎭';
+    if (data.voteAverage >= 8.0) return 'Khán giả đại chúng, gia đình thích phim chất lượng 👨‍👩‍👧';
+    if (data.voteAverage >= 7.0) return 'Khán giả đại chúng, gia đình 🎬';
+    if (data.voteAverage >= 6.0) return 'Khán giả trẻ, giải trí nhẹ 🎉';
+    return 'Khán giả thích thể loại đặc biệt 🎯';
   },
 
   // ✅ NEW: Phân tích chiến lược phát hành
   analyzeReleaseStrategy(data) {
     const month = data.releaseMonth;
-    if ([6, 7, 12].includes(month)) return 'Mùa phim bom tấn - Cạnh tranh cao';
-    if ([3, 4, 9, 10].includes(month)) return 'Mùa vàng - Thuận lợi phát hành';
-    return 'Mùa thấp điểm - Ít cạnh tranh';
+    if ([6, 7, 12].includes(month)) return 'Mùa phim bom tấn - Cạnh tranh cao 💥';
+    if ([3, 4, 9, 10].includes(month)) return 'Mùa vàng - Thuận lợi phát hành ⭐';
+    return 'Mùa thấp điểm - Ít cạnh tranh 🎪';
   },
   
   // Display prediction results
@@ -1976,6 +2150,30 @@ const App = {
     }
   },
   
+  // ✅ NEW: Show results loading animation
+  showResultsLoading() {
+    const loadingOverlay = document.getElementById('results-loading-overlay');
+    if (loadingOverlay) {
+      loadingOverlay.style.display = 'flex';
+      // Ensure it's visible and animated
+      setTimeout(() => {
+        loadingOverlay.classList.add('active');
+      }, 10);
+    }
+  },
+  
+  // ✅ NEW: Hide results loading animation
+  hideResultsLoading() {
+    const loadingOverlay = document.getElementById('results-loading-overlay');
+    if (loadingOverlay) {
+      loadingOverlay.classList.remove('active');
+      // Delay hiding to allow fade-out animation
+      setTimeout(() => {
+        loadingOverlay.style.display = 'none';
+      }, 300);
+    }
+  },
+  
   hideLoading() {
     this.isLoading = false;
     
@@ -2675,6 +2873,196 @@ function announce(message) {
     }, 100);
   }
 }
+
+// ========== 9A. RANDOM DATA & MODAL FUNCTIONS ==========
+App.showRandomDataModal = function() {
+  const modal = document.getElementById('random-data-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    setTimeout(() => {
+      modal.classList.add('active');
+    }, 10);
+  }
+};
+
+App.hideRandomDataModal = function() {
+  const modal = document.getElementById('random-data-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    setTimeout(() => {
+      modal.style.display = 'none';
+    }, 300);
+  }
+};
+
+// ✅ NEW: Fill form with random data based on scenario
+App.fillRandomData = function(scenario) {
+  console.log('🎲 Filling random data for scenario:', scenario);
+  
+  // Hide modal first
+  this.hideRandomDataModal();
+  
+  // Generate random data based on scenario
+  let randomData = {};
+  
+  if (scenario === 'success') {
+    // High vote, high budget, high revenue = Success
+    const voteAvg = 8.0 + Math.random() * 1.5; // 8.0-9.5
+    const budget = 50000000 + Math.random() * 150000000; // $50M-$200M
+    const revenue = budget * (2.5 + Math.random() * 2.5); // 2.5x-5.0x ROI
+    
+    randomData = {
+      title: this.getRandomMovieTitle('success'),
+      voteAverage: voteAvg,
+      budget: Math.round(budget),
+      revenue: Math.round(revenue),
+      runtime: 100 + Math.floor(Math.random() * 60), // 100-160 mins
+      releaseMonth: [6, 7, 12][Math.floor(Math.random() * 3)], // Summer or Christmas
+    };
+  } else if (scenario === 'average') {
+    // Medium vote, medium budget, medium revenue
+    const voteAvg = 6.5 + Math.random() * 0.8; // 6.5-7.3
+    const budget = 30000000 + Math.random() * 50000000; // $30M-$80M
+    const revenue = budget * (1.0 + Math.random() * 0.5); // 1.0x-1.5x ROI
+    
+    randomData = {
+      title: this.getRandomMovieTitle('average'),
+      voteAverage: voteAvg,
+      budget: Math.round(budget),
+      revenue: Math.round(revenue),
+      runtime: 110 + Math.floor(Math.random() * 40), // 110-150 mins
+      releaseMonth: [3, 4, 9, 10][Math.floor(Math.random() * 4)], // Spring or Fall
+    };
+  } else if (scenario === 'failure') {
+    // Low vote, low budget, low revenue
+    const voteAvg = 4.5 + Math.random() * 1.0; // 4.5-5.5
+    const budget = 10000000 + Math.random() * 30000000; // $10M-$40M
+    const revenue = budget * (0.3 + Math.random() * 0.6); // 0.3x-0.9x ROI
+    
+    randomData = {
+      title: this.getRandomMovieTitle('failure'),
+      voteAverage: voteAvg,
+      budget: Math.round(budget),
+      revenue: Math.round(revenue),
+      runtime: 90 + Math.floor(Math.random() * 40), // 90-130 mins
+      releaseMonth: [1, 2, 5, 8][Math.floor(Math.random() * 4)], // Off-season months
+    };
+  }
+  
+  // Randomly select 1-3 genres
+  const allGenres = ['Action', 'Adventure', 'Animation', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Romance'];
+  const numGenres = 1 + Math.floor(Math.random() * 3);
+  const selectedGenres = [];
+  for (let i = 0; i < numGenres; i++) {
+    selectedGenres.push(allGenres[Math.floor(Math.random() * allGenres.length)]);
+  }
+  randomData.genres = selectedGenres;
+  
+  // Fill form fields
+  this.fillFormWithData(randomData);
+  
+  // Auto-submit after a short delay
+  setTimeout(() => {
+    const form = document.getElementById('prediction-form');
+    if (form) {
+      console.log('🎬 Auto-submitting form with random data...');
+      form.dispatchEvent(new Event('submit'));
+    }
+  }, 300);
+};
+
+// Helper: Get random movie title based on scenario
+App.getRandomMovieTitle = function(scenario) {
+  const successTitles = [
+    'Avengers Endgame', 'Avatar', 'Titanic', 'Lion King', 'Frozen',
+    'The Hive', 'Dune', 'Top Gun', 'Barbie', 'Oppenheimer'
+  ];
+  
+  const averageTitles = [
+    'The Tourist', 'Goosebumps', 'The Ring', 'Insidious', 'Lucy',
+    'Pixels', 'Battleship', 'Percy Jackson', 'City of Angels', 'Aquaman'
+  ];
+  
+  const failureTitles = [
+    'Cats', 'The Emoji Movie', 'Disaster Movie', 'Birdemic', 'Gigli',
+    'Movie 43', 'Madea Express', 'The Room', 'Troll 2', 'Saving Christmas'
+  ];
+  
+  const titles = scenario === 'success' ? successTitles : 
+                 scenario === 'average' ? averageTitles : failureTitles;
+  
+  return titles[Math.floor(Math.random() * titles.length)];
+};
+
+// Helper: Fill form with random data
+App.fillFormWithData = function(data) {
+  // Title
+  const titleInput = document.getElementById('title');
+  if (titleInput) titleInput.value = data.title;
+  
+  // Vote Average (range slider)
+  const voteAvgInput = document.getElementById('vote_average');
+  if (voteAvgInput) {
+    voteAvgInput.value = data.voteAverage.toFixed(1);
+    const valueDisplay = voteAvgInput.parentElement.querySelector('.range-value');
+    if (valueDisplay) valueDisplay.textContent = data.voteAverage.toFixed(1);
+  }
+  
+  // Budget (number input)
+  const budgetInput = document.getElementById('budget');
+  if (budgetInput) {
+    budgetInput.value = data.budget;
+  }
+  
+  // Revenue (number input)
+  const revenueInput = document.getElementById('revenue');
+  if (revenueInput) {
+    revenueInput.value = data.revenue;
+  }
+  
+  // Runtime (range slider)
+  const runtimeInput = document.getElementById('runtime');
+  if (runtimeInput) {
+    runtimeInput.value = data.runtime;
+    const valueDisplay = runtimeInput.parentElement.querySelector('.range-value');
+    if (valueDisplay) valueDisplay.textContent = data.runtime + ' phút';
+  }
+  
+  // Release Month
+  const releaseMonth = data.releaseMonth;
+  const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const releaseDate = document.getElementById('release_date');
+  if (releaseDate) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const day = '01';
+    const month = String(releaseMonth).padStart(2, '0');
+    releaseDate.value = `${year}-${month}-${day}`;
+  }
+  
+  // Genres - click genre chips to select them
+  const genresInput = document.getElementById('genres');
+  if (genresInput) {
+    // Clear previous selections
+    document.querySelectorAll('.genre-chip.active').forEach(chip => {
+      chip.classList.remove('active');
+    });
+    
+    // Select new genres
+    data.genres.forEach(genreToSelect => {
+      const genreChip = document.querySelector(`.genre-chip[data-genre="${genreToSelect}"]`);
+      if (genreChip) {
+        genreChip.classList.add('active');
+      }
+    });
+    
+    // Update hidden genres input
+    genresInput.value = data.genres.join(',');
+  }
+  
+  console.log('✅ Form filled with random data:', data);
+};
 
 // ========== 9. INITIALIZE ALL ENHANCEMENTS ==========
 function initializeEnhancements() {
