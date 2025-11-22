@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoviePredict | AI Box Office Analytics</title>
-    
+
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
-    
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon/favicon.svg') }}">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
+
 <body class="dark-theme">
     <!-- Background Elements -->
     <div class="bg-noise"></div>
-    <div class="bg-glow-top"></div>
-    <div class="bg-glow-bottom"></div>
+    <div class="bg-aurora"></div>
+    <canvas id="particles-canvas"></canvas>
 
     <!-- Navigation -->
     <nav class="glass-nav">
@@ -44,91 +49,89 @@
 
     <!-- Main Content -->
     <main class="container main-layout">
-        
+
         <!-- Section 1: Hero & Input -->
         <section id="predict" class="hero-section">
             <div class="hero-content">
-                <h1 class="hero-title">
+                <h1 class="hero-title glitch-text" data-text="Dự Đoán Doanh Thu Phim">
                     Dự Đoán <span class="text-gradient">Doanh Thu Phim</span><br>
                     Bằng Trí Tuệ Nhân Tạo
                 </h1>
                 <p class="hero-subtitle">
-                    Phân tích tiềm năng thành công của dự án phim điện ảnh Việt Nam với độ chính xác 99.5% dựa trên dữ liệu lịch sử.
+                    Phân tích tiềm năng thành công của dự án phim điện ảnh Việt Nam với độ chính xác 99.5% dựa trên dữ
+                    liệu lịch sử.
                 </p>
-                
+
                 <!-- Input Card -->
                 <div class="glass-card input-card">
                     <form id="prediction-form">
                         <div class="form-header">
                             <h3><i class="fas fa-magic"></i> Nhập Thông Tin Phim</h3>
                         </div>
-                        
+
                         <div class="form-grid">
                             <!-- Title -->
                             <div class="form-group full-width">
                                 <label>Tên Phim</label>
                                 <div class="input-wrapper">
                                     <i class="fas fa-heading"></i>
-                                    <input type="text" id="title" name="title" placeholder="VD: Mai, Lật Mặt 7..." required>
+                                    <input type="text" id="title" name="title" placeholder="VD: Mai, Lật Mặt 7..."
+                                        required>
                                 </div>
                             </div>
 
-                            <!-- Budget -->
-                            <div class="form-group">
-                                <label>Ngân Sách (USD)</label>
+                            <div class="form-group floating-group">
                                 <div class="input-wrapper">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    <input type="number" id="budget" name="budget" placeholder="5000000" required>
+                                    <input type="number" id="budget" name="budget" required placeholder=" " min="0">
+                                    <label for="budget">Ngân Sách (USD)</label>
+                                    <i class="fas fa-money-bill-wave"></i>
                                 </div>
                             </div>
 
-                            <!-- Revenue (Current) -->
-                            <div class="form-group">
-                                <label>Doanh Thu Hiện Tại (USD)</label>
+                            <div class="form-group floating-group">
                                 <div class="input-wrapper">
+                                    <input type="number" id="revenue" name="revenue" required placeholder=" " min="0">
+                                    <label for="revenue">Doanh Thu Hiện Tại (USD)</label>
                                     <i class="fas fa-chart-line"></i>
-                                    <input type="number" id="revenue" name="revenue" placeholder="0" required>
                                 </div>
                                 <small class="hint">Nhập 0 nếu phim chưa chiếu</small>
                             </div>
 
-                            <!-- Vote Average -->
-                            <div class="form-group">
-                                <label>Điểm Đánh Giá (TMDB)</label>
+                            <div class="form-group floating-group">
                                 <div class="input-wrapper">
+                                    <input type="number" id="vote_average" name="vote_average" step="0.1" min="0"
+                                        max="10" required placeholder=" ">
+                                    <label for="vote_average">Điểm Đánh Giá (TMDB)</label>
                                     <i class="fas fa-star"></i>
-                                    <input type="number" id="vote_average" name="vote_average" step="0.1" min="0" max="10" placeholder="7.5" required>
                                 </div>
                             </div>
 
-                            <!-- Runtime -->
-                            <div class="form-group">
-                                <label>Thời Lượng (Phút)</label>
+                            <div class="form-group floating-group">
                                 <div class="input-wrapper">
+                                    <input type="number" id="runtime" name="runtime" required placeholder=" " min="0">
+                                    <label for="runtime">Thời Lượng (Phút)</label>
                                     <i class="fas fa-clock"></i>
-                                    <input type="number" id="runtime" name="runtime" placeholder="120" value="120">
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Genres -->
-                        <div class="form-group full-width">
-                            <label>Thể Loại</label>
-                            <div class="genre-selector" id="genre-selector">
-                                <!-- Generated by JS -->
+                            <!-- Genres -->
+                            <div class="form-group full-width">
+                                <label>Thể Loại</label>
+                                <div class="genre-selector" id="genre-selector">
+                                    <!-- Generated by JS -->
+                                </div>
+                                <input type="hidden" id="genres" name="genres">
                             </div>
-                            <input type="hidden" id="genres" name="genres">
-                        </div>
 
-                        <div class="form-actions">
-                            <button type="button" id="randomDataBtn" class="btn-secondary">
-                                <i class="fas fa-random"></i> Dữ Liệu Mẫu
-                            </button>
-                            <button type="submit" id="submitBtn" class="btn-primary">
-                                <span class="btn-text">Phân Tích Ngay</span>
-                                <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i></span>
-                            </button>
-                        </div>
+                            <div class="form-actions">
+                                <button type="button" id="randomDataBtn" class="btn-secondary">
+                                    <i class="fas fa-random"></i> Dữ Liệu Mẫu
+                                </button>
+                                <button type="submit" id="submitBtn" class="btn-primary">
+                                    <span class="btn-text">Phân Tích Ngay</span>
+                                    <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i></span>
+                                </button>
+                            </div>
                     </form>
                 </div>
             </div>
@@ -210,6 +213,111 @@
                 </div>
             </div>
         </section>
+
+        <!-- Section 4: Project Journey (Timeline) -->
+        <section id="journey" class="journey-section">
+            <div class="section-header-center">
+                <h2 class="section-title">Hành Trình Dự Án</h2>
+                <p class="section-subtitle">Quá trình xây dựng và phát triển hệ thống dự đoán</p>
+            </div>
+
+            <div class="timeline">
+                <!-- Step 1 -->
+                <div class="timeline-item left">
+                    <div class="timeline-content glass-card clickable" data-stage="1">
+                        <div class="date">Giai Đoạn 1</div>
+                        <h3><i class="fas fa-database"></i> Thu Thập Dữ Liệu</h3>
+                        <p>
+                            Sử dụng Python để crawl dữ liệu từ <strong>TMDB</strong> và <strong>IMDb</strong>.
+                            Tổng hợp thông tin của hơn 2,000 bộ phim bao gồm ngân sách, doanh thu, diễn viên, và đạo
+                            diễn.
+                        </p>
+                        <span class="tag">BeautifulSoup</span>
+                        <span class="tag">TMDB API</span>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="timeline-item right">
+                    <div class="timeline-content glass-card clickable" data-stage="2">
+                        <div class="date">Giai Đoạn 2</div>
+                        <h3><i class="fas fa-filter"></i> Xử Lý & Làm Sạch</h3>
+                        <p>
+                            Xử lý dữ liệu thiếu (missing values), chuẩn hóa tiền tệ về USD, và loại bỏ các phim không có
+                            doanh thu (outliers).
+                            Thực hiện <strong>Feature Engineering</strong> để tạo ra các đặc trưng mới như ROI.
+                        </p>
+                        <span class="tag">Pandas</span>
+                        <span class="tag">NumPy</span>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="timeline-item left">
+                    <div class="timeline-content glass-card clickable" data-stage="3">
+                        <div class="date">Giai Đoạn 3</div>
+                        <h3><i class="fas fa-brain"></i> Huấn Luyện Mô Hình</h3>
+                        <p>
+                            Thử nghiệm nhiều thuật toán: Linear Regression, SVM, và quyết định chọn <strong>Random
+                                Forest</strong>
+                            vì độ chính xác cao nhất (99.5%) và khả năng chống overfitting tốt.
+                        </p>
+                        <span class="tag">Scikit-learn</span>
+                        <span class="tag">Random Forest</span>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="timeline-item right">
+                    <div class="timeline-content glass-card clickable" data-stage="4">
+                        <div class="date">Giai Đoạn 4</div>
+                        <h3><i class="fas fa-laptop-code"></i> Xây Dựng Ứng Dụng</h3>
+                        <p>
+                            Phát triển Web App sử dụng <strong>Flask</strong> cho backend và giao diện hiện đại với
+                            <strong>Glassmorphism</strong>. Tích hợp biểu đồ trực quan hóa dữ liệu thời gian thực.
+                        </p>
+                        <span class="tag">Flask</span>
+                        <span class="tag">Chart.js</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Team -->
+        <section id="about" class="team-section">
+            <div class="section-header-center">
+                <h2 class="section-title">Đội Ngũ Thực Hiện</h2>
+            </div>
+
+            <div class="team-grid">
+                <div class="glass-card team-card">
+                    <div class="member-avatar">
+                        <img src="{{ url_for('static', filename='images/member1.jpg') }}" alt="Member 1"
+                            onerror="this.src='https://ui-avatars.com/api/?name=Khuê+Đinh&background=FFD700&color=000'">
+                    </div>
+                    <h3>Đinh Ngọc Khuê</h3>
+                    <p class="role">Trưởng Nhóm / AI Engineer</p>
+                </div>
+
+                <div class="glass-card team-card">
+                    <div class="member-avatar">
+                        <img src="{{ url_for('static', filename='images/member2.jpg') }}" alt="Member 2"
+                            onerror="this.src='https://ui-avatars.com/api/?name=Hoà+Khổng&background=00f2ff&color=000'">
+                    </div>
+                    <h3>Khổng Thị Hoà</h3>
+                    <p class="role">Data Analyst</p>
+                </div>
+
+                <div class="glass-card team-card">
+                    <div class="member-avatar">
+                        <img src="{{ url_for('static', filename='images/member3.jpg') }}" alt="Member 3"
+                            onerror="this.src='https://ui-avatars.com/api/?name=Huy+Phan&background=ff4d4d&color=fff'">
+                    </div>
+                    <h3>Phan Văn Huy</h3>
+                    <p class="role">Frontend Developer</p>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
@@ -218,7 +326,32 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- Journey Details Modal -->
+    <div id="journey-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-card">
+            <button class="modal-close"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <h3 id="modal-title">Giai Đoạn X</h3>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h4><i class="fas fa-info-circle"></i> Chi Tiết Thực Hiện</h4>
+                    <p id="modal-details">...</p>
+                </div>
+                <div class="modal-section">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Vấn Đề Gặp Phải</h4>
+                    <p id="modal-issues">...</p>
+                </div>
+                <div class="modal-section">
+                    <h4><i class="fas fa-check-circle"></i> Giải Pháp</h4>
+                    <p id="modal-solutions">...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
+
 </html>
