@@ -10,3 +10,4 @@ gunicorn
 flask_bcrypt
 flask_login
 python-dotenv
+beautifulsoup4
