@@ -140,7 +140,10 @@
         <!-- Section 2: Results Dashboard (Hidden by default) -->
         <section id="results" class="results-section hidden">
             <div class="section-header">
-                <h2>Kết Quả Phân Tích</h2>
+                <div>
+                    <h2>Kết Quả Phân Tích</h2>
+                    <h3 id="result-movie-title" class="result-movie-title"></h3>
+                </div>
                 <button id="resetBtn" class="btn-icon"><i class="fas fa-redo"></i></button>
             </div>
 
@@ -152,6 +155,9 @@
                         <div class="confidence-badge" id="confidence-badge">
                             98%
                         </div>
+                    </div>
+                    <div class="model-info-badge">
+                        <i class="fas fa-microchip"></i> Model: Random Forest
                     </div>
                     <div class="result-body">
                         <div class="prediction-status" id="prediction-status">
@@ -225,65 +231,243 @@
                 <!-- Step 1 -->
                 <div class="timeline-item left">
                     <div class="timeline-content glass-card clickable" data-stage="1">
-                        <div class="date">Giai Đoạn 1</div>
-                        <h3><i class="fas fa-database"></i> Thu Thập Dữ Liệu</h3>
+                        <div class="date">Tuần 1-2</div>
+                        <h3><i class="fas fa-search"></i> Khởi Động & Thu Thập</h3>
                         <p>
-                            Sử dụng Python để crawl dữ liệu từ <strong>TMDB</strong> và <strong>IMDb</strong>.
-                            Tổng hợp thông tin của hơn 2,000 bộ phim bao gồm ngân sách, doanh thu, diễn viên, và đạo
-                            diễn.
+                            Xác định bài toán và thu thập dữ liệu thô từ <strong>TMDB & IMDb</strong>.
+                            Xây dựng nền tảng cho dự án với hơn 2,000 bộ phim.
                         </p>
-                        <span class="tag">BeautifulSoup</span>
-                        <span class="tag">TMDB API</span>
+                        <span class="tag">Data Collection</span>
+                        <span class="tag">Planning</span>
                     </div>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="timeline-item right">
                     <div class="timeline-content glass-card clickable" data-stage="2">
-                        <div class="date">Giai Đoạn 2</div>
-                        <h3><i class="fas fa-filter"></i> Xử Lý & Làm Sạch</h3>
+                        <div class="date">Tuần 2-3</div>
+                        <h3><i class="fas fa-broom"></i> Làm Sạch & Định Nghĩa</h3>
                         <p>
-                            Xử lý dữ liệu thiếu (missing values), chuẩn hóa tiền tệ về USD, và loại bỏ các phim không có
-                            doanh thu (outliers).
-                            Thực hiện <strong>Feature Engineering</strong> để tạo ra các đặc trưng mới như ROI.
+                            Xử lý dữ liệu nhiễu và định nghĩa tiêu chí <strong>"Thành Công"</strong>
+                            (ROI ≥ 1 & Vote ≥ 6.5). Chuẩn bị dataset sạch sẽ.
                         </p>
-                        <span class="tag">Pandas</span>
-                        <span class="tag">NumPy</span>
+                        <span class="tag">Data Cleaning</span>
+                        <span class="tag">EDA</span>
                     </div>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="timeline-item left">
                     <div class="timeline-content glass-card clickable" data-stage="3">
-                        <div class="date">Giai Đoạn 3</div>
-                        <h3><i class="fas fa-brain"></i> Huấn Luyện Mô Hình</h3>
+                        <div class="date">Tuần 4</div>
+                        <h3><i class="fas fa-cogs"></i> Feature Engineering</h3>
                         <p>
-                            Thử nghiệm nhiều thuật toán: Linear Regression, SVM, và quyết định chọn <strong>Random
-                                Forest</strong>
-                            vì độ chính xác cao nhất (99.5%) và khả năng chống overfitting tốt.
+                            Biến đổi dữ liệu thô thành <strong>47 đặc trưng</strong> có ý nghĩa.
+                            Tạo các biến mới như ROI, Mùa phim, và Tương tác diễn viên.
                         </p>
-                        <span class="tag">Scikit-learn</span>
-                        <span class="tag">Random Forest</span>
+                        <span class="tag">Feature Extraction</span>
+                        <span class="tag">One-Hot Encoding</span>
                     </div>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="timeline-item right">
                     <div class="timeline-content glass-card clickable" data-stage="4">
-                        <div class="date">Giai Đoạn 4</div>
-                        <h3><i class="fas fa-laptop-code"></i> Xây Dựng Ứng Dụng</h3>
+                        <div class="date">Tuần 5-8</div>
+                        <h3><i class="fas fa-chess-king"></i> Huấn Luyện & Tối Ưu</h3>
                         <p>
-                            Phát triển Web App sử dụng <strong>Flask</strong> cho backend và giao diện hiện đại với
-                            <strong>Glassmorphism</strong>. Tích hợp biểu đồ trực quan hóa dữ liệu thời gian thực.
+                            Cuộc đua giữa <strong>Logistic Regression</strong> và <strong>Random Forest</strong>.
+                            Tinh chỉnh tham số và kiểm chứng chéo (Cross-Validation).
                         </p>
-                        <span class="tag">Flask</span>
-                        <span class="tag">Chart.js</span>
+                        <span class="tag">Model Training</span>
+                        <span class="tag">Optimization</span>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="timeline-item left">
+                    <div class="timeline-content glass-card clickable" data-stage="5">
+                        <div class="date">Tuần 9-10</div>
+                        <h3><i class="fas fa-rocket"></i> Hoàn Thiện Sản Phẩm</h3>
+                        <p>
+                            Xây dựng Web App với giao diện <strong>Glassmorphism</strong>.
+                            Viết báo cáo chi tiết và đóng gói sản phẩm cuối cùng.
+                        </p>
+                        <span class="tag">Web Development</span>
+                        <span class="tag">Deployment</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 5: Team -->
+        <!-- Section 4.5: Data Storytelling -->
+        <section id="story" class="story-section">
+            <div class="container">
+                <!-- Intro Block -->
+                <div class="story-intro text-center mb-5">
+                    <span class="badge-glow">Báo Cáo Dự Án</span>
+                    <h2 class="story-title">Hành Trình Chinh Phục Dữ Liệu Điện Ảnh</h2>
+                    <p class="story-lead">
+                        Được thực hiện bởi <strong>Nhóm 04 - Khoa Học Dữ Liệu HUMG</strong> trong 5 tuần nỗ lực không
+                        ngừng nghỉ.
+                        Chúng tôi đã biến những con số khô khan thành một công cụ dự đoán mạnh mẽ.
+                    </p>
+                </div>
+
+                <!-- Chapter 1: The Data -->
+                <div class="story-chapter">
+                    <div class="chapter-header">
+                        <span class="chapter-number">01</span>
+                        <h3>"Đãi Cát Tìm Vàng" - Xử Lý Dữ Liệu</h3>
+                    </div>
+                    <div class="chapter-content">
+                        <div class="row">
+                            <div class="col-text">
+                                <p>
+                                    Hành trình bắt đầu với một thách thức lớn: <strong>2,194 bộ phim</strong> từ nhiều
+                                    nguồn khác nhau với dữ liệu hỗn loạn.
+                                    Trong 4 tuần đầu tiên, chúng tôi đã phải "làm sạch" từng dòng dữ liệu, xử lý các giá
+                                    trị thiếu và loại bỏ những nhiễu loạn.
+                                </p>
+                                <p>
+                                    Nhưng điều thú vị nhất là quá trình <strong>Feature Engineering</strong>. Chúng tôi
+                                    không chỉ dùng dữ liệu thô, mà đã sáng tạo ra <strong>47 đặc trưng mới</strong>.
+                                    Từ việc phân tích thời điểm phát hành (Mùa phim bom tấn vs Mùa thấp điểm) đến việc
+                                    tính toán chỉ số ROI (Tỷ suất lợi nhuận).
+                                </p>
+                                <div class="stats-mini-grid">
+                                    <div class="stat-mini">
+                                        <strong>2,194</strong>
+                                        <span>Bộ Phim</span>
+                                    </div>
+                                    <div class="stat-mini">
+                                        <strong>47</strong>
+                                        <span>Features</span>
+                                    </div>
+                                    <div class="stat-mini">
+                                        <strong>20+</strong>
+                                        <span>Năm Dữ Liệu</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-visual">
+                                <div class="glass-card chart-box-mini">
+                                    <h4>Phân Bố Thể Loại Phim</h4>
+                                    <div class="chart-wrapper-mini">
+                                        <canvas id="genreChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chapter 2: The Model Race -->
+                <div class="story-chapter reverse">
+                    <div class="chapter-header">
+                        <span class="chapter-number">02</span>
+                        <h3>Cuộc Đua Thuật Toán</h3>
+                    </div>
+                    <div class="chapter-content">
+                        <div class="row">
+                            <div class="col-visual">
+                                <div class="glass-card comparison-card">
+                                    <h4>Hiệu Suất Mô Hình (F1-Score)</h4>
+                                    <div class="comparison-bar">
+                                        <div class="model-name">Logistic Regression</div>
+                                        <div class="progress-bar">
+                                            <div class="progress" style="width: 84.88%">84.88%</div>
+                                        </div>
+                                    </div>
+                                    <div class="comparison-bar winner">
+                                        <div class="model-name">Random Forest <i class="fas fa-crown text-warning"></i>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress" style="width: 99.52%">99.52%</div>
+                                        </div>
+                                    </div>
+                                    <p class="comparison-note">
+                                        Random Forest vượt trội nhờ khả năng xử lý các mối quan hệ phi tuyến tính phức
+                                        tạp.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-text">
+                                <p>
+                                    Tuần thứ 5 là thời điểm quyết định. Chúng tôi đưa hai "đấu thủ" lên sàn đấu:
+                                    <strong>Logistic Regression</strong> (cổ điển, dễ hiểu) và <strong>Random
+                                        Forest</strong> (mạnh mẽ, linh hoạt).
+                                </p>
+                                <p>
+                                    Kết quả thật bất ngờ nhưng thuyết phục. Trong khi Logistic Regression chỉ đạt độ
+                                    chính xác khoảng 85%, <strong>Random Forest</strong> đã bứt phá ngoạn mục với
+                                    <strong>F1-Score lên tới 99.52%</strong>.
+                                    Mô hình này đã chứng minh khả năng học hỏi tuyệt vời từ những tương tác phức tạp
+                                    giữa ngân sách, diễn viên và thể loại phim.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chapter 3: The Insights -->
+                <div class="story-chapter">
+                    <div class="chapter-header">
+                        <span class="chapter-number">03</span>
+                        <h3>Bí Mật Của Sự Thành Công</h3>
+                    </div>
+                    <div class="chapter-content">
+                        <p class="text-center mb-4">
+                            Điều gì thực sự làm nên một bộ phim "bom tấn"? Phân tích Feature Importance của chúng tôi đã
+                            hé lộ những sự thật thú vị.
+                        </p>
+                        <div class="insights-grid">
+                            <div class="glass-card insight-card highlight">
+                                <div class="insight-icon"><i class="fas fa-star"></i></div>
+                                <h4>Chất Lượng Là Vua</h4>
+                                <div class="insight-value">41.56%</div>
+                                <p>
+                                    <strong>Vote Average</strong> là yếu tố quan trọng nhất. Khán giả ngày nay rất thông
+                                    minh, một bộ phim hay thực sự sẽ luôn có chỗ đứng.
+                                </p>
+                            </div>
+                            <div class="glass-card insight-card">
+                                <div class="insight-icon"><i class="fas fa-balance-scale"></i></div>
+                                <h4>Cân Bằng Ngân Sách</h4>
+                                <div class="insight-value">10.70%</div>
+                                <p>
+                                    <strong>ROI vs Vote</strong>: Sự cân bằng giữa lợi nhuận và đánh giá nghệ thuật.
+                                    Phim vừa lời vừa được khen mới là thành công bền vững.
+                                </p>
+                            </div>
+                            <div class="glass-card insight-card">
+                                <div class="insight-icon"><i class="fas fa-bullhorn"></i></div>
+                                <h4>Sức Mạnh Truyền Thông</h4>
+                                <div class="insight-value">5.14%</div>
+                                <p>
+                                    <strong>Vote Count</strong>: Số lượng người quan tâm và đánh giá phản ánh độ phủ
+                                    sóng (viral) của bộ phim.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conclusion -->
+                <div class="story-footer text-center mt-5">
+                    <p class="conclusion-text">
+                        "Dự án này không chỉ là bài tập, mà là nỗ lực của chúng tôi để mang góc nhìn <strong>Khoa Học Dữ
+                            Liệu</strong> vào nghệ thuật điện ảnh.
+                        Hy vọng công cụ này sẽ hỗ trợ đắc lực cho các nhà làm phim Việt Nam."
+                    </p>
+                    <div class="signature">
+                        <img src="{{ url_for('static', filename='images/signature.png') }}" alt="Signature"
+                            class="signature-img" onerror="this.style.display='none'">
+                        <span>Nhóm 04 - KHDLK68 - HUMG</span>
+                    </div>
+                </div>
+            </div>
+        </section>
         <section id="about" class="team-section">
             <div class="section-header-center">
                 <h2 class="section-title">Đội Ngũ Thực Hiện</h2>
@@ -296,7 +480,7 @@
                             onerror="this.src='https://ui-avatars.com/api/?name=Khuê+Đinh&background=FFD700&color=000'">
                     </div>
                     <h3>Đinh Ngọc Khuê</h3>
-                    <p class="role">Trưởng Nhóm / AI Engineer</p>
+                    <p class="role">Data EDA</p>
                 </div>
 
                 <div class="glass-card team-card">
@@ -305,7 +489,7 @@
                             onerror="this.src='https://ui-avatars.com/api/?name=Hoà+Khổng&background=00f2ff&color=000'">
                     </div>
                     <h3>Khổng Thị Hoà</h3>
-                    <p class="role">Data Analyst</p>
+                    <p class="role">Trưởng nhóm</p>
                 </div>
 
                 <div class="glass-card team-card">
@@ -314,7 +498,7 @@
                             onerror="this.src='https://ui-avatars.com/api/?name=Huy+Phan&background=ff4d4d&color=fff'">
                     </div>
                     <h3>Phan Văn Huy</h3>
-                    <p class="role">Frontend Developer</p>
+                    <p class="role">Data Engineer</p>
                 </div>
             </div>
         </section>
@@ -322,7 +506,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2024 MoviePredict AI. Designed for Cinema.</p>
+            <p>&copy; Bộ môn Đồ Án 01 - Chuyên ngành Khoa học dữ liệu - HUMG</p>
         </div>
     </footer>
 

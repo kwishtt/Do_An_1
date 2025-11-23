@@ -10,7 +10,147 @@ const App = {
     this.setupScrollAnimations();
     this.setupModal();
     this.setupParticles();
-    this.setupNavbar();
+    this.setupStoryCharts();
+    this.setupCounters();
+  },
+
+  setupCounters() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = entry.target;
+          const endValue = parseFloat(target.getAttribute('data-target'));
+          this.animateValue(target, 0, endValue, 2000);
+          observer.unobserve(target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.count-up').forEach(el => observer.observe(el));
+  },
+
+  animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+
+      // Easing function
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+
+      const current = start + (end - start) * easeOutQuart;
+
+      if (end % 1 !== 0) {
+        obj.innerHTML = current.toFixed(1);
+      } else {
+        obj.innerHTML = Math.floor(current);
+      }
+
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      } else {
+        if (end % 1 !== 0) {
+          obj.innerHTML = end.toFixed(1);
+        } else {
+          obj.innerHTML = end;
+        }
+      }
+    };
+    window.requestAnimationFrame(step);
+  },
+
+  setupStoryCharts() {
+    // Genre Distribution Chart (Doughnut)
+    const genreCtx = document.getElementById('genreChart');
+    if (genreCtx) {
+      new Chart(genreCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Action', 'Drama', 'Comedy', 'Adventure', 'Horror', 'Thriller', 'Sci-Fi', 'Romance'],
+          datasets: [{
+            data: [25, 20, 18, 15, 8, 7, 5, 2],
+            backgroundColor: [
+              '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
+              '#98D8C8', '#F7DC6F', '#BB8FCE', '#F1948A'
+            ],
+            borderWidth: 0,
+            hoverOffset: 10
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                color: '#a0a0b0',
+                font: { family: "'Inter', sans-serif", size: 11 },
+                boxWidth: 12
+              }
+            }
+          },
+          cutout: '70%'
+        }
+      });
+    }
+
+    // Budget vs Revenue Scatter Plot
+    const scatterCtx = document.getElementById('scatterChart');
+    if (scatterCtx) {
+      // Generate simulated data points
+      const scatterData = [];
+      for (let i = 0; i < 50; i++) {
+        const budget = Math.random() * 200 + 10; // 10M - 210M
+        // Revenue correlates with budget but with high variance
+        const multiplier = Math.random() * 5 + 0.5; // 0.5x - 5.5x
+        const revenue = budget * multiplier;
+        scatterData.push({ x: budget, y: revenue });
+      }
+
+      new Chart(scatterCtx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'Phim (Triệu USD)',
+            data: scatterData,
+            backgroundColor: 'rgba(0, 195, 255, 0.6)',
+            borderColor: 'rgba(0, 195, 255, 1)',
+            borderWidth: 1,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              title: { display: true, text: 'Ngân Sách (Triệu $)', color: '#8f90a0' },
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#8f90a0' }
+            },
+            y: {
+              title: { display: true, text: 'Doanh Thu (Triệu $)', color: '#8f90a0' },
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#8f90a0' }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(10, 10, 15, 0.9)',
+              titleColor: '#fff',
+              callbacks: {
+                label: function (context) {
+                  return `Budget: $${context.parsed.x}M - Revenue: $${context.parsed.y.toFixed(1)}M`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
   },
 
   setupNavbar() {
@@ -162,28 +302,34 @@ const App = {
 
   journeyData: {
     1: {
-      title: "Giai Đoạn 1: Thu Thập Dữ Liệu",
-      details: "Sử dụng thư viện <strong>BeautifulSoup</strong> để crawl dữ liệu từ IMDb và <strong>TMDB API</strong> để lấy thông tin chi tiết. Tổng hợp được dataset gồm 2,000+ bộ phim với 15 trường thông tin.",
-      issues: "Gặp vấn đề về <strong>Rate Limit</strong> của API và cấu trúc HTML không đồng nhất trên IMDb.",
-      solutions: "Sử dụng kỹ thuật <strong>Backoff Strategy</strong> (đợi 1s sau mỗi request) và viết các hàm parser linh hoạt để xử lý ngoại lệ."
+      title: "Tuần 1: Khởi Động & Thu Thập Dữ Liệu",
+      details: "Bắt đầu với việc xác định bài toán và thu thập dữ liệu. Chúng em đã tải bộ dữ liệu <strong>Movies.csv</strong> từ Kaggle (nguồn gốc từ TMDB/IMDb) và tiến hành kiểm tra cấu trúc của hơn 2,000 bộ phim. Các trường quan trọng như Budget, Revenue, Cast, và Genres được rà soát kỹ lưỡng.",
+      issues: "Dữ liệu thô ban đầu chứa nhiều nhiễu và định dạng không đồng nhất, đặc biệt là các cột tiền tệ và ngày tháng.",
+      solutions: "Thống nhất quy trình xử lý dữ liệu và xác định các cột quan trọng cần giữ lại cho mô hình."
     },
     2: {
-      title: "Giai Đoạn 2: Xử Lý & Làm Sạch",
-      details: "Thực hiện Data Cleaning: Xử lý missing values (điền trung vị cho budget), loại bỏ các phim có doanh thu = 0. Feature Engineering: Tạo cột <strong>ROI</strong> và chuẩn hóa đơn vị tiền tệ.",
-      issues: "Dữ liệu bị nhiễu (Outliers) ở các phim bom tấn và phim độc lập kinh phí thấp.",
-      solutions: "Sử dụng phương pháp <strong>IQR (Interquartile Range)</strong> để phát hiện và xử lý ngoại lai, đồng thời log-transform các biến số lớn."
+      title: "Tuần 2-3: Làm Sạch & Định Nghĩa Thành Công",
+      details: "Giai đoạn quan trọng để chuẩn hóa dữ liệu. Chúng em đã xử lý <strong>1,173 hàng</strong> có Budget/Revenue bằng 0 và điền giá trị thiếu cho Director/Stars. Quan trọng nhất, nhóm đã định nghĩa tiêu chí <strong>Thành Công</strong>: Phim phải có <strong>ROI ≥ 1</strong> (không lỗ) VÀ <strong>Vote Average ≥ 6.5</strong> (được khán giả đón nhận).",
+      issues: "Việc định nghĩa 'Thành công' là thách thức lớn nhất. Nếu chỉ dựa vào doanh thu sẽ bỏ qua phim nghệ thuật, nếu chỉ dựa vào điểm số sẽ bỏ qua yếu tố thương mại.",
+      solutions: "Quyết định sử dụng tiêu chí kép (ROI + Rating) để đảm bảo tính toàn diện, cân bằng giữa yếu tố kinh tế và chất lượng nội dung."
     },
     3: {
-      title: "Giai Đoạn 3: Huấn Luyện Mô Hình",
-      details: "Chia tập dữ liệu Train/Test (80/20). Thử nghiệm các thuật toán: Linear Regression, SVM, Random Forest. Sử dụng <strong>GridSearchCV</strong> để tối ưu tham số.",
-      issues: "Mô hình ban đầu bị <strong>Overfitting</strong> trên tập train (99%) nhưng thấp trên tập test.",
-      solutions: "Điều chỉnh độ sâu của cây (max_depth), tăng số lượng cây (n_estimators) và sử dụng Cross-Validation để đánh giá khách quan."
+      title: "Tuần 4: Feature Engineering - Biến Số Mới",
+      details: "Từ dữ liệu thô, chúng em đã tạo ra <strong>47 đặc trưng mới</strong>. Các đặc trưng nổi bật bao gồm: <em>roi_vs_vote</em> (tương tác giữa lợi nhuận và điểm số), <em>num_main_cast</em> (số lượng diễn viên chính), và các đặc trưng thời gian như <em>release_quarter</em> (quý phát hành).",
+      issues: "Dữ liệu có nhiều biến phân loại (Categorical) như Thể loại và Quốc gia, khó đưa trực tiếp vào mô hình.",
+      solutions: "Sử dụng kỹ thuật <strong>One-Hot Encoding</strong> cho Top 15 Genres và Top 10 Countries, đồng thời Log-transform các biến số lớn như Budget/Revenue."
     },
     4: {
-      title: "Giai Đoạn 4: Xây Dựng Ứng Dụng",
-      details: "Backend: Flask API để serve model. Frontend: HTML5/CSS3 với thiết kế Glassmorphism. Tích hợp Chart.js để vẽ biểu đồ Feature Importance.",
-      issues: "Giao diện ban đầu chưa responsive và thiếu tính tương tác.",
-      solutions: "Áp dụng <strong>Mobile-First Design</strong>, sử dụng CSS Grid/Flexbox và thêm các hiệu ứng Animation/Glow để tăng trải nghiệm người dùng."
+      title: "Tuần 5-8: Huấn Luyện & Tối Ưu Mô Hình",
+      details: "Cuộc đua giữa <strong>Logistic Regression</strong> (Accuracy 84.8%) và <strong>Random Forest</strong>. Kết quả: Random Forest chiến thắng áp đảo với <strong>Accuracy 99.51%</strong> và F1-Score 99.52%. Phân tích Feature Importance cho thấy <strong>Vote Average</strong> (41.56%) là yếu tố quan trọng nhất.",
+      issues: "Mô hình ban đầu có thể bị Overfitting nếu không kiểm soát tốt các tham số.",
+      solutions: "Áp dụng <strong>5-Fold Cross-Validation</strong> để kiểm chứng độ ổn định và tinh chỉnh tham số (Hyperparameter Tuning) cho Random Forest."
+    },
+    5: {
+      title: "Tuần 9-10: Hoàn Thiện Sản Phẩm",
+      details: "Xây dựng Web App hoàn chỉnh sử dụng <strong>Flask</strong> và giao diện <strong>Glassmorphism</strong>. Tích hợp biểu đồ phân tích dữ liệu thực tế và đóng gói báo cáo chi tiết về toàn bộ quá trình nghiên cứu.",
+      issues: "Thách thức trong việc trình bày các kết quả phân tích phức tạp một cách trực quan và dễ hiểu trên giao diện web.",
+      solutions: "Sử dụng thư viện <strong>Chart.js</strong> để vẽ biểu đồ tương tác và thiết kế Dashboard khoa học, giúp người dùng dễ dàng nắm bắt thông tin."
     }
   },
 
@@ -382,6 +528,12 @@ const App = {
     }, 100);
 
     // Update UI Elements
+    const movieTitle = document.getElementById('title').value;
+    const resultTitleEl = document.getElementById('result-movie-title');
+    if (resultTitleEl) {
+      resultTitleEl.textContent = movieTitle ? `Phim: ${movieTitle}` : 'Phim: (Chưa đặt tên)';
+    }
+
     const prediction = data.prediction;
     const metrics = data.metrics;
 
