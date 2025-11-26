@@ -142,51 +142,67 @@
             <div class="section-header">
                 <div>
                     <h2>Kết Quả Phân Tích</h2>
-                    <h1 id="result-movie-title" class="result-movie-title"></h1>
+                    <h3 id="result-movie-title" class="result-movie-title"></h3>
                 </div>
                 <button id="resetBtn" class="btn-icon"><i class="fas fa-redo"></i></button>
             </div>
 
-            <div class="dashboard-grid">
-                <!-- Main Prediction Card -->
-                <div class="glass-card result-card main-result">
-                    <div class="result-header">
-                        <span class="label">Tỉ Lệ Thành Công Của Phim</span>
-                        <div class="confidence-badge" id="confidence-badge">
-                            98%
+            <!-- New Hero Layout -->
+            <div class="hero-result-container glass-card">
+                <div class="hero-grid">
+                    <!-- Left: Gauge & Status -->
+                    <div class="hero-status-col">
+                        <div class="gauge-wrapper">
+                            <canvas id="predictionGauge"></canvas>
+                            <div class="gauge-value">
+                                <span id="confidence-value">98%</span>
+                                <small>Xác Suất</small>
+                            </div>
+                        </div>
+                        <div class="status-text-wrapper">
+                            <div class="prediction-status" id="prediction-status">
+                                <!-- JS will inject icon and text -->
+                            </div>
+                            <p class="prediction-desc" id="prediction-desc">
+                                <!-- JS will inject description -->
+                            </p>
                         </div>
                     </div>
-                    <div class="model-info-badge">
-                        <i class="fas fa-microchip"></i> Model: Random Forest
-                    </div>
-                    <div class="result-body">
-                        <div class="prediction-status" id="prediction-status">
-                            <i class="fas fa-check-circle"></i>
-                            <span>THÀNH CÔNG</span>
+
+                    <!-- Right: Key Metrics -->
+                    <div class="hero-metrics-col">
+                        <div class="metric-pill">
+                            <div class="pill-icon"><i class="fas fa-chart-line"></i></div>
+                            <div class="pill-content">
+                                <span class="pill-label">ROI Dự Kiến</span>
+                                <span class="pill-value" id="roi-value">--</span>
+                            </div>
                         </div>
-                        <p class="prediction-desc" id="prediction-desc">
-                            Dựa trên các chỉ số, phim này có khả năng thành công rất cao.
-                        </p>
+
+                        <div class="metric-pill">
+                            <div class="pill-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="pill-content">
+                                <span class="pill-label">Rủi Ro</span>
+                                <span class="pill-value" id="risk-value">--</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-pill">
+                            <div class="pill-icon"><i class="fas fa-money-bill-wave"></i></div>
+                            <div class="pill-content">
+                                <span class="pill-label">Doanh Thu Dự Kiến</span>
+                                <span class="pill-value" id="revenue-value">--</span>
+                            </div>
+                        </div>
+
+                        <div class="model-badge-hero">
+                            <i class="fas fa-microchip"></i> AI Model: Random Forest (99.5%)
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Metrics Cards -->
-                <div class="glass-card metric-card">
-                    <div class="metric-icon"><i class="fas fa-percentage"></i></div>
-                    <div class="metric-info">
-                        <span class="label">ROI Dự Kiến</span>
-                        <span class="value" id="roi-value">--</span>
-                    </div>
-                </div>
-
-                <div class="glass-card metric-card">
-                    <div class="metric-icon"><i class="fas fa-shield-alt"></i></div>
-                    <div class="metric-info">
-                        <span class="label">Rủi Ro</span>
-                        <span class="value" id="risk-value">--</span>
-                    </div>
-                </div>
-
+            <div class="dashboard-grid mt-4">
                 <!-- Chart Section -->
                 <div class="glass-card chart-card full-width">
                     <h3><i class="fas fa-chart-bar"></i> Yếu Tố Ảnh Hưởng</h3>

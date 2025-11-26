@@ -536,46 +536,141 @@ const App = {
 
     const prediction = data.prediction;
     const metrics = data.metrics;
-
-    // Main Status
-    const statusEl = document.getElementById('prediction-status');
-    const descEl = document.getElementById('prediction-desc');
-    const badgeEl = document.getElementById('confidence-badge');
-
     const prob = prediction.success_probability;
 
+    // Hero Container Theme
+    const heroContainer = document.querySelector('.hero-result-container');
+    heroContainer.classList.remove('theme-success', 'theme-danger', 'theme-warning');
+
+    // Status Elements
+    const statusEl = document.getElementById('prediction-status');
+    const descEl = document.getElementById('prediction-desc');
+    const confidenceValEl = document.getElementById('confidence-value');
+
+    // Determine State
     if (prob >= 0.6) {
-      statusEl.innerHTML = '<i class="fas fa-check-circle"></i> <span>THÀNH CÔNG</span>';
-      statusEl.className = 'prediction-status text-success';
-      descEl.textContent = `Phim có tiềm năng thành công cao với xác suất ${prediction.confidence}% `;
+      heroContainer.classList.add('theme-success');
+      statusEl.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success)"></i> <span style="color: var(--success)">THÀNH CÔNG</span>';
+      descEl.textContent = `Dự án có tiềm năng thành công rất cao. Các chỉ số đều ủng hộ kết quả tích cực.`;
     } else if (prob <= 0.4) {
-      statusEl.innerHTML = '<i class="fas fa-times-circle"></i> <span>RỦI RO CAO</span>';
-      statusEl.className = 'prediction-status text-danger';
-      descEl.textContent = `Dự án có rủi ro cao, xác suất thành công chỉ ${prediction.confidence}% `;
+      heroContainer.classList.add('theme-danger');
+      statusEl.innerHTML = '<i class="fas fa-times-circle" style="color: var(--danger)"></i> <span style="color: var(--danger)">RỦI RO CAO</span>';
+      descEl.textContent = `Cảnh báo: Dự án có rủi ro cao. Cần xem xét lại ngân sách hoặc kịch bản.`;
     } else {
-      statusEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> <span>TRUNG BÌNH</span>';
-      statusEl.className = 'prediction-status text-warning';
-      descEl.textContent = `Phim có tiềm năng trung bình, cần cân nhắc kỹ các yếu tố. Xác suất: ${prediction.confidence}%`;
+      heroContainer.classList.add('theme-warning');
+      statusEl.innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--warning)"></i> <span style="color: var(--warning)">TRUNG BÌNH</span>';
+      descEl.textContent = `Tiềm năng ở mức trung bình. Thành công phụ thuộc nhiều vào marketing và thời điểm.`;
     }
-    badgeEl.textContent = `${prediction.confidence}% `;
 
-    // Metrics
+    // Update Values
+    confidenceValEl.textContent = `${prediction.confidence}%`;
     document.getElementById('roi-value').textContent = metrics.predictedROI + 'x';
+    document.getElementById('risk-value').textContent = metrics.riskLevel;
 
-    const riskEl = document.getElementById('risk-value');
-    riskEl.textContent = metrics.riskLevel;
-    riskEl.className = 'value'; // Reset class
+    // Format Revenue
+    const revenue = metrics.predictedRevenue;
+    const formattedRevenue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(revenue);
+    document.getElementById('revenue-value').textContent = formattedRevenue;
 
-    if (['Cao', 'Rất cao'].includes(metrics.riskLevel)) {
-      riskEl.classList.add('text-danger');
-    } else if (['Trung bình', 'Trung bình cao'].includes(metrics.riskLevel)) {
-      riskEl.classList.add('text-warning');
-    } else {
-      riskEl.classList.add('text-success');
+    // Render Gauge
+    this.renderGauge(prob);
+
+    // Render Feature Chart
+    this.renderFeatureChart(data.feature_importance);
+  },
+
+  renderGauge(probability) {
+    const ctx = document.getElementById('predictionGauge').getContext('2d');
+
+    if (this.gaugeChart) {
+      this.gaugeChart.destroy();
     }
 
-    // Render Chart
-    this.renderFeatureChart(data.feature_importance);
+    const value = probability * 100;
+    const color = probability >= 0.6 ? '#00ff9d' : (probability <= 0.4 ? '#ff4d4d' : '#ffb700');
+
+    this.gaugeChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Success', 'Remaining'],
+        datasets: [{
+          data: [value, 100 - value],
+          backgroundColor: [
+            color,
+            'rgba(255, 255, 255, 0.05)'
+          ],
+          borderWidth: 0,
+          borderRadius: 20,
+          cutout: '85%',
+          circumference: 360,
+          rotation: 0,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true,
+          duration: 1500,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+  },
+
+  renderFeatureChart(featureData) {
+    const ctx = document.getElementById('featureChart').getContext('2d');
+
+    if (this.featureChart) {
+      this.featureChart.destroy();
+    }
+
+    // Process data
+    const labels = featureData.top_features.map(f => f.name);
+    const values = featureData.top_features.map(f => f.importance);
+
+    this.featureChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Mức Độ Ảnh Hưởng (%)',
+          data: values,
+          backgroundColor: 'rgba(0, 242, 255, 0.6)',
+          borderColor: '#00f2ff',
+          borderWidth: 1,
+          borderRadius: 5
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(10, 10, 15, 0.9)',
+            titleColor: '#fff',
+            bodyColor: '#a0a0b0',
+            borderColor: 'rgba(255, 255, 255, 0.1)',
+            borderWidth: 1
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+          },
+          y: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
   },
 
   setupCharts() {

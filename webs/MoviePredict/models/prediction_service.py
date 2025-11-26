@@ -364,21 +364,47 @@ class MoviePredictionService:
         """
         try:
             # ==========================================
-            # VOTE AVERAGE - 76.53% importance
+            # VOTE AVERAGE (Weighted by Vote Count)
             # ==========================================
             vote_avg = feature_dict.get('Vote Average', 6.5)
             if vote_avg is None:
-                # Tìm alternative names
                 for key in feature_dict:
                     if key.lower() in ['vote_average', 'vote average', 'vote_avg', 'voteaverage']:
                         vote_avg = feature_dict[key]
                         break
                 else:
                     vote_avg = 6.5
+
+            # Lấy Vote Count để tính độ tin cậy
+            vote_count = feature_dict.get('vote_count', 0)
+            if vote_count == 0: # Fallback tìm tên khác
+                 for key in feature_dict:
+                    if key.lower() in ['vote_count', 'votecount', 'vote count']:
+                        vote_count = feature_dict[key]
+                        break
             
-            # Normalize vote_average từ [0, 10] → [0, 1]
-            # Vote 10.0 = 100% success, Vote 5.0 = 50% success (success line), Vote 0 = 0% success
-            vote_contribution = max(0.0, min(1.0, vote_avg / 10.0))
+            # Áp dụng công thức IMDb (Weighted Rating)
+            # WR = (v / (v+m)) * R + (m / (v+m)) * C
+            # R = vote_avg
+            # v = vote_count
+            # m = minimum votes required (đặt là 500 để lọc nhiễu)
+            # C = mean vote (trung bình toàn cầu ~ 6.0)
+            
+            v = vote_count
+            m = 500
+            C = 6.0
+            
+            if v > 0:
+                weighted_vote = (v / (v + m)) * vote_avg + (m / (v + m)) * C
+            else:
+                weighted_vote = C # Nếu không có vote, lấy trung bình
+                
+            # Log sự thay đổi để so sánh
+            if abs(weighted_vote - vote_avg) > 0.1:
+                logger.info(f"Vote Adjustment: {vote_avg} -> {weighted_vote:.2f} (Votes: {v})")
+
+            # Normalize weighted_vote từ [0, 10] → [0, 1]
+            vote_contribution = max(0.0, min(1.0, weighted_vote / 10.0))
             
             # ==========================================
             # ROI - 23.47% importance
@@ -419,10 +445,8 @@ class MoviePredictionService:
             
             # Log chi tiết
             logger.debug(
-                "Dynamic prob calc: vote=%.2f (contrib=%.2f) + roi=%.2f (contrib=%.2f) = base=%.4f → final=%.4f",
-                vote_avg, vote_contribution, roi, roi_contribution, 
-                (vote_contribution * vote_weight) + (roi_contribution * roi_weight),
-                success_probability
+                "Dynamic prob calc: vote=%.2f (weighted=%.2f) + roi=%.2f = final=%.4f",
+                vote_avg, weighted_vote, roi, success_probability
             )
             
             return success_probability
