@@ -542,20 +542,37 @@ const App = {
     const descEl = document.getElementById('prediction-desc');
     const badgeEl = document.getElementById('confidence-badge');
 
-    if (prediction.will_succeed) {
+    const prob = prediction.success_probability;
+
+    if (prob >= 0.6) {
       statusEl.innerHTML = '<i class="fas fa-check-circle"></i> <span>THÀNH CÔNG</span>';
-      statusEl.className = 'prediction-status success';
+      statusEl.className = 'prediction-status text-success';
       descEl.textContent = `Phim có tiềm năng thành công cao với xác suất ${prediction.confidence}% `;
-    } else {
+    } else if (prob <= 0.4) {
       statusEl.innerHTML = '<i class="fas fa-times-circle"></i> <span>RỦI RO CAO</span>';
-      statusEl.className = 'prediction-status danger';
+      statusEl.className = 'prediction-status text-danger';
       descEl.textContent = `Dự án có rủi ro cao, xác suất thành công chỉ ${prediction.confidence}% `;
+    } else {
+      statusEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> <span>TRUNG BÌNH</span>';
+      statusEl.className = 'prediction-status text-warning';
+      descEl.textContent = `Phim có tiềm năng trung bình, cần cân nhắc kỹ các yếu tố. Xác suất: ${prediction.confidence}%`;
     }
     badgeEl.textContent = `${prediction.confidence}% `;
 
     // Metrics
     document.getElementById('roi-value').textContent = metrics.predictedROI + 'x';
-    document.getElementById('risk-value').textContent = metrics.riskLevel;
+
+    const riskEl = document.getElementById('risk-value');
+    riskEl.textContent = metrics.riskLevel;
+    riskEl.className = 'value'; // Reset class
+
+    if (['Cao', 'Rất cao'].includes(metrics.riskLevel)) {
+      riskEl.classList.add('text-danger');
+    } else if (['Trung bình', 'Trung bình cao'].includes(metrics.riskLevel)) {
+      riskEl.classList.add('text-warning');
+    } else {
+      riskEl.classList.add('text-success');
+    }
 
     // Render Chart
     this.renderFeatureChart(data.feature_importance);

@@ -401,10 +401,10 @@ class MoviePredictionService:
             # ==========================================
             # WEIGHTED COMBINATION
             # ==========================================
-            # Vote Average: 76.53% weight
-            # ROI: 23.47% weight
-            vote_weight = 0.7653
-            roi_weight = 0.2347
+            # Vote Average: 50% weight (Cân bằng)
+            # ROI: 50% weight (Thực tế)
+            vote_weight = 0.50
+            roi_weight = 0.50
             
             success_probability = (vote_contribution * vote_weight) + (roi_contribution * roi_weight)
             

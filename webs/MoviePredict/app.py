@@ -89,8 +89,8 @@ def predict():
                 # Đánh dấu đây có đang dùng model thật hay không dựa trên trạng thái tải model
                 'is_real_model': prediction_service.model is not None,
                 'key_features': {
-                    'vote_average_importance': '76.53%',
-                    'roi_importance': '23.47%',
+                    'vote_average_importance': '50.00%',
+                    'roi_importance': '50.00%',
                     'note': 'Random Forest model với 99.52% accuracy'
                 }
             }

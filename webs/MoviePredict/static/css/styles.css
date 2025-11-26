@@ -30,6 +30,7 @@
     /* Status */
     --success: #00ff9d;
     --danger: #ff4d4d;
+    --warning: #ffb700;
 
     /* Effects */
     --glass-border: 1px solid rgba(255, 255, 255, 0.05);
@@ -256,6 +257,18 @@ body {
     background: linear-gradient(135deg, var(--text-main) 0%, var(--secondary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.text-success {
+    color: var(--success) !important;
+}
+
+.text-danger {
+    color: var(--danger) !important;
+}
+
+.text-warning {
+    color: var(--warning) !important;
 }
 
 .hero-subtitle {
@@ -1572,13 +1585,13 @@ footer {
 /* Enhanced Results UI */
 .result-movie-title {
     font-family: var(--font-display);
-    font-size: 1.5rem;
+    font-size: 2.2rem;
     background: var(--primary-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-top: 5px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .model-info-badge {
