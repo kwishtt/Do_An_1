@@ -307,7 +307,8 @@
                     <span class="badge-glow">PROJECT REPORT</span>
                     <h2 class="story-title">THE DATA <span class="text-stroke">JOURNEY</span></h2>
                     <p class="story-lead text-reveal">
-                        Hành trình biến dữ liệu thô thành tri thức.
+                        Từ 2,000 dòng dữ liệu thô đến một cỗ máy dự đoán chính xác 99%. Đây là câu chuyện về cách chúng
+                        tôi tìm ra công thức của một "Bom Tấn".
                     </p>
                 </div>
 
@@ -315,29 +316,35 @@
                 <div class="story-chapter">
                     <div class="chapter-header reveal-left">
                         <span class="chapter-number">01</span>
-                        <h3>DATA PROCESSING</h3>
+                        <h3>DATA REFINEMENT</h3>
                     </div>
                     <div class="chapter-content">
                         <div class="row">
                             <div class="col-text reveal-left stagger-1">
                                 <p>
-                                    Xử lý <strong>2,194 bộ phim</strong>. Làm sạch dữ liệu, xử lý giá trị thiếu và loại
-                                    bỏ nhiễu.
+                                    Hành trình bắt đầu với <strong>2,194 bộ phim</strong> từ Kaggle. Nhưng dữ liệu thực
+                                    tế không bao giờ hoàn hảo: 1,173 dòng thiếu ngân sách, hàng loạt giá trị bị khuyết.
+                                </p>
+                                <p>
+                                    Suốt 4 tuần đầu, chúng tôi tỉ mỉ làm sạch từng dòng dữ liệu. Không chỉ dừng lại ở
+                                    đó, <strong>47 đặc trưng mới</strong> (Features) đã được kiến tạo: từ việc giải mã
+                                    <em>"Ngày phát hành"</em> để tìm ra xu hướng mùa vụ, đến việc phân tích <em>"Độ dài
+                                        phim"</em> và sức hút của dàn diễn viên.
                                 </p>
                                 <div class="stats-mini-grid">
                                     <div class="stat-mini">
-                                        <strong class="mono-text">2,194</strong>
-                                        <span>MOVIES</span>
+                                        <strong class="mono-text">1,020</strong>
+                                        <span>CLEAN SAMPLES</span>
                                     </div>
                                     <div class="stat-mini">
                                         <strong class="mono-text">47</strong>
-                                        <span>FEATURES</span>
+                                        <span>ENGINEERED FEATURES</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-visual reveal-right stagger-2">
                                 <div class="glass-card chart-box-mini">
-                                    <h4>GENRE DISTRIBUTION</h4>
+                                    <h4>DATA DISTRIBUTION</h4>
                                     <div class="chart-wrapper-mini">
                                         <canvas id="genreChart"></canvas>
                                     </div>
@@ -351,16 +358,16 @@
                 <div class="story-chapter reverse">
                     <div class="chapter-header reveal-right">
                         <span class="chapter-number">02</span>
-                        <h3>ALGORITHM RACE</h3>
+                        <h3>ALGORITHM ARENA</h3>
                     </div>
                     <div class="chapter-content">
                         <div class="row">
                             <div class="col-visual reveal-left stagger-1">
                                 <div class="glass-card comparison-card">
-                                    <h4 class="mono-text mb-3" style="margin-bottom: 15px;">MODEL PERFORMANCE</h4>
+                                    <h4 class="mono-text mb-3" style="margin-bottom: 15px;">ACCURACY BATTLE</h4>
                                     <div class="comparison-bar">
                                         <div class="model-name">
-                                            <span>Logistic Regression</span>
+                                            <span>Logistic Regression (Baseline)</span>
                                             <span>84.88%</span>
                                         </div>
                                         <div class="progress-bar">
@@ -369,7 +376,8 @@
                                     </div>
                                     <div class="comparison-bar winner">
                                         <div class="model-name">
-                                            <span class="highlight">Random Forest <i class="fas fa-crown"></i></span>
+                                            <span class="highlight">Random Forest Optimized <i
+                                                    class="fas fa-crown"></i></span>
                                             <span class="highlight">99.52%</span>
                                         </div>
                                         <div class="progress-bar">
@@ -377,22 +385,23 @@
                                         </div>
                                     </div>
                                     <p class="text-muted" style="font-size: 0.85rem; margin-top: 15px;">
-                                        Random Forest vượt trội nhờ khả năng xử lý các mối quan hệ phi tuyến tính phức
-                                        tạp.
+                                        Được kiểm chứng qua <strong>5-Fold Cross-Validation</strong>, Random Forest
+                                        chứng minh sự ổn định tuyệt đối với độ lệch chuẩn chỉ 0.0072.
                                     </p>
                                 </div>
                             </div>
                             <div class="col-text reveal-right stagger-2">
                                 <p>
-                                    Tuần thứ 5 là thời điểm quyết định. Chúng tôi đưa hai "đấu thủ" lên sàn đấu:
-                                    <strong>Logistic Regression</strong> (cổ điển) và <strong>Random Forest</strong>
-                                    (hiện đại).
+                                    Tuần thứ 5 là sàn đấu của các thuật toán. <strong>Logistic Regression</strong> bước
+                                    lên đài với tư cách là Baseline, đạt độ chính xác 84.8% - một con số đáng nể nhưng
+                                    chưa đủ.
                                 </p>
                                 <p>
-                                    Kết quả thật bất ngờ. Trong khi Logistic Regression chỉ đạt độ chính xác ~85%,
-                                    <strong>Random Forest</strong> đã bứt phá ngoạn mục với <strong>F1-Score
-                                        99.52%</strong>.
-                                    Mô hình này đã chứng minh khả năng học hỏi tuyệt vời từ những tương tác phức tạp.
+                                    Đối thủ của nó, <strong>Random Forest</strong>, đã tạo nên một cú đột phá. Với khả
+                                    năng học sâu các mối quan hệ phi tuyến tính phức tạp giữa <em>Ngân sách</em>,
+                                    <em>Thể loại</em> và <em>Đánh giá</em>, mô hình này đã đạt tới độ chính xác gần như
+                                    tuyệt đối: <strong>99.52%</strong>. Không có hiện tượng Overfitting, đây là một
+                                    chiến thắng thuyết phục.
                                 </p>
                             </div>
                         </div>
@@ -403,38 +412,39 @@
                 <div class="story-chapter">
                     <div class="chapter-header reveal-left">
                         <span class="chapter-number">03</span>
-                        <h3>SUCCESS FACTORS</h3>
+                        <h3>THE SECRET SAUCE</h3>
                     </div>
                     <div class="chapter-content">
                         <p class="text-center mb-5 story-lead reveal-on-scroll" style="margin-bottom: 40px;">
-                            Điều gì thực sự làm nên một bộ phim "bom tấn"? Phân tích Feature Importance đã hé lộ:
+                            Điều gì thực sự tạo nên một bộ phim thành công? Phân tích <strong>Feature
+                                Importance</strong> đã hé lộ sự thật bất ngờ:
                         </p>
                         <div class="insights-grid">
                             <div class="glass-card insight-card reveal-on-scroll stagger-1">
                                 <div class="insight-icon"><i class="fas fa-star"></i></div>
                                 <h4>QUALITY IS KING</h4>
-                                <div class="insight-value">41.56%</div>
+                                <div class="insight-value">76.5%</div>
                                 <p style="font-size: 0.85rem; color: var(--text-muted);">
-                                    <strong>Vote Average</strong> là yếu tố quan trọng nhất. Khán giả ngày nay rất thông
-                                    minh, phim hay thực sự sẽ luôn có chỗ đứng.
+                                    <strong>Vote Average</strong> là yếu tố thống trị. Khán giả không bị đánh lừa bởi
+                                    marketing. Phim hay (Avg > 7.2) chắc chắn sẽ thắng.
                                 </p>
                             </div>
                             <div class="glass-card insight-card reveal-on-scroll stagger-2">
-                                <div class="insight-icon"><i class="fas fa-balance-scale"></i></div>
-                                <h4>BUDGET BALANCE</h4>
-                                <div class="insight-value">10.70%</div>
+                                <div class="insight-icon"><i class="fas fa-chart-line"></i></div>
+                                <h4>FINANCIAL HEALTH</h4>
+                                <div class="insight-value">23.5%</div>
                                 <p style="font-size: 0.85rem; color: var(--text-muted);">
-                                    <strong>ROI vs Vote</strong>: Sự cân bằng giữa lợi nhuận và nghệ thuật. Phim vừa lời
-                                    vừa được khen mới là thành công bền vững.
+                                    <strong>ROI & Budget</strong> đóng vai trò hỗ trợ. Một bộ phim cần quản lý vốn tốt,
+                                    nhưng tiền bạc không thể cứu vãn một kịch bản tồi.
                                 </p>
                             </div>
                             <div class="glass-card insight-card reveal-on-scroll stagger-3">
-                                <div class="insight-icon"><i class="fas fa-bullhorn"></i></div>
-                                <h4>VIRAL POWER</h4>
-                                <div class="insight-value">5.14%</div>
+                                <div class="insight-icon"><i class="fas fa-cogs"></i></div>
+                                <h4>SMART ENGINEERING</h4>
+                                <div class="insight-value">TOP 3</div>
                                 <p style="font-size: 0.85rem; color: var(--text-muted);">
-                                    <strong>Vote Count</strong>: Số lượng người quan tâm phản ánh độ phủ sóng (viral) và
-                                    sức mạnh truyền thông của dự án.
+                                    Các biến số do chúng tôi tạo ra như <em>roi_clipped</em> đã lọt vào Top 3 yếu tố
+                                    quan trọng nhất, chứng minh giá trị của Feature Engineering.
                                 </p>
                             </div>
                         </div>
@@ -445,9 +455,10 @@
                 <div class="story-footer text-center mt-5 reveal-on-scroll"
                     style="text-align: center; margin-top: 60px;">
                     <p class="story-lead text-reveal">
-                        "Dự án này không chỉ là bài tập, mà là nỗ lực mang góc nhìn <strong>Data Science</strong> vào
+                        "Dự án này không chỉ là những con số. Đó là nỗ lực mang tư duy <strong>Data Science</strong> vào
                         nghệ thuật điện ảnh.
-                        Hy vọng công cụ này sẽ hỗ trợ đắc lực cho các nhà làm phim Việt Nam."
+                        Chúng tôi tin rằng, với công cụ này, các nhà làm phim Việt Nam có thể đưa ra những quyết định
+                        táo bạo và chính xác hơn."
                     </p>
                     <div class="signature reveal-on-scroll stagger-1">
                         <span class="mono-text">GROUP 04 - KHDLK68 - HUMG</span>
@@ -494,7 +505,7 @@
 
     <footer>
         <div class="container">
-            <p class="mono-text">&copy; 2024 MOVIE PREDICT | GROUP 04 HUMG</p>
+            <p class="mono-text">MOVIE PREDICT | GROUP 04 HUMG | kwishtt/VietNamMoviesPredict </p>
         </div>
     </footer>
 
