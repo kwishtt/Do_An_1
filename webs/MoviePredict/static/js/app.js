@@ -26,8 +26,131 @@ const App = {
       });
     }, observerOptions);
 
-    const elements = document.querySelectorAll('.reveal-on-scroll, .reveal-left, .reveal-right, .text-reveal, .timeline-item');
+    const elements = document.querySelectorAll('.reveal-on-scroll, .reveal-left, .reveal-right, .text-reveal, .timeline-item, .simulation-card');
     elements.forEach(el => observer.observe(el));
+  },
+
+  // --- Simulation Mode Logic ---
+  initSimulationMode(originalData) {
+    const panel = document.getElementById('simulationPanel');
+    const simBudget = document.getElementById('simBudget');
+    const simRevenue = document.getElementById('simRevenue');
+    const simRuntime = document.getElementById('simRuntime');
+    const simVote = document.getElementById('simVote');
+
+    // Show panel
+    panel.style.display = 'block';
+
+    // Set initial values from original prediction
+    simBudget.value = originalData.budget;
+    simRevenue.value = originalData.revenue || 0;
+    simRuntime.value = originalData.runtime;
+    simVote.value = originalData.voteAverage;
+
+    this.updateSimDisplay(originalData.budget, originalData.revenue || 0, originalData.runtime, originalData.voteAverage);
+
+    // Store original probability for comparison
+    this.originalProb = originalData.success_probability || 0;
+    document.getElementById('simScore').innerText = Math.round(this.originalProb * 100) + '%';
+    document.getElementById('simDelta').innerText = '';
+
+    // Debounce function for API calls
+    const debounce = (func, wait) => {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    };
+
+    // Event Listeners
+    const handleUpdate = () => {
+      const budget = parseFloat(simBudget.value);
+      const revenue = parseFloat(simRevenue.value);
+      const runtime = parseInt(simRuntime.value);
+      const vote = parseFloat(simVote.value);
+
+      this.updateSimDisplay(budget, revenue, runtime, vote);
+      this.runSimulation(originalData, budget, revenue, runtime, vote);
+    };
+
+    const debouncedUpdate = debounce(handleUpdate, 500); // Wait 500ms after sliding stops
+
+    simBudget.oninput = () => this.updateSimDisplay(simBudget.value, simRevenue.value, simRuntime.value, simVote.value);
+    simRevenue.oninput = () => this.updateSimDisplay(simBudget.value, simRevenue.value, simRuntime.value, simVote.value);
+    simRuntime.oninput = () => this.updateSimDisplay(simBudget.value, simRevenue.value, simRuntime.value, simVote.value);
+    simVote.oninput = () => this.updateSimDisplay(simBudget.value, simRevenue.value, simRuntime.value, simVote.value);
+
+    simBudget.onchange = debouncedUpdate;
+    simRevenue.onchange = debouncedUpdate;
+    simRuntime.onchange = debouncedUpdate;
+    simVote.onchange = debouncedUpdate;
+  },
+
+  updateSimDisplay(budget, revenue, runtime, vote) {
+    document.getElementById('simBudgetVal').innerText = '$' + parseInt(budget).toLocaleString();
+    document.getElementById('simRevenueVal').innerText = '$' + parseInt(revenue).toLocaleString();
+    document.getElementById('simRuntimeVal').innerText = runtime + ' min';
+    document.getElementById('simVoteVal').innerText = parseFloat(vote).toFixed(1);
+  },
+
+  async runSimulation(baseData, newBudget, newRevenue, newRuntime, newVote) {
+    // Show loading state
+    const scoreEl = document.getElementById('simScore');
+    scoreEl.style.opacity = '0.5';
+
+    try {
+      // Prepare simulation payload
+      const payload = {
+        ...baseData, // Copy all original fields (genres, etc.)
+        budget: newBudget,
+        revenue: newRevenue,
+        runtime: newRuntime,
+        voteAverage: newVote
+      };
+
+      const response = await fetch('/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        const newProb = result.prediction.success_probability;
+        const percent = Math.round(newProb * 100);
+
+        scoreEl.innerText = percent + '%';
+        scoreEl.style.opacity = '1';
+
+        // Calculate Delta
+        const delta = newProb - this.originalProb;
+        const deltaEl = document.getElementById('simDelta');
+
+        if (Math.abs(delta) < 0.001) {
+          deltaEl.innerText = 'No Change';
+          deltaEl.className = 'sim-delta';
+        } else if (delta > 0) {
+          deltaEl.innerText = `+${(delta * 100).toFixed(1)}% Boost`;
+          deltaEl.className = 'sim-delta positive';
+        } else {
+          deltaEl.innerText = `${(delta * 100).toFixed(1)}% Drop`;
+          deltaEl.className = 'sim-delta negative';
+        }
+
+        // Optional: Play sound effect here
+      }
+    } catch (error) {
+      console.error('Simulation error:', error);
+      scoreEl.style.opacity = '1';
+    }
   },
 
   setupStoryCharts() {
@@ -267,6 +390,17 @@ const App = {
 
       const result = await response.json();
 
+      // Show results section
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+
+      // Initialize Simulation Mode with input data + prediction result
+      const simulationData = {
+        ...data, // Original inputs (genres, etc.)
+        success_probability: result.prediction.success_probability
+      };
+      this.initSimulationMode(simulationData);
+
       if (result.success) {
         this.showResults(result);
       } else {
@@ -275,7 +409,7 @@ const App = {
 
     } catch (error) {
       console.error('Error:', error);
-      alert('Đã có lỗi xảy ra khi kết nối tới server.');
+      alert('Có lỗi xảy ra khi dự đoán: ' + error.message);
     } finally {
       // Reset button state
       btnText.style.display = 'inline-block';
