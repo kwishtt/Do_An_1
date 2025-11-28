@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoviePredict | AI Box Office Analytics</title>
+    <title>MoviePredict | Cinematic AI Analytics</title>
 
     <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
         rel="stylesheet">
 
     <!-- Chart.js -->
@@ -26,10 +28,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 
-<body class="dark-theme">
+<body class="cinematic-theme">
     <!-- Background Elements -->
     <div class="bg-noise"></div>
-    <div class="bg-aurora"></div>
+    <div class="bg-ambient"></div>
     <canvas id="particles-canvas"></canvas>
 
     <!-- Navigation -->
@@ -37,12 +39,12 @@
         <div class="container nav-container">
             <a href="#" class="logo">
                 <i class="fas fa-film logo-icon"></i>
-                <span class="logo-text">Movie<span class="highlight">Predict</span></span>
+                <span class="logo-text">MOVIES<span class="highlight">PREDICT</span></span>
             </a>
             <div class="nav-links">
                 <a href="#predict" class="active">Dự Đoán</a>
-                <a href="#model">Mô Hình</a>
-                <a href="#about">Về Chúng Tôi</a>
+                <a href="#trending">Xu Hướng</a>
+                <a href="#story">Insights</a>
             </div>
         </div>
     </nav>
@@ -53,70 +55,71 @@
         <!-- Section 1: Hero & Input -->
         <section id="predict" class="hero-section">
             <div class="hero-content">
-                <h1 class="hero-title glitch-text" data-text="Dự Đoán Doanh Thu Phim">
-                    Dự Đoán <span class="text-gradient">Doanh Thu Phim</span><br>
-                    Bằng Trí Tuệ Nhân Tạo
+                <div class="hero-badge">
+                    <span class="pulse-dot"></span> AI POWERED ANALYTICS
+                </div>
+                <h1 class="hero-title">
+                    DỰ ĐOÁN <span class="text-gradient">DOANH THU PHÒNG VÉ</span>
                 </h1>
                 <p class="hero-subtitle">
-                    Phân tích tiềm năng thành công của dự án phim điện ảnh Việt Nam với độ chính xác 99.5% dựa trên dữ
-                    liệu lịch sử.
+                    Nhập thông tin dự án phim của bạn. AI sẽ phân tích hàng nghìn điểm dữ liệu để dự báo khả năng thành
+                    công.
                 </p>
 
                 <!-- Input Card -->
                 <div class="glass-card input-card">
                     <form id="prediction-form">
                         <div class="form-header">
-                            <h3><i class="fas fa-magic"></i> Nhập Thông Tin Phim</h3>
+                            <h3><i class="fas fa-search"></i> Phân Tích Dự Án</h3>
                         </div>
 
                         <div class="form-grid">
                             <!-- Title -->
                             <div class="form-group full-width">
-                                <label>Tên Phim</label>
+                                <label class="mono-label">TÊN DỰ ÁN (PROJECT TITLE)</label>
                                 <div class="input-wrapper">
                                     <i class="fas fa-heading"></i>
-                                    <input type="text" id="title" name="title" placeholder="VD: Mai, Lật Mặt 7..."
-                                        required>
+                                    <input type="text" id="title" name="title" placeholder="Nhập tên phim..." required>
                                 </div>
                             </div>
 
                             <div class="form-group floating-group">
+                                <label class="mono-label">NGÂN SÁCH (BUDGET)</label>
                                 <div class="input-wrapper">
-                                    <input type="number" id="budget" name="budget" required placeholder=" " min="0">
-                                    <label for="budget">Ngân Sách (USD)</label>
-                                    <i class="fas fa-money-bill-wave"></i>
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <input type="number" id="budget" name="budget" required placeholder="0" min="0">
                                 </div>
                             </div>
 
                             <div class="form-group floating-group">
+                                <label class="mono-label">DOANH THU HIỆN TẠI (CURRENT REV)</label>
                                 <div class="input-wrapper">
-                                    <input type="number" id="revenue" name="revenue" required placeholder=" " min="0">
-                                    <label for="revenue">Doanh Thu Hiện Tại (USD)</label>
                                     <i class="fas fa-chart-line"></i>
+                                    <input type="number" id="revenue" name="revenue" required placeholder="0" min="0">
                                 </div>
-
                             </div>
 
                             <div class="form-group floating-group">
+                                <label class="mono-label">ĐIỂM ĐÁNH GIÁ (TMDB SCORE)</label>
                                 <div class="input-wrapper">
-                                    <input type="number" id="vote_average" name="vote_average" step="0.1" min="0"
-                                        max="10" required placeholder=" ">
-                                    <label for="vote_average">Điểm Đánh Giá (TMDB)</label>
                                     <i class="fas fa-star"></i>
+                                    <input type="number" id="vote_average" name="vote_average" step="0.1" min="0"
+                                        max="10" required placeholder="0.0">
                                 </div>
                             </div>
 
                             <div class="form-group floating-group">
+                                <label class="mono-label">THỜI LƯỢNG (RUNTIME)</label>
                                 <div class="input-wrapper">
-                                    <input type="number" id="runtime" name="runtime" required placeholder=" " min="0">
-                                    <label for="runtime">Thời Lượng (Phút)</label>
                                     <i class="fas fa-clock"></i>
+                                    <input type="number" id="runtime" name="runtime" required placeholder="Phút"
+                                        min="0">
                                 </div>
                             </div>
 
                             <!-- Genres -->
                             <div class="form-group full-width">
-                                <label>Thể Loại</label>
+                                <label class="mono-label">THỂ LOẠI (GENRES)</label>
                                 <div class="genre-selector" id="genre-selector">
                                     <!-- Generated by JS -->
                                 </div>
@@ -125,24 +128,107 @@
 
                             <div class="form-actions">
                                 <button type="button" id="randomDataBtn" class="btn-secondary">
-                                    <i class="fas fa-random"></i> Dữ Liệu Mẫu
+                                    <i class="fas fa-random"></i> AUTO-FILL
                                 </button>
                                 <button type="submit" id="submitBtn" class="btn-primary">
-                                    <span class="btn-text">Phân Tích Ngay</span>
-                                    <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i></span>
+                                    <span class="btn-text">DỰ ĐOÁN NGAY</span>
+                                    <span class="btn-loader"><i class="fas fa-circle-notch fa-spin"></i></span>
                                 </button>
                             </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </section>
 
-        <!-- Section 2: Results Dashboard (Hidden by default) -->
+        <!-- Section 2: Trending Predictions (New) -->
+        <section id="trending" class="trending-section">
+            <div class="section-header">
+                <h2 class="section-title">TRENDING <span class="text-stroke">PREDICTIONS</span></h2>
+                <div class="nav-arrows">
+                    <button class="arrow-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="arrow-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div class="trending-grid">
+                <!-- Card 1 -->
+                <div class="glass-card movie-card">
+                    <div class="card-image"
+                        style="background-image: url('https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHcjOgEE2t2.jpg')">
+                        <div class="card-overlay"></div>
+                        <div class="card-rating">98%</div>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="movie-title">Fast X</h3>
+                        <div class="movie-meta">
+                            <span class="meta-item"><i class="fas fa-dollar-sign"></i> $340M</span>
+                            <span class="meta-item"><i class="fas fa-star"></i> 7.2</span>
+                        </div>
+                        <div class="prediction-bar">
+                            <div class="bar-fill" style="width: 98%"></div>
+                        </div>
+                        <div class="prediction-label">
+                            <span>Success Probability</span>
+                            <span class="mono-text">HIGH</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-card movie-card">
+                    <div class="card-image"
+                        style="background-image: url('https://upload.wikimedia.org/wikipedia/vi/1/13/BI%E1%BB%86T_%C4%90%E1%BB%98I_MARVEL_-_Vietnam_poster.jpg')">
+                        <div class="card-overlay"></div>
+                        <div class="card-rating warning">45%</div>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="movie-title">The Marvels</h3>
+                        <div class="movie-meta">
+                            <span class="meta-item"><i class="fas fa-dollar-sign"></i> $270M</span>
+                            <span class="meta-item"><i class="fas fa-star"></i> 5.8</span>
+                        </div>
+                        <div class="prediction-bar">
+                            <div class="bar-fill warning" style="width: 45%"></div>
+                        </div>
+                        <div class="prediction-label">
+                            <span>Success Probability</span>
+                            <span class="mono-text">RISKY</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-card movie-card">
+                    <div class="card-image"
+                        style="background-image: url('https://image.tmdb.org/t/p/w500/qhb1qOilapbapxWQn9jtRCMwXJF.jpg')">
+                        <div class="card-overlay"></div>
+                        <div class="card-rating">88%</div>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="movie-title">Wonka</h3>
+                        <div class="movie-meta">
+                            <span class="meta-item"><i class="fas fa-dollar-sign"></i> $125M</span>
+                            <span class="meta-item"><i class="fas fa-star"></i> 7.8</span>
+                        </div>
+                        <div class="prediction-bar">
+                            <div class="bar-fill" style="width: 88%"></div>
+                        </div>
+                        <div class="prediction-label">
+                            <span>Success Probability</span>
+                            <span class="mono-text">HIGH</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Results Dashboard (Hidden by default) -->
         <section id="results" class="results-section hidden">
             <div class="section-header">
                 <div>
-                    <h2>Kết Quả Phân Tích</h2>
-                    <h3 id="result-movie-title" class="result-movie-title"></h3>
+                    <h2 class="section-title">ANALYSIS <span class="text-stroke">RESULTS</span></h2>
+                    <h3 id="result-movie-title" class="result-movie-title mono-text"></h3>
                 </div>
                 <button id="resetBtn" class="btn-icon"><i class="fas fa-redo"></i></button>
             </div>
@@ -155,8 +241,8 @@
                         <div class="gauge-wrapper">
                             <canvas id="predictionGauge"></canvas>
                             <div class="gauge-value">
-                                <span id="confidence-value">98%</span>
-                                <small>Xác Suất</small>
+                                <span id="confidence-value" class="mono-text">98%</span>
+                                <small>PROBABILITY</small>
                             </div>
                         </div>
                         <div class="status-text-wrapper">
@@ -174,29 +260,29 @@
                         <div class="metric-pill">
                             <div class="pill-icon"><i class="fas fa-chart-line"></i></div>
                             <div class="pill-content">
-                                <span class="pill-label">ROI Dự Kiến</span>
-                                <span class="pill-value" id="roi-value">--</span>
+                                <span class="pill-label">ROI ESTIMATE</span>
+                                <span class="pill-value mono-text" id="roi-value">--</span>
                             </div>
                         </div>
 
                         <div class="metric-pill">
                             <div class="pill-icon"><i class="fas fa-shield-alt"></i></div>
                             <div class="pill-content">
-                                <span class="pill-label">Rủi Ro</span>
-                                <span class="pill-value" id="risk-value">--</span>
+                                <span class="pill-label">RISK LEVEL</span>
+                                <span class="pill-value mono-text" id="risk-value">--</span>
                             </div>
                         </div>
 
                         <div class="metric-pill">
                             <div class="pill-icon"><i class="fas fa-money-bill-wave"></i></div>
                             <div class="pill-content">
-                                <span class="pill-label">Doanh Thu Dự Kiến</span>
-                                <span class="pill-value" id="revenue-value">--</span>
+                                <span class="pill-label">REV FORECAST</span>
+                                <span class="pill-value mono-text" id="revenue-value">--</span>
                             </div>
                         </div>
 
                         <div class="model-badge-hero">
-                            <i class="fas fa-microchip"></i> AI Model: Random Forest (99.5%)
+                            <i class="fas fa-microchip"></i> MODEL: RANDOM FOREST (99.5%)
                         </div>
                     </div>
                 </div>
@@ -205,7 +291,7 @@
             <div class="dashboard-grid mt-4">
                 <!-- Chart Section -->
                 <div class="glass-card chart-card full-width">
-                    <h3><i class="fas fa-chart-bar"></i> Yếu Tố Ảnh Hưởng</h3>
+                    <h3><i class="fas fa-chart-bar"></i> FEATURE IMPORTANCE</h3>
                     <div class="chart-container">
                         <canvas id="featureChart"></canvas>
                     </div>
@@ -213,162 +299,45 @@
             </div>
         </section>
 
-        <!-- Section 3: Model Info -->
-        <section id="model" class="model-section">
-            <div class="glass-card info-card">
-                <div class="info-header">
-                    <h3><i class="fas fa-robot"></i> Về Mô Hình AI</h3>
-                </div>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="label">Thuật Toán</span>
-                        <span class="value">Random Forest</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">Độ Chính Xác</span>
-                        <span class="value">99.52%</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">Dữ Liệu Train</span>
-                        <span class="value">1,000+ Phim</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 4: Project Journey (Timeline) -->
-        <section id="journey" class="journey-section">
-            <div class="section-header-center">
-                <h2 class="section-title">Hành Trình Dự Án</h2>
-                <p class="section-subtitle">Quá trình xây dựng và phát triển hệ thống dự đoán</p>
-            </div>
-
-            <div class="timeline">
-                <!-- Step 1 -->
-                <div class="timeline-item left">
-                    <div class="timeline-content glass-card clickable" data-stage="1">
-                        <div class="date">Tuần 1-2</div>
-                        <h3><i class="fas fa-search"></i> Khởi Động & Thu Thập</h3>
-                        <p>
-                            Xác định bài toán và thu thập dữ liệu thô từ <strong>TMDB & IMDb</strong>.
-                            Xây dựng nền tảng cho dự án với hơn 2,000 bộ phim.
-                        </p>
-                        <span class="tag">Data Collection</span>
-                        <span class="tag">Planning</span>
-                    </div>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="timeline-item right">
-                    <div class="timeline-content glass-card clickable" data-stage="2">
-                        <div class="date">Tuần 2-3</div>
-                        <h3><i class="fas fa-broom"></i> Làm Sạch & Định Nghĩa</h3>
-                        <p>
-                            Xử lý dữ liệu nhiễu và định nghĩa tiêu chí <strong>"Thành Công"</strong>
-                            (ROI ≥ 1 & Vote ≥ 6.5). Chuẩn bị dataset sạch sẽ.
-                        </p>
-                        <span class="tag">Data Cleaning</span>
-                        <span class="tag">EDA</span>
-                    </div>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="timeline-item left">
-                    <div class="timeline-content glass-card clickable" data-stage="3">
-                        <div class="date">Tuần 4</div>
-                        <h3><i class="fas fa-cogs"></i> Feature Engineering</h3>
-                        <p>
-                            Biến đổi dữ liệu thô thành <strong>47 đặc trưng</strong> có ý nghĩa.
-                            Tạo các biến mới như ROI, Mùa phim, và Tương tác diễn viên.
-                        </p>
-                        <span class="tag">Feature Extraction</span>
-                        <span class="tag">One-Hot Encoding</span>
-                    </div>
-                </div>
-
-                <!-- Step 4 -->
-                <div class="timeline-item right">
-                    <div class="timeline-content glass-card clickable" data-stage="4">
-                        <div class="date">Tuần 5-8</div>
-                        <h3><i class="fas fa-chess-king"></i> Huấn Luyện & Tối Ưu</h3>
-                        <p>
-                            Cuộc đua giữa <strong>Logistic Regression</strong> và <strong>Random Forest</strong>.
-                            Tinh chỉnh tham số và kiểm chứng chéo (Cross-Validation).
-                        </p>
-                        <span class="tag">Model Training</span>
-                        <span class="tag">Optimization</span>
-                    </div>
-                </div>
-
-                <!-- Step 5 -->
-                <div class="timeline-item left">
-                    <div class="timeline-content glass-card clickable" data-stage="5">
-                        <div class="date">Tuần 9-10</div>
-                        <h3><i class="fas fa-rocket"></i> Hoàn Thiện Sản Phẩm</h3>
-                        <p>
-                            Xây dựng Web App với giao diện <strong>Glassmorphism</strong>.
-                            Viết báo cáo chi tiết và đóng gói sản phẩm cuối cùng.
-                        </p>
-                        <span class="tag">Web Development</span>
-                        <span class="tag">Deployment</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 4.5: Data Storytelling -->
+        <!-- Section 4: Data Storytelling -->
         <section id="story" class="story-section">
             <div class="container">
                 <!-- Intro Block -->
-                <div class="story-intro text-center mb-5">
-                    <span class="badge-glow">Báo Cáo Dự Án</span>
-                    <h2 class="story-title">Hành Trình Chinh Phục Dữ Liệu Điện Ảnh</h2>
-                    <p class="story-lead">
-                        Được thực hiện bởi <strong>Nhóm 04 - Khoa Học Dữ Liệu HUMG</strong> trong 5 tuần nỗ lực không
-                        ngừng nghỉ.
-                        Chúng tôi đã biến những con số khô khan thành một công cụ dự đoán mạnh mẽ.
+                <div class="story-intro text-center mb-5 reveal-on-scroll">
+                    <span class="badge-glow">PROJECT REPORT</span>
+                    <h2 class="story-title">THE DATA <span class="text-stroke">JOURNEY</span></h2>
+                    <p class="story-lead text-reveal">
+                        Hành trình biến dữ liệu thô thành tri thức.
                     </p>
                 </div>
 
                 <!-- Chapter 1: The Data -->
                 <div class="story-chapter">
-                    <div class="chapter-header">
+                    <div class="chapter-header reveal-left">
                         <span class="chapter-number">01</span>
-                        <h3>"Đãi Cát Tìm Vàng" - Xử Lý Dữ Liệu</h3>
+                        <h3>DATA PROCESSING</h3>
                     </div>
                     <div class="chapter-content">
                         <div class="row">
-                            <div class="col-text">
+                            <div class="col-text reveal-left stagger-1">
                                 <p>
-                                    Hành trình bắt đầu với một thách thức lớn: <strong>2,194 bộ phim</strong> từ nhiều
-                                    nguồn khác nhau với dữ liệu hỗn loạn.
-                                    Trong 4 tuần đầu tiên, chúng tôi đã phải "làm sạch" từng dòng dữ liệu, xử lý các giá
-                                    trị thiếu và loại bỏ những nhiễu loạn.
-                                </p>
-                                <p>
-                                    Nhưng điều thú vị nhất là quá trình <strong>Feature Engineering</strong>. Chúng tôi
-                                    không chỉ dùng dữ liệu thô, mà đã sáng tạo ra <strong>47 đặc trưng mới</strong>.
-                                    Từ việc phân tích thời điểm phát hành (Mùa phim bom tấn vs Mùa thấp điểm) đến việc
-                                    tính toán chỉ số ROI (Tỷ suất lợi nhuận).
+                                    Xử lý <strong>2,194 bộ phim</strong>. Làm sạch dữ liệu, xử lý giá trị thiếu và loại
+                                    bỏ nhiễu.
                                 </p>
                                 <div class="stats-mini-grid">
                                     <div class="stat-mini">
-                                        <strong>2,194</strong>
-                                        <span>Bộ Phim</span>
+                                        <strong class="mono-text">2,194</strong>
+                                        <span>MOVIES</span>
                                     </div>
                                     <div class="stat-mini">
-                                        <strong>47</strong>
-                                        <span>Features</span>
-                                    </div>
-                                    <div class="stat-mini">
-                                        <strong>20+</strong>
-                                        <span>Năm Dữ Liệu</span>
+                                        <strong class="mono-text">47</strong>
+                                        <span>FEATURES</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-visual">
+                            <div class="col-visual reveal-right stagger-2">
                                 <div class="glass-card chart-box-mini">
-                                    <h4>Phân Bố Thể Loại Phim</h4>
+                                    <h4>GENRE DISTRIBUTION</h4>
                                     <div class="chart-wrapper-mini">
                                         <canvas id="genreChart"></canvas>
                                     </div>
@@ -380,46 +349,50 @@
 
                 <!-- Chapter 2: The Model Race -->
                 <div class="story-chapter reverse">
-                    <div class="chapter-header">
+                    <div class="chapter-header reveal-right">
                         <span class="chapter-number">02</span>
-                        <h3>Cuộc Đua Thuật Toán</h3>
+                        <h3>ALGORITHM RACE</h3>
                     </div>
                     <div class="chapter-content">
                         <div class="row">
-                            <div class="col-visual">
+                            <div class="col-visual reveal-left stagger-1">
                                 <div class="glass-card comparison-card">
-                                    <h4>Hiệu Suất Mô Hình (F1-Score)</h4>
+                                    <h4 class="mono-text mb-3" style="margin-bottom: 15px;">MODEL PERFORMANCE</h4>
                                     <div class="comparison-bar">
-                                        <div class="model-name">Logistic Regression</div>
+                                        <div class="model-name">
+                                            <span>Logistic Regression</span>
+                                            <span>84.88%</span>
+                                        </div>
                                         <div class="progress-bar">
-                                            <div class="progress" style="width: 84.88%">84.88%</div>
+                                            <div class="progress" style="width: 84.88%"></div>
                                         </div>
                                     </div>
                                     <div class="comparison-bar winner">
-                                        <div class="model-name">Random Forest <i class="fas fa-crown text-warning"></i>
+                                        <div class="model-name">
+                                            <span class="highlight">Random Forest <i class="fas fa-crown"></i></span>
+                                            <span class="highlight">99.52%</span>
                                         </div>
                                         <div class="progress-bar">
-                                            <div class="progress" style="width: 99.52%">99.52%</div>
+                                            <div class="progress" style="width: 99.52%"></div>
                                         </div>
                                     </div>
-                                    <p class="comparison-note">
+                                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 15px;">
                                         Random Forest vượt trội nhờ khả năng xử lý các mối quan hệ phi tuyến tính phức
                                         tạp.
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-text">
+                            <div class="col-text reveal-right stagger-2">
                                 <p>
                                     Tuần thứ 5 là thời điểm quyết định. Chúng tôi đưa hai "đấu thủ" lên sàn đấu:
-                                    <strong>Logistic Regression</strong> (cổ điển, dễ hiểu) và <strong>Random
-                                        Forest</strong> (mạnh mẽ, linh hoạt).
+                                    <strong>Logistic Regression</strong> (cổ điển) và <strong>Random Forest</strong>
+                                    (hiện đại).
                                 </p>
                                 <p>
-                                    Kết quả thật bất ngờ nhưng thuyết phục. Trong khi Logistic Regression chỉ đạt độ
-                                    chính xác khoảng 85%, <strong>Random Forest</strong> đã bứt phá ngoạn mục với
-                                    <strong>F1-Score lên tới 99.52%</strong>.
-                                    Mô hình này đã chứng minh khả năng học hỏi tuyệt vời từ những tương tác phức tạp
-                                    giữa ngân sách, diễn viên và thể loại phim.
+                                    Kết quả thật bất ngờ. Trong khi Logistic Regression chỉ đạt độ chính xác ~85%,
+                                    <strong>Random Forest</strong> đã bứt phá ngoạn mục với <strong>F1-Score
+                                        99.52%</strong>.
+                                    Mô hình này đã chứng minh khả năng học hỏi tuyệt vời từ những tương tác phức tạp.
                                 </p>
                             </div>
                         </div>
@@ -428,41 +401,40 @@
 
                 <!-- Chapter 3: The Insights -->
                 <div class="story-chapter">
-                    <div class="chapter-header">
+                    <div class="chapter-header reveal-left">
                         <span class="chapter-number">03</span>
-                        <h3>Bí Mật Của Sự Thành Công</h3>
+                        <h3>SUCCESS FACTORS</h3>
                     </div>
                     <div class="chapter-content">
-                        <p class="text-center mb-4">
-                            Điều gì thực sự làm nên một bộ phim "bom tấn"? Phân tích Feature Importance của chúng tôi đã
-                            hé lộ những sự thật thú vị.
+                        <p class="text-center mb-5 story-lead reveal-on-scroll" style="margin-bottom: 40px;">
+                            Điều gì thực sự làm nên một bộ phim "bom tấn"? Phân tích Feature Importance đã hé lộ:
                         </p>
                         <div class="insights-grid">
-                            <div class="glass-card insight-card highlight">
+                            <div class="glass-card insight-card reveal-on-scroll stagger-1">
                                 <div class="insight-icon"><i class="fas fa-star"></i></div>
-                                <h4>Chất Lượng Là Vua</h4>
+                                <h4>QUALITY IS KING</h4>
                                 <div class="insight-value">41.56%</div>
-                                <p>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">
                                     <strong>Vote Average</strong> là yếu tố quan trọng nhất. Khán giả ngày nay rất thông
-                                    minh, một bộ phim hay thực sự sẽ luôn có chỗ đứng.
+                                    minh, phim hay thực sự sẽ luôn có chỗ đứng.
                                 </p>
                             </div>
-                            <div class="glass-card insight-card">
+                            <div class="glass-card insight-card reveal-on-scroll stagger-2">
                                 <div class="insight-icon"><i class="fas fa-balance-scale"></i></div>
-                                <h4>Cân Bằng Ngân Sách</h4>
+                                <h4>BUDGET BALANCE</h4>
                                 <div class="insight-value">10.70%</div>
-                                <p>
-                                    <strong>ROI vs Vote</strong>: Sự cân bằng giữa lợi nhuận và đánh giá nghệ thuật.
-                                    Phim vừa lời vừa được khen mới là thành công bền vững.
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">
+                                    <strong>ROI vs Vote</strong>: Sự cân bằng giữa lợi nhuận và nghệ thuật. Phim vừa lời
+                                    vừa được khen mới là thành công bền vững.
                                 </p>
                             </div>
-                            <div class="glass-card insight-card">
+                            <div class="glass-card insight-card reveal-on-scroll stagger-3">
                                 <div class="insight-icon"><i class="fas fa-bullhorn"></i></div>
-                                <h4>Sức Mạnh Truyền Thông</h4>
+                                <h4>VIRAL POWER</h4>
                                 <div class="insight-value">5.14%</div>
-                                <p>
-                                    <strong>Vote Count</strong>: Số lượng người quan tâm và đánh giá phản ánh độ phủ
-                                    sóng (viral) của bộ phim.
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">
+                                    <strong>Vote Count</strong>: Số lượng người quan tâm phản ánh độ phủ sóng (viral) và
+                                    sức mạnh truyền thông của dự án.
                                 </p>
                             </div>
                         </div>
@@ -470,23 +442,23 @@
                 </div>
 
                 <!-- Conclusion -->
-                <div class="story-footer text-center mt-5">
-                    <p class="conclusion-text">
-                        "Dự án này không chỉ là bài tập, mà là nỗ lực của chúng tôi để mang góc nhìn <strong>Khoa Học Dữ
-                            Liệu</strong> vào nghệ thuật điện ảnh.
+                <div class="story-footer text-center mt-5 reveal-on-scroll"
+                    style="text-align: center; margin-top: 60px;">
+                    <p class="story-lead text-reveal">
+                        "Dự án này không chỉ là bài tập, mà là nỗ lực mang góc nhìn <strong>Data Science</strong> vào
+                        nghệ thuật điện ảnh.
                         Hy vọng công cụ này sẽ hỗ trợ đắc lực cho các nhà làm phim Việt Nam."
                     </p>
-                    <div class="signature">
-                        <img src="{{ url_for('static', filename='images/signature.png') }}" alt="Signature"
-                            class="signature-img" onerror="this.style.display='none'">
-                        <span>Nhóm 04 - KHDLK68 - HUMG</span>
+                    <div class="signature reveal-on-scroll stagger-1">
+                        <span class="mono-text">GROUP 04 - KHDLK68 - HUMG</span>
                     </div>
                 </div>
             </div>
         </section>
+
         <section id="about" class="team-section">
             <div class="section-header-center">
-                <h2 class="section-title">Đội Ngũ Thực Hiện</h2>
+                <h2 class="section-title">THE <span class="text-stroke">TEAM</span></h2>
             </div>
 
             <div class="team-grid">
@@ -496,7 +468,7 @@
                             onerror="this.src='https://ui-avatars.com/api/?name=Khuê+Đinh&background=FFD700&color=000'">
                     </div>
                     <h3>Đinh Ngọc Khuê</h3>
-                    <p class="role">Data EDA</p>
+                    <p class="role mono-text">DATA EDA</p>
                 </div>
 
                 <div class="glass-card team-card">
@@ -505,7 +477,7 @@
                             onerror="this.src='https://ui-avatars.com/api/?name=Hoà+Khổng&background=00f2ff&color=000'">
                     </div>
                     <h3>Khổng Thị Hoà</h3>
-                    <p class="role">Trưởng nhóm</p>
+                    <p class="role mono-text">TEAM LEADER</p>
                 </div>
 
                 <div class="glass-card team-card">
@@ -514,7 +486,7 @@
                             onerror="this.src='https://ui-avatars.com/api/?name=Huy+Phan&background=ff4d4d&color=fff'">
                     </div>
                     <h3>Phan Văn Huy</h3>
-                    <p class="role">Data Engineer</p>
+                    <p class="role mono-text">DATA ENGINEER</p>
                 </div>
             </div>
         </section>
@@ -522,33 +494,9 @@
 
     <footer>
         <div class="container">
-            <p>&copy; Bộ môn Đồ Án 01 - Chuyên ngành Khoa học dữ liệu - HUMG</p>
+            <p class="mono-text">&copy; 2024 MOVIE PREDICT | GROUP 04 HUMG</p>
         </div>
     </footer>
-
-    <!-- Journey Details Modal -->
-    <div id="journey-modal" class="modal-overlay hidden">
-        <div class="modal-content glass-card">
-            <button class="modal-close"><i class="fas fa-times"></i></button>
-            <div class="modal-header">
-                <h3 id="modal-title">Giai Đoạn X</h3>
-            </div>
-            <div class="modal-body">
-                <div class="modal-section">
-                    <h4><i class="fas fa-info-circle"></i> Chi Tiết Thực Hiện</h4>
-                    <p id="modal-details">...</p>
-                </div>
-                <div class="modal-section">
-                    <h4><i class="fas fa-exclamation-triangle"></i> Vấn Đề Gặp Phải</h4>
-                    <p id="modal-issues">...</p>
-                </div>
-                <div class="modal-section">
-                    <h4><i class="fas fa-check-circle"></i> Giải Pháp</h4>
-                    <p id="modal-solutions">...</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>

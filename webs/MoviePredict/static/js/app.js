@@ -7,56 +7,27 @@ const App = {
     this.setupEventListeners();
     this.setupCharts();
     this.renderGenreChips();
-    this.setupScrollAnimations();
-    this.setupModal();
     this.setupParticles();
     this.setupStoryCharts();
-    this.setupCounters();
+    this.setupScrollAnimations();
   },
 
-  setupCounters() {
+  setupScrollAnimations() {
+    const observerOptions = {
+      threshold: 0.15,
+      rootMargin: "0px 0px -50px 0px"
+    };
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const target = entry.target;
-          const endValue = parseFloat(target.getAttribute('data-target'));
-          this.animateValue(target, 0, endValue, 2000);
-          observer.unobserve(target);
+          entry.target.classList.add('visible');
         }
       });
-    }, { threshold: 0.5 });
+    }, observerOptions);
 
-    document.querySelectorAll('.count-up').forEach(el => observer.observe(el));
-  },
-
-  animateValue(obj, start, end, duration) {
-    let startTimestamp = null;
-    const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-
-      // Easing function
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-
-      const current = start + (end - start) * easeOutQuart;
-
-      if (end % 1 !== 0) {
-        obj.innerHTML = current.toFixed(1);
-      } else {
-        obj.innerHTML = Math.floor(current);
-      }
-
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      } else {
-        if (end % 1 !== 0) {
-          obj.innerHTML = end.toFixed(1);
-        } else {
-          obj.innerHTML = end;
-        }
-      }
-    };
-    window.requestAnimationFrame(step);
+    const elements = document.querySelectorAll('.reveal-on-scroll, .reveal-left, .reveal-right, .text-reveal, .timeline-item');
+    elements.forEach(el => observer.observe(el));
   },
 
   setupStoryCharts() {
@@ -70,8 +41,8 @@ const App = {
           datasets: [{
             data: [25, 20, 18, 15, 8, 7, 5, 2],
             backgroundColor: [
-              '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
-              '#98D8C8', '#F7DC6F', '#BB8FCE', '#F1948A'
+              '#00f2ea', '#00c3ff', '#0080ff', '#e2b714',
+              '#ff8c00', '#ff4d4d', '#bfa1a1', '#ffffff'
             ],
             borderWidth: 0,
             hoverOffset: 10
@@ -84,70 +55,13 @@ const App = {
             legend: {
               position: 'right',
               labels: {
-                color: '#a0a0b0',
-                font: { family: "'Inter', sans-serif", size: 11 },
+                color: '#94a3b8',
+                font: { family: "'JetBrains Mono', monospace", size: 11 },
                 boxWidth: 12
               }
             }
           },
-          cutout: '70%'
-        }
-      });
-    }
-
-    // Budget vs Revenue Scatter Plot
-    const scatterCtx = document.getElementById('scatterChart');
-    if (scatterCtx) {
-      // Generate simulated data points
-      const scatterData = [];
-      for (let i = 0; i < 50; i++) {
-        const budget = Math.random() * 200 + 10; // 10M - 210M
-        // Revenue correlates with budget but with high variance
-        const multiplier = Math.random() * 5 + 0.5; // 0.5x - 5.5x
-        const revenue = budget * multiplier;
-        scatterData.push({ x: budget, y: revenue });
-      }
-
-      new Chart(scatterCtx, {
-        type: 'scatter',
-        data: {
-          datasets: [{
-            label: 'Phim (Triệu USD)',
-            data: scatterData,
-            backgroundColor: 'rgba(0, 195, 255, 0.6)',
-            borderColor: 'rgba(0, 195, 255, 1)',
-            borderWidth: 1,
-            pointRadius: 4,
-            pointHoverRadius: 6
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              title: { display: true, text: 'Ngân Sách (Triệu $)', color: '#8f90a0' },
-              grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#8f90a0' }
-            },
-            y: {
-              title: { display: true, text: 'Doanh Thu (Triệu $)', color: '#8f90a0' },
-              grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#8f90a0' }
-            }
-          },
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: 'rgba(10, 10, 15, 0.9)',
-              titleColor: '#fff',
-              callbacks: {
-                label: function (context) {
-                  return `Budget: $${context.parsed.x}M - Revenue: $${context.parsed.y.toFixed(1)}M`;
-                }
-              }
-            }
-          }
+          cutout: '75%'
         }
       });
     }
@@ -177,29 +91,6 @@ const App = {
 
       lastScroll = currentScroll;
     });
-
-    // Active link tracking on scroll
-    const sections = document.querySelectorAll('section[id]');
-
-    const observerOptions = {
-      threshold: 0.3,
-      rootMargin: '-100px 0px -66%'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${entry.target.id}`) {
-              link.classList.add('active');
-            }
-          });
-        }
-      });
-    }, observerOptions);
-
-    sections.forEach(section => observer.observe(section));
 
     // Smooth scroll on click
     navLinks.forEach(link => {
@@ -238,9 +129,10 @@ const App = {
       constructor() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
-        this.size = Math.random() * 2 + 1;
+        this.vx = (Math.random() - 0.5) * 0.3;
+        this.vy = (Math.random() - 0.5) * 0.3;
+        this.size = Math.random() * 2;
+        this.alpha = Math.random() * 0.5 + 0.1;
       }
 
       update() {
@@ -252,7 +144,7 @@ const App = {
       }
 
       draw() {
-        ctx.fillStyle = 'rgba(0, 242, 255, 0.3)'; // Neon Cyan
+        ctx.fillStyle = `rgba(0, 242, 234, ${this.alpha})`; // Electric Teal
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -261,7 +153,7 @@ const App = {
 
     const initParticles = () => {
       particles = [];
-      const numberOfParticles = Math.min(window.innerWidth / 10, 100); // Responsive count
+      const numberOfParticles = Math.min(window.innerWidth / 15, 80);
       for (let i = 0; i < numberOfParticles; i++) {
         particles.push(new Particle());
       }
@@ -275,23 +167,6 @@ const App = {
       particles.forEach((p, index) => {
         p.update();
         p.draw();
-
-        // Draw connections
-        for (let j = index + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dx = p.x - p2.x;
-          const dy = p.y - p2.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 150) {
-            ctx.strokeStyle = `rgba(112, 0, 255, ${0.1 - distance / 1500})`; // Purple lines
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.stroke();
-          }
-        }
       });
 
       requestAnimationFrame(animate);
@@ -300,107 +175,9 @@ const App = {
     animate();
   },
 
-  journeyData: {
-    1: {
-      title: "Tuần 1: Khởi Động & Thu Thập Dữ Liệu",
-      details: "Bắt đầu với việc xác định bài toán và thu thập dữ liệu. Chúng em đã tải bộ dữ liệu <strong>Movies.csv</strong> từ Kaggle (nguồn gốc từ TMDB/IMDb) và tiến hành kiểm tra cấu trúc của hơn 2,000 bộ phim. Các trường quan trọng như Budget, Revenue, Cast, và Genres được rà soát kỹ lưỡng.",
-      issues: "Dữ liệu thô ban đầu chứa nhiều nhiễu và định dạng không đồng nhất, đặc biệt là các cột tiền tệ và ngày tháng.",
-      solutions: "Thống nhất quy trình xử lý dữ liệu và xác định các cột quan trọng cần giữ lại cho mô hình."
-    },
-    2: {
-      title: "Tuần 2-3: Làm Sạch & Định Nghĩa Thành Công",
-      details: "Giai đoạn quan trọng để chuẩn hóa dữ liệu. Chúng em đã xử lý <strong>1,173 hàng</strong> có Budget/Revenue bằng 0 và điền giá trị thiếu cho Director/Stars. Quan trọng nhất, nhóm đã định nghĩa tiêu chí <strong>Thành Công</strong>: Phim phải có <strong>ROI ≥ 1</strong> (không lỗ) VÀ <strong>Vote Average ≥ 6.5</strong> (được khán giả đón nhận).",
-      issues: "Việc định nghĩa 'Thành công' là thách thức lớn nhất. Nếu chỉ dựa vào doanh thu sẽ bỏ qua phim nghệ thuật, nếu chỉ dựa vào điểm số sẽ bỏ qua yếu tố thương mại.",
-      solutions: "Quyết định sử dụng tiêu chí kép (ROI + Rating) để đảm bảo tính toàn diện, cân bằng giữa yếu tố kinh tế và chất lượng nội dung."
-    },
-    3: {
-      title: "Tuần 4: Feature Engineering - Biến Số Mới",
-      details: "Từ dữ liệu thô, chúng em đã tạo ra <strong>47 đặc trưng mới</strong>. Các đặc trưng nổi bật bao gồm: <em>roi_vs_vote</em> (tương tác giữa lợi nhuận và điểm số), <em>num_main_cast</em> (số lượng diễn viên chính), và các đặc trưng thời gian như <em>release_quarter</em> (quý phát hành).",
-      issues: "Dữ liệu có nhiều biến phân loại (Categorical) như Thể loại và Quốc gia, khó đưa trực tiếp vào mô hình.",
-      solutions: "Sử dụng kỹ thuật <strong>One-Hot Encoding</strong> cho Top 15 Genres và Top 10 Countries, đồng thời Log-transform các biến số lớn như Budget/Revenue."
-    },
-    4: {
-      title: "Tuần 5-8: Huấn Luyện & Tối Ưu Mô Hình",
-      details: "Cuộc đua giữa <strong>Logistic Regression</strong> (Accuracy 84.8%) và <strong>Random Forest</strong>. Kết quả: Random Forest chiến thắng áp đảo với <strong>Accuracy 99.51%</strong> và F1-Score 99.52%. Phân tích Feature Importance cho thấy <strong>Vote Average</strong> (41.56%) là yếu tố quan trọng nhất.",
-      issues: "Mô hình ban đầu có thể bị Overfitting nếu không kiểm soát tốt các tham số.",
-      solutions: "Áp dụng <strong>5-Fold Cross-Validation</strong> để kiểm chứng độ ổn định và tinh chỉnh tham số (Hyperparameter Tuning) cho Random Forest."
-    },
-    5: {
-      title: "Tuần 9-10: Hoàn Thiện Sản Phẩm",
-      details: "Xây dựng Web App hoàn chỉnh sử dụng <strong>Flask</strong> và giao diện <strong>Glassmorphism</strong>. Tích hợp biểu đồ phân tích dữ liệu thực tế và đóng gói báo cáo chi tiết về toàn bộ quá trình nghiên cứu.",
-      issues: "Thách thức trong việc trình bày các kết quả phân tích phức tạp một cách trực quan và dễ hiểu trên giao diện web.",
-      solutions: "Sử dụng thư viện <strong>Chart.js</strong> để vẽ biểu đồ tương tác và thiết kế Dashboard khoa học, giúp người dùng dễ dàng nắm bắt thông tin."
-    }
-  },
-
-  setupModal() {
-    const modal = document.getElementById('journey-modal');
-    const closeBtn = document.querySelector('.modal-close');
-    const overlay = document.querySelector('.modal-overlay');
-
-    if (!modal) return;
-
-    // Open Modal
-    document.querySelectorAll('.clickable[data-stage]').forEach(item => {
-      item.addEventListener('click', () => {
-        const stageId = item.getAttribute('data-stage');
-        const data = this.journeyData[stageId];
-
-        if (data) {
-          document.getElementById('modal-title').textContent = data.title;
-          document.getElementById('modal-details').innerHTML = data.details;
-          document.getElementById('modal-issues').innerHTML = data.issues;
-          document.getElementById('modal-solutions').innerHTML = data.solutions;
-
-          modal.classList.remove('hidden');
-          // Small delay to allow display:flex to apply before adding active class for transition
-          requestAnimationFrame(() => {
-            modal.classList.add('active');
-          });
-        }
-      });
-    });
-
-    // Close Modal Function
-    const closeModal = () => {
-      modal.classList.remove('active');
-      setTimeout(() => {
-        modal.classList.add('hidden');
-      }, 300); // Wait for transition
-    };
-
-    // Close Events
-    closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) closeModal();
-    });
-
-    // Escape Key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.classList.contains('active')) {
-        closeModal();
-      }
-    });
-  },
-
-  setupScrollAnimations() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.remove('scroll-hidden');
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    const items = document.querySelectorAll('.timeline-item');
-    items.forEach(el => {
-      el.classList.add('scroll-hidden'); // Hide initially via JS
-      observer.observe(el);
-    });
-  },
-
   setupEventListeners() {
+    this.setupNavbar();
+
     // Form Submission
     const form = document.getElementById('prediction-form');
     if (form) {
@@ -423,24 +200,13 @@ const App = {
       });
     }
 
-    // Smooth Scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
-    });
-
     // Mouse Glow Effect
     document.querySelectorAll('.glass-card').forEach(card => {
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
+        // Update CSS variables for glow effect if implemented in CSS
       });
     });
   },
@@ -531,7 +297,7 @@ const App = {
     const movieTitle = document.getElementById('title').value;
     const resultTitleEl = document.getElementById('result-movie-title');
     if (resultTitleEl) {
-      resultTitleEl.textContent = movieTitle ? `Phim: ${movieTitle}` : 'Phim: (Chưa đặt tên)';
+      resultTitleEl.textContent = movieTitle ? `PROJECT: ${movieTitle.toUpperCase()}` : 'PROJECT: UNTITLED';
     }
 
     const prediction = data.prediction;
@@ -548,18 +314,18 @@ const App = {
     const confidenceValEl = document.getElementById('confidence-value');
 
     // Determine State
+    let color = '#e2b714'; // Default warning
     if (prob >= 0.6) {
-      heroContainer.classList.add('theme-success');
-      statusEl.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success)"></i> <span style="color: var(--success)">THÀNH CÔNG</span>';
-      descEl.textContent = `Dự án có tiềm năng thành công rất cao. Các chỉ số đều ủng hộ kết quả tích cực.`;
+      color = '#00f2ea';
+      statusEl.innerHTML = `<i class="fas fa-check-circle" style="color: ${color}"></i> <span style="color: ${color}">BLOCKBUSTER POTENTIAL</span>`;
+      descEl.textContent = `Dự án có tín hiệu rất tích cực. Các chỉ số cho thấy khả năng sinh lời cao.`;
     } else if (prob <= 0.4) {
-      heroContainer.classList.add('theme-danger');
-      statusEl.innerHTML = '<i class="fas fa-times-circle" style="color: var(--danger)"></i> <span style="color: var(--danger)">RỦI RO CAO</span>';
-      descEl.textContent = `Cảnh báo: Dự án có rủi ro cao. Cần xem xét lại ngân sách hoặc kịch bản.`;
+      color = '#ff4d4d';
+      statusEl.innerHTML = `<i class="fas fa-times-circle" style="color: ${color}"></i> <span style="color: ${color}">HIGH RISK</span>`;
+      descEl.textContent = `Cảnh báo: Dự án có rủi ro cao. Cần cân nhắc lại ngân sách hoặc chiến lược.`;
     } else {
-      heroContainer.classList.add('theme-warning');
-      statusEl.innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--warning)"></i> <span style="color: var(--warning)">TRUNG BÌNH</span>';
-      descEl.textContent = `Tiềm năng ở mức trung bình. Thành công phụ thuộc nhiều vào marketing và thời điểm.`;
+      statusEl.innerHTML = `<i class="fas fa-exclamation-circle" style="color: ${color}"></i> <span style="color: ${color}">AVERAGE</span>`;
+      descEl.textContent = `Tiềm năng ở mức trung bình. Thành công phụ thuộc vào yếu tố thị trường.`;
     }
 
     // Update Values
@@ -587,7 +353,7 @@ const App = {
     }
 
     const value = probability * 100;
-    const color = probability >= 0.6 ? '#00ff9d' : (probability <= 0.4 ? '#ff4d4d' : '#ffb700');
+    const color = probability >= 0.6 ? '#00f2ea' : (probability <= 0.4 ? '#ff4d4d' : '#e2b714');
 
     this.gaugeChart = new Chart(ctx, {
       type: 'doughnut',
@@ -639,12 +405,12 @@ const App = {
       data: {
         labels: labels,
         datasets: [{
-          label: 'Mức Độ Ảnh Hưởng (%)',
+          label: 'Importance (%)',
           data: values,
-          backgroundColor: 'rgba(0, 242, 255, 0.6)',
-          borderColor: '#00f2ff',
+          backgroundColor: 'rgba(0, 242, 234, 0.6)',
+          borderColor: '#00f2ea',
           borderWidth: 1,
-          borderRadius: 5
+          borderRadius: 4
         }]
       },
       options: {
@@ -654,19 +420,21 @@ const App = {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: 'rgba(10, 10, 15, 0.9)',
+            backgroundColor: 'rgba(10, 14, 23, 0.9)',
             titleColor: '#fff',
-            bodyColor: '#a0a0b0',
+            bodyColor: '#94a3b8',
             borderColor: 'rgba(255, 255, 255, 0.1)',
             borderWidth: 1
           }
         },
         scales: {
           x: {
-            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { color: '#94a3b8', font: { family: "'JetBrains Mono', monospace" } }
           },
           y: {
-            grid: { display: false }
+            grid: { display: false },
+            ticks: { color: '#ffffff', font: { family: "'JetBrains Mono', monospace" } }
           }
         }
       }
@@ -675,63 +443,13 @@ const App = {
 
   setupCharts() {
     // Global Chart Defaults for Dark Theme
-    Chart.defaults.color = '#a0a0b0';
-    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
-    Chart.defaults.font.family = "'Inter', sans-serif";
-  },
-
-  renderFeatureChart(featureData) {
-    const ctx = document.getElementById('featureChart').getContext('2d');
-
-    if (this.featureChart) {
-      this.featureChart.destroy();
-    }
-
-    // Process data
-    const labels = featureData.top_features.map(f => f.name);
-    const values = featureData.top_features.map(f => f.importance);
-
-    this.featureChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Mức Độ Ảnh Hưởng (%)',
-          data: values,
-          backgroundColor: 'rgba(0, 242, 255, 0.6)',
-          borderColor: '#00f2ff',
-          borderWidth: 1,
-          borderRadius: 5
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: 'rgba(10, 10, 15, 0.9)',
-            titleColor: '#fff',
-            bodyColor: '#a0a0b0',
-            borderColor: 'rgba(255, 255, 255, 0.1)',
-            borderWidth: 1
-          }
-        },
-        scales: {
-          x: {
-            grid: { color: 'rgba(255, 255, 255, 0.05)' }
-          },
-          y: {
-            grid: { display: false }
-          }
-        }
-      }
-    });
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.05)';
+    Chart.defaults.font.family = "'JetBrains Mono', monospace";
   },
 
   fillRandomData() {
-    document.getElementById('title').value = 'Phim Test ' + Math.floor(Math.random() * 100);
+    document.getElementById('title').value = 'Project Alpha ' + Math.floor(Math.random() * 100);
     document.getElementById('budget').value = Math.floor(Math.random() * 5000000) + 1000000;
     document.getElementById('revenue').value = Math.floor(Math.random() * 10000000);
     document.getElementById('vote_average').value = (Math.random() * 5 + 4).toFixed(1);
