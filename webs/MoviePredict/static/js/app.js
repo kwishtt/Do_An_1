@@ -438,14 +438,16 @@ const App = {
     const metrics = data.metrics;
     const prob = prediction.success_probability;
 
-    // Hero Container Theme
-    const heroContainer = document.querySelector('.hero-result-container');
-    heroContainer.classList.remove('theme-success', 'theme-danger', 'theme-warning');
+    // Update Gauge
+    this.renderGauge(prob);
 
-    // Status Elements
+    // Update Text
+    const probPercent = Math.round(prob * 100);
+    document.getElementById('confidence-value').innerText = probPercent + '%';
+
+    // Status Text
     const statusEl = document.getElementById('prediction-status');
     const descEl = document.getElementById('prediction-desc');
-    const confidenceValEl = document.getElementById('confidence-value');
 
     // Determine State
     let color = '#e2b714'; // Default warning
@@ -462,21 +464,95 @@ const App = {
       descEl.textContent = `Tiềm năng ở mức trung bình. Thành công phụ thuộc vào yếu tố thị trường.`;
     }
 
-    // Update Values
-    confidenceValEl.textContent = `${prediction.confidence}%`;
-    document.getElementById('roi-value').textContent = metrics.predictedROI + 'x';
-    document.getElementById('risk-value').textContent = metrics.riskLevel;
+    // Update Metrics Values
+    const roi = metrics.roi_category || metrics.predictedROI || 'N/A';
+    const risk = metrics.risk_level || metrics.riskLevel || 'N/A';
+    const revenue = metrics.estimated_revenue || metrics.predictedRevenue || 0;
+
+    document.getElementById('roi-value').textContent = roi;
+    document.getElementById('risk-value').textContent = risk;
 
     // Format Revenue
-    const revenue = metrics.predictedRevenue;
     const formattedRevenue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(revenue);
     document.getElementById('revenue-value').textContent = formattedRevenue;
 
-    // Render Gauge
-    this.renderGauge(prob);
-
-    // Render Feature Chart
+    // Render Charts
     this.renderFeatureChart(data.feature_importance);
+    this.renderRadarChart(data.input_data);
+  },
+
+  renderRadarChart(inputData) {
+    const ctx = document.getElementById('radarChart').getContext('2d');
+
+    if (this.radarChartInstance) {
+      this.radarChartInstance.destroy();
+    }
+
+    // Normalize data for chart (Scale 0-100)
+    // Benchmarks (Approximate values for a "Blockbuster")
+    const benchmark = {
+      budget: 150000000, // $150M
+      runtime: 130,      // 130 mins
+      vote: 7.5,         // 7.5 stars
+      revenue: 400000000 // $400M
+    };
+
+    const dataValues = [
+      Math.min((inputData.budget / benchmark.budget) * 100, 100),
+      Math.min((inputData.runtime / benchmark.runtime) * 100, 100),
+      Math.min((inputData.vote_average / benchmark.vote) * 100, 100),
+      Math.min((inputData.revenue / benchmark.revenue) * 100, 100),
+      Math.min((inputData.vote_average * 10) + 20, 100) // Quality Score proxy
+    ];
+
+    this.radarChartInstance = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['Budget Power', 'Runtime Fit', 'Audience Rating', 'Revenue Potential', 'Quality Score'],
+        datasets: [{
+          label: 'Your Movie',
+          data: dataValues,
+          backgroundColor: 'rgba(0, 229, 255, 0.2)',
+          borderColor: '#00E5FF',
+          pointBackgroundColor: '#00E5FF',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#00E5FF'
+        }, {
+          label: 'Blockbuster Avg',
+          data: [80, 85, 90, 85, 90], // Ideal shape
+          backgroundColor: 'rgba(255, 215, 0, 0.1)',
+          borderColor: '#FFD700',
+          pointBackgroundColor: '#FFD700',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#FFD700',
+          borderDash: [5, 5]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+            pointLabels: {
+              color: '#fff',
+              font: { family: "'Outfit', sans-serif", size: 12 }
+            },
+            ticks: { display: false, backdropColor: 'transparent' },
+            suggestedMin: 0,
+            suggestedMax: 100
+          }
+        },
+        plugins: {
+          legend: {
+            labels: { color: '#fff', font: { family: "'Outfit', sans-serif" } }
+          }
+        }
+      }
+    });
   },
 
   renderGauge(probability) {
